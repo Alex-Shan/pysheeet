@@ -7,7 +7,7 @@ import pytest
 import unicodedata
 
 
-# Encoding and Decoding
+# Encoding 和 Decoding
 def encode_utf8(s: str) -> bytes:
     """Encode string to UTF-8 bytes."""
     return s.encode("utf-8")
@@ -23,7 +23,7 @@ def encode_with_errors(s: str, encoding: str, errors: str) -> bytes:
     return s.encode(encoding, errors=errors)
 
 
-# Code Points
+# 代码点
 def get_code_point(char: str) -> int:
     """Get Unicode code point of character."""
     return ord(char)
@@ -39,7 +39,7 @@ def format_code_points(s: str) -> list[str]:
     return [f"U+{ord(c):04X}" for c in s]
 
 
-# Normalization
+# 正常化
 def normalize_nfc(s: str) -> str:
     """Normalize to NFC (composed) form."""
     return unicodedata.normalize("NFC", s)
@@ -50,7 +50,7 @@ def normalize_nfd(s: str) -> str:
     return unicodedata.normalize("NFD", s)
 
 
-# Character Info
+# 角色信息
 def get_char_name(char: str) -> str:
     """Get Unicode name of character."""
     return unicodedata.name(char)
@@ -66,13 +66,13 @@ def lookup_char(name: str) -> str:
     return unicodedata.lookup(name)
 
 
-# String Operations
+# String 操作
 def case_insensitive_equal(s1: str, s2: str) -> bool:
     """Case-insensitive comparison using casefold."""
     return s1.casefold() == s2.casefold()
 
 
-# Tests
+# 测试
 class TestEncodingDecoding:
     def test_encode_utf8(self):
         assert encode_utf8("Café") == b"Caf\xc3\xa9"
@@ -108,13 +108,13 @@ class TestCodePoints:
 
 class TestNormalization:
     def test_nfc(self):
-        # e + combining accent -> single é
+        # e + 组合重音 -> 单 é
         composed = normalize_nfc("e\u0301")
         assert composed == "é"
         assert len(composed) == 1
 
     def test_nfd(self):
-        # single é -> e + combining accent
+        # 单 é -> e + 组合重音
         decomposed = normalize_nfd("é")
         assert len(decomposed) == 2
 
@@ -131,9 +131,9 @@ class TestCharInfo:
         assert "ACUTE" in get_char_name("é")
 
     def test_get_char_category(self):
-        assert get_char_category("A") == "Lu"  # Letter, uppercase
-        assert get_char_category("a") == "Ll"  # Letter, lowercase
-        assert get_char_category("1") == "Nd"  # Number, digit
+        assert get_char_category("A") == "Lu"  # 字母，大写
+        assert get_char_category("a") == "Ll"  # 字母，小写
+        assert get_char_category("1") == "Nd"  # 数字、数字
 
     def test_lookup_char(self):
         assert lookup_char("LATIN CAPITAL LETTER A") == "A"

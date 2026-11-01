@@ -1,32 +1,25 @@
 .. meta::
-    :description lang=en: Python multiprocessing tutorial covering process creation, pools, shared memory, inter-process communication, and parallel CPU-bound task execution
+    :description lang=zh_CN: Python multiprocessing 教程涵盖 process 创建、池、共享内存、process 间通信以及并行 CPU 绑定任务执行
     :keywords: Python, Python3, multiprocessing, Process, Pool, Queue, Pipe, shared memory, parallel, CPU-bound, GIL bypass
 
-===============
-Multiprocessing
-===============
+========================================
+多进程（Multiprocessing）
+========================================
 
 :Source: `src/basic/concurrency_.py <https://github.com/crazyguitar/pysheeet/blob/master/src/basic/concurrency_.py>`_
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-Introduction
-------------
+介绍（Introduction）
+--------------------------------
 
-The ``multiprocessing`` module enables true parallel execution by spawning
-separate Python processes, each with its own Python interpreter and memory
-space. Unlike threads, processes bypass the Global Interpreter Lock (GIL),
-making multiprocessing ideal for CPU-bound tasks that need to utilize multiple
-CPU cores. The trade-off is higher overhead for process creation and
-inter-process communication compared to threads.
+``multiprocessing`` module 通过生成单独的 Python processes 来实现 true 并行执行， 每个都有自己的 Python interpreter 和内存空间。 与threads不同， processes 绕过全局 Interpreter Lock (GIL)， 使 multiprocessing 成为需要利用多个 CPU 内核的 CPU 绑定任务的理想选择。 与 threads 相比，代价是 process 创建和 process 间通信的开销更高。
 
-Creating Processes
-------------------
+创建进程（Creating Processes）
+------------------------------------------------
 
-Creating processes is similar to creating threads. Each process runs in its
-own memory space, so changes to variables in one process don't affect others.
-Use ``start()`` to begin execution and ``join()`` to wait for completion.
+创建 processes 与创建 threads 类似。每个 process 在独立的 memory space 中运行，因此一个 process 对 variables 的修改不会影响其他 processes。使用 ``start()`` 开始执行，使用 ``join()`` 等待执行完成。
 
 .. code-block:: python
 
@@ -48,13 +41,10 @@ Use ``start()`` to begin execution and ``join()`` to wait for completion.
 
         print(f"Main process PID: {os.getpid()}")
 
-Process Pool
-------------
+进程池（Process Pool）
+----------------------------------
 
-A ``Pool`` manages a collection of worker processes and distributes tasks among
-them. This is more efficient than creating a new process for each task, as
-processes are reused. The pool provides methods like ``map()``, ``apply()``,
-and their async variants for different use cases.
+一个 ``Pool`` 管理一个collection的worker processes，并在它们之间分配任务。这比为每个任务创建新的 process 更有效，因为 processes 被重复使用。该池提供 methods（如 ``map()`` 、 ``apply()`` ）及其针对不同用例的异步变体。
 
 .. code-block:: python
 
@@ -71,24 +61,21 @@ and their async variants for different use cases.
     if __name__ == "__main__":
         numbers = [10**6, 10**6, 10**6, 10**6]
 
-        # Sequential execution
+        # 顺序执行
         start = time.time()
         results = [cpu_intensive(n) for n in numbers]
         print(f"Sequential: {time.time() - start:.2f}s")
 
-        # Parallel execution with Pool
+        # 与 Pool 并行执行
         start = time.time()
         with Pool(4) as pool:
             results = pool.map(cpu_intensive, numbers)
         print(f"Parallel: {time.time() - start:.2f}s")
 
-Pool Methods
-------------
+池方法（Pool Methods）
+----------------------------------
 
-The Pool class provides several methods for distributing work. ``map()`` applies
-a function to each item in an iterable and returns results in order. ``apply()``
-calls a function with arguments and blocks until complete. The ``_async``
-variants return immediately with an ``AsyncResult`` object.
+池class提供了多个methods用于分配工作。 ``map()`` 将 function 应用于 iterable 中的每个 item，并按顺序返回结果。 ``apply()`` 使用 arguments 调用 function 并阻塞直至完成。 ``_async`` 变体立即返回，并带有 ``AsyncResult`` object。
 
 .. code-block:: python
 
@@ -102,29 +89,27 @@ variants return immediately with an ``AsyncResult`` object.
 
     if __name__ == "__main__":
         with Pool(4) as pool:
-            # map - apply function to iterable
+            # 地图 - 将 function 应用于 iterable
             results = pool.map(square, range(10))
             print(f"map: {results}")
 
-            # starmap - unpack arguments from iterable
+            # starmap - 从 iterable 中解压 arguments
             pairs = [(1, 2), (3, 4), (5, 6)]
             results = pool.starmap(add, pairs)
             print(f"starmap: {results}")
 
-            # apply_async - non-blocking single call
+            # apply_async - 非阻塞单次调用
             result = pool.apply_async(square, (10,))
             print(f"apply_async: {result.get()}")
 
-            # map_async - non-blocking map
+            # map_async - 非阻塞地图
             result = pool.map_async(square, range(5))
             print(f"map_async: {result.get()}")
 
-Sharing Data with Queue
------------------------
+使用 Queue 共享数据（Sharing Data with Queue）
+----------------------------------------------------------------------------
 
-Processes don't share memory by default. ``multiprocessing.Queue`` provides a
-thread and process-safe way to exchange data between processes. It's the
-recommended approach for most inter-process communication scenarios.
+Processes 默认不共享内存。 ``multiprocessing.Queue`` 提供 thread-safe 和 process-safe 的方式，在 processes 之间交换数据。对于大多数 inter-process communication 场景，推荐使用这种方式。
 
 .. code-block:: python
 
@@ -134,7 +119,7 @@ recommended approach for most inter-process communication scenarios.
         for item in items:
             q.put(item)
             print(f"Produced: {item}")
-        q.put(None)  # Sentinel
+        q.put(None)  # 哨兵
 
     def consumer(q):
         while True:
@@ -155,12 +140,10 @@ recommended approach for most inter-process communication scenarios.
         p1.join()
         p2.join()
 
-Sharing Data with Pipe
-----------------------
+使用 Pipe 共享数据（Sharing Data with Pipe）
+------------------------------------------------------------------------
 
-A ``Pipe`` creates a two-way communication channel between two processes. It's
-simpler and faster than Queue for point-to-point communication but only
-supports two endpoints. Each end can send and receive data.
+``Pipe`` 在两个 processes 之间创建双向通信通道。它比 Queue 的点对点通信更简单、更快，但仅支持两个端点。每端都可以发送和接收数据。
 
 .. code-block:: python
 
@@ -192,12 +175,10 @@ supports two endpoints. Each end can send and receive data.
         p1.join()
         p2.join()
 
-Shared Memory with Value and Array
-----------------------------------
+使用 Value 与 Array 共享内存（Shared Memory with Value and Array）
+------------------------------------------------------------------------------------------------------------------
 
-For simple shared state, ``Value`` and ``Array`` provide shared memory that
-multiple processes can access. These are faster than Queue/Pipe for frequently
-accessed data but require careful synchronization to avoid race conditions.
+对于简单共享状态， ``Value`` 和 ``Array`` 提供多个 processes 可以访问的共享内存。对于频繁访问的数据，它们比 Queue/Pipe 更快，但需要仔细同步以避免 race conditions。
 
 .. code-block:: python
 
@@ -213,8 +194,8 @@ accessed data but require careful synchronization to avoid race conditions.
             arr[i] = arr[i] * 2
 
     if __name__ == "__main__":
-        # Shared integer
-        counter = Value('i', 0)  # 'i' = signed int
+        # 共享integer
+        counter = Value('i', 0)  # 'i' = 签名 int
         processes = [Process(target=increment, args=(counter,)) for _ in range(4)]
         for p in processes:
             p.start()
@@ -222,20 +203,17 @@ accessed data but require careful synchronization to avoid race conditions.
             p.join()
         print(f"Counter: {counter.value}")  # 40000
 
-        # Shared array
-        arr = Array('d', [1.0, 2.0, 3.0, 4.0])  # 'd' = double
+        # 共享array
+        arr = Array('d', [1.0, 2.0, 3.0, 4.0])  # 'd' = 双
         p = Process(target=modify_array, args=(arr,))
         p.start()
         p.join()
         print(f"Array: {list(arr)}")  # [2.0, 4.0, 6.0, 8.0]
 
-Manager for Complex Shared Objects
-----------------------------------
+使用 Manager 共享复杂对象（Manager for Complex Shared Objects）
+----------------------------------------------------------------------------------------------------------
 
-A ``Manager`` provides a way to share more complex Python objects (lists, dicts)
-between processes. The manager runs a server process that holds the actual
-objects, and other processes access them through proxies. This is slower than
-Value/Array but supports arbitrary Python objects.
+``Manager`` 提供了一种在 processes 之间共享更多 complex Python objects（lists、dicts）的方法。管理器运行一个服务器 process，该服务器保存实际的 objects，其他 processes 通过代理访问它们。这比 Value/Array 慢，但支持任意 Python objects。
 
 .. code-block:: python
 
@@ -262,12 +240,10 @@ Value/Array but supports arbitrary Python objects.
             print(f"Dict: {dict(shared_dict)}")
             print(f"List: {list(shared_list)}")
 
-Process Synchronization
------------------------
+进程同步（Process Synchronization）
+----------------------------------------------------------
 
-Multiprocessing provides the same synchronization primitives as threading:
-``Lock``, ``RLock``, ``Semaphore``, ``Event``, ``Condition``, and ``Barrier``.
-These work across processes instead of threads.
+Multiprocessing 提供与线程相同的同步原语： ``Lock`` 、 ``RLock`` 、 ``Semaphore`` 、 ``Event`` 、 ``Condition`` 和 ``Barrier`` 。它们适用于 processes 而不是 threads。
 
 .. code-block:: python
 
@@ -294,12 +270,10 @@ These work across processes instead of threads.
 
         print(f"Counter: {counter.value}")  # 40000
 
-Daemon Processes
-----------------
+守护进程（Daemon Processes）
+--------------------------------------------
 
-Like daemon threads, daemon processes are terminated when the main process
-exits. They're useful for background tasks that shouldn't prevent program
-termination. Set ``daemon=True`` before calling ``start()``.
+与守护进程 threads 一样，守护进程 processes 在主 process 退出时终止。它们对于不应该阻止程序终止的后台任务很有用。 Set ``daemon=True`` 在调用 ``start()`` 之前。
 
 .. code-block:: python
 
@@ -318,12 +292,10 @@ termination. Set ``daemon=True`` before calling ``start()``.
         time.sleep(3)
         print("Main process exiting, daemon will be terminated")
 
-Handling Process Termination
-----------------------------
+处理进程终止（Handling Process Termination）
+------------------------------------------------------------------------
 
-Processes can be terminated gracefully using ``terminate()`` or forcefully
-using ``kill()``. Always clean up resources properly and consider using
-signals for graceful shutdown in production code.
+Processes 可以使用 ``terminate()`` 正常终止，也可以使用 ``kill()`` 强制终止。始终正确清理资源，并考虑在生产代码中使用信号正常关闭。
 
 .. code-block:: python
 
@@ -345,24 +317,21 @@ signals for graceful shutdown in production code.
 
         time.sleep(3)
 
-        # Graceful termination (SIGTERM)
+        # 优雅终止 (SIGTERM)
         p.terminate()
         p.join(timeout=2)
 
-        # Force kill if still alive
+        # 如果还活着就强制杀死
         if p.is_alive():
             p.kill()
             p.join()
 
         print(f"Exit code: {p.exitcode}")
 
-ProcessPoolExecutor
--------------------
+ProcessPoolExecutor 进程池（ProcessPoolExecutor）
+----------------------------------------------------------------------------------------
 
-``concurrent.futures.ProcessPoolExecutor`` provides a higher-level interface
-for process pools that's consistent with ``ThreadPoolExecutor``. It's often
-easier to use than ``multiprocessing.Pool`` and integrates well with the
-futures pattern.
+``concurrent.futures.ProcessPoolExecutor`` 为 process 池提供与 ``ThreadPoolExecutor`` 一致的更高级别接口。它通常比 ``multiprocessing.Pool`` 更容易使用，并且与期货模式很好地集成。
 
 .. code-block:: python
 
@@ -375,23 +344,21 @@ futures pattern.
         numbers = [10**6, 10**6, 10**6, 10**6]
 
         with ProcessPoolExecutor(max_workers=4) as executor:
-            # Submit individual tasks
+            # 提交个人任务
             futures = [executor.submit(compute, n) for n in numbers]
 
-            # Process results as they complete
+            # Process 完成后的结果
             for future in as_completed(futures):
                 print(f"Result: {future.result()}")
 
-            # Or use map for ordered results
+            # 或者使用地图来获取有序结果
             results = list(executor.map(compute, numbers))
             print(f"All results: {results}")
 
-Comparing Threads vs Processes
-------------------------------
+比较线程与进程（Comparing Threads vs Processes）
+------------------------------------------------------------------------------
 
-Choose threads for I/O-bound tasks (network, file I/O) where the GIL is
-released during waiting. Choose processes for CPU-bound tasks that need true
-parallelism. This example demonstrates the performance difference.
+对于 I/O 绑定任务（网络、文件 I/O）选择 threads，其中 GIL 在等待期间被释放。对于需要 true 并行性的 CPU 绑定任务，请选择 processes。此示例演示了性能差异。
 
 .. code-block:: python
 
@@ -407,13 +374,13 @@ parallelism. This example demonstrates the performance difference.
         n = 10**7
         count = 4
 
-        # Sequential
+        # 顺序
         start = time.time()
         for _ in range(count):
             cpu_bound(n)
         print(f"Sequential: {time.time() - start:.2f}s")
 
-        # Threads (limited by GIL)
+        # Threads（受GIL限制）
         start = time.time()
         threads = [Thread(target=cpu_bound, args=(n,)) for _ in range(count)]
         for t in threads:
@@ -422,7 +389,7 @@ parallelism. This example demonstrates the performance difference.
             t.join()
         print(f"Threads: {time.time() - start:.2f}s")
 
-        # Processes (true parallelism)
+        # Processes（true并行度）
         start = time.time()
         with Pool(count) as pool:
             pool.map(cpu_bound, [n] * count)

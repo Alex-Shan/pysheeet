@@ -27,7 +27,7 @@ class PysheeetTest(LiveServerTestCase):
 
     def create_app(self):
         """Create a app for test."""
-        # remove env ACME_TOKEN*
+        # 删除环境 ACME_TOKEN*
         for k, v in os.environ.items():
             if not k.startswith("ACME_TOKEN"):
                 continue
@@ -191,7 +191,7 @@ class PysheeetTest(LiveServerTestCase):
             ),
             "notes/multitasking/index.html": "notes/concurrency/index.html",
             "notes/pytorch/pytorch.html": "notes/llm/pytorch.html",
-            # Intermediate restructuring snapshots Google still has indexed.
+            # 中间重组快照 Google 仍已编入索引。
             "notes/container/python-dict.html": (
                 "notes/basic/python-dict.html"
             ),
@@ -221,7 +221,7 @@ class PysheeetTest(LiveServerTestCase):
             "notes/appendix/python-asyncio.html": (
                 "notes/asyncio/python-asyncio-guide.html"
             ),
-            # Deleted pages with no direct successor go to the root.
+            # 没有直接后继的已删除页面将转到根目录。
             "notes/python-aws.html": "index.html",
             "notes/testing/python-tests.html": "index.html",
         }

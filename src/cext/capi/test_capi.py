@@ -4,7 +4,7 @@ import pytest
 import sys
 import os
 
-# Add build directory to path
+# 将构建目录添加到路径
 build_dir = os.path.join(os.path.dirname(__file__), "build")
 for d in os.listdir(build_dir) if os.path.exists(build_dir) else []:
     path = os.path.join(build_dir, d)

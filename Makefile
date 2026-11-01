@@ -60,3 +60,17 @@ endif
 format:
 	black --line-length 79 $(SRC) src/
 	find src/cext -type f \( -name "*.cpp" -o -name "*.c" -o -name "*.h" \) | xargs -I{} clang-format -style=file -i {}
+
+# 中文文档构建与检查，不安装或升级示例运行依赖。
+.PHONY: docs-deps docs-html docs-check docs-preview
+docs-deps:
+	python -m pip install --require-hashes -r requirements-docs.lock
+
+docs-html:
+	python -m sphinx -a -b html -d docs/_build/doctrees -W --keep-going docs docs/_build/html
+
+docs-check: docs-html
+	python tools/check_docs.py
+
+docs-preview:
+	python -m http.server 8000 --directory docs/_build/html

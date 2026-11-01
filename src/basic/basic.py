@@ -8,7 +8,7 @@ import platform
 import pytest
 
 
-# Python Version
+# Python版本
 def get_version_info() -> tuple:
     """Get Python version info."""
     return sys.version_info[:3]
@@ -24,7 +24,7 @@ def check_version(major: int, minor: int) -> bool:
     return sys.version_info >= (major, minor)
 
 
-# Control Flow
+# 控制流程
 def classify_number(x: int) -> str:
     """Classify number as negative, zero, or positive."""
     if x < 0:
@@ -75,7 +75,7 @@ def loop_completed(items: list, target) -> bool:
     return True
 
 
-# Exception Handling
+# Exception 搬运
 def safe_divide(a: float, b: float) -> float | None:
     """Divide with exception handling."""
     try:
@@ -115,13 +115,13 @@ def square_dict(n: int) -> dict:
     return {x: x**2 for x in range(n)}
 
 
-# Truthiness
+# 真实性
 def is_truthy(value) -> bool:
     """Check if value is truthy."""
     return bool(value)
 
 
-# Multiple Assignment
+# 多重作业
 def swap(a, b) -> tuple:
     """Swap two values."""
     return b, a
@@ -133,7 +133,7 @@ def first_and_rest(items: list) -> tuple:
     return first, rest
 
 
-# Tests
+# 测试
 class TestVersion:
     def test_get_version_info(self):
         info = get_version_info()

@@ -1,29 +1,20 @@
 .. meta::
-    :description lang=en: SQLAlchemy advanced query patterns including joins, subqueries, aggregations, window functions, and performance optimization
+    :description lang=zh_CN: SQLAlchemy 高级查询模式，包括联接、子查询、聚合、窗口 functions 和性能优化
     :keywords: Python, SQLAlchemy, query, join, subquery, aggregate, window function, CTE, performance, optimization
 
-========================
-SQLAlchemy Query Recipes
-========================
+==================================================================================
+SQLAlchemy 查询配方（SQLAlchemy Query Recipes）
+==================================================================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-This section covers advanced query patterns and recipes for SQLAlchemy. While the
-basics of querying are covered in the ORM section, real-world applications often
-require more sophisticated queries involving joins across multiple tables, subqueries,
-aggregations, and performance optimizations. These patterns help you write efficient
-database queries while maintaining readable Python code. Understanding these techniques
-is essential for building scalable applications that interact with relational databases.
+本节介绍 SQLAlchemy 的高级查询模式和配方。虽然 ORM 部分介绍了查询的基础知识，但实际应用程序通常需要更复杂的查询，涉及跨多个表的联接、子查询、聚合和性能优化。这些模式可帮助您编写高效的数据库查询，同时保持可读的 Python 代码。了解这些技术对于构建与关系数据库交互的可扩展应用程序至关重要。
 
-Order By
---------
+排序（Order By）
+------------------------
 
-The ``order_by()`` method sorts query results by one or more columns. Pass column
-objects directly, or use ``desc()`` for descending order. You can chain multiple
-columns for secondary sorting. SQLAlchemy also supports ``nullsfirst()`` and
-``nullslast()`` to control how NULL values are sorted, which is particularly useful
-when dealing with optional fields.
+``order_by()`` method 按一列或多列对查询结果进行排序。直接传递列objects，或使用 ``desc()`` 进行降序排列。您可以链接多个列以进行二次排序。 SQLAlchemy还支持 ``nullsfirst()`` 和 ``nullslast()`` 来控制NULL values的排序方式，这在处理可选字段时特别有用。
 
 .. code-block:: python
 
@@ -47,25 +38,21 @@ when dealing with optional fields.
     ...     User(name="Carol", age=30)])
     >>> session.commit()
 
-    >>> # Ascending order
+    >>> # 升序
     >>> stmt = select(User).order_by(User.age)
     >>> print([u.name for u in session.execute(stmt).scalars()])
     ['Bob', 'Alice', 'Carol']
 
-    >>> # Descending order
+    >>> # 降序排列
     >>> stmt = select(User).order_by(desc(User.age), User.name)
     >>> print([u.name for u in session.execute(stmt).scalars()])
     ['Alice', 'Carol', 'Bob']
     >>> session.close()
 
-Limit and Offset
-----------------
+限制和偏移（Limit and Offset）
+----------------------------------------------
 
-Use ``limit()`` to restrict the number of results and ``offset()`` to skip rows,
-enabling pagination. These methods translate directly to SQL LIMIT and OFFSET clauses.
-For large datasets, consider using keyset pagination (filtering by the last seen ID)
-instead of offset-based pagination, as OFFSET can become slow with large offsets
-since the database must scan and discard rows.
+使用 ``limit()`` 限制结果数量，使用 ``offset()`` 跳过行，从而启用分页。这些 methods 直接转换为 SQL、LIMIT 和 OFFSET 条款。对于大型数据集，请考虑使用键集分页（按最后看到的 ID 进行过滤）而不是基于偏移量的分页，因为 OFFSET 会因数据库必须扫描并丢弃行而在较大偏移量下变慢。
 
 .. code-block:: python
 
@@ -85,25 +72,21 @@ since the database must scan and discard rows.
     >>> session.add_all([User(name=f"User{i}") for i in range(10)])
     >>> session.commit()
 
-    >>> # First page (3 items)
+    >>> # 第一页 (3 items)
     >>> stmt = select(User).order_by(User.id).limit(3)
     >>> print([u.name for u in session.execute(stmt).scalars()])
     ['User0', 'User1', 'User2']
 
-    >>> # Second page
+    >>> # 第二页
     >>> stmt = select(User).order_by(User.id).limit(3).offset(3)
     >>> print([u.name for u in session.execute(stmt).scalars()])
     ['User3', 'User4', 'User5']
     >>> session.close()
 
-Group By and Aggregates
------------------------
+分组与聚合（Group By and Aggregates）
+------------------------------------------------------------
 
-Use ``group_by()`` with aggregate functions like ``func.count()``, ``func.sum()``,
-``func.avg()``, ``func.min()``, and ``func.max()`` for grouped calculations. The
-``having()`` method filters groups after aggregation, similar to SQL's HAVING clause.
-When selecting both regular columns and aggregates, all non-aggregate columns must
-be included in the GROUP BY clause.
+使用 ``group_by()`` 与聚合 functions（如 ``func.count()`` 、 ``func.sum()`` 、 ``func.avg()`` 、 ``func.min()`` 和 ``func.max()`` ）进行分组计算。 ``having()`` method 在聚合后过滤组，类似于 SQL 的 HAVING 子句。当选择常规列和聚合时，所有非聚合列必须包含在 GROUP BY 子句中。
 
 .. code-block:: python
 
@@ -128,7 +111,7 @@ be included in the GROUP BY clause.
     ...     Sale(product="B", amount=50)])
     >>> session.commit()
 
-    >>> # Group by with sum
+    >>> # 按总和分组
     >>> stmt = select(Sale.product, func.sum(Sale.amount).label("total"))\
     ...        .group_by(Sale.product)
     >>> for row in session.execute(stmt):
@@ -136,20 +119,17 @@ be included in the GROUP BY clause.
     A: 250
     B: 250
 
-    >>> # Having clause
+    >>> # 拥有条款
     >>> stmt = select(Sale.product, func.count().label("count"))\
     ...        .group_by(Sale.product).having(func.count() > 1)
     >>> print(session.execute(stmt).fetchall())
     [('A', 2), ('B', 2)]
     >>> session.close()
 
-Join Queries
-------------
+连接查询（Join Queries）
+------------------------------------
 
-SQLAlchemy provides several ways to join tables. For ORM models with relationships,
-use ``join()`` which automatically uses the foreign key. For explicit join conditions,
-pass the condition as the second argument. Use ``outerjoin()`` for LEFT OUTER JOIN.
-The ``select_from()`` method specifies the FROM clause when needed for complex joins.
+SQLAlchemy 提供了多种连接表的方法。对于有关系的 ORM 型号，使用 ``join()`` ，它会自动使用国外的 key。对于显式连接条件，请将条件作为第二个 argument 传递。将 ``outerjoin()`` 用于 LEFT OUTER JOIN。当 complex 连接需要时， ``select_from()`` method 指定 FROM 子句。
 
 .. code-block:: python
 
@@ -180,24 +160,21 @@ The ``select_from()`` method specifies the FROM clause when needed for complex j
     >>> session.add_all([alice, bob])
     >>> session.commit()
 
-    >>> # Inner join
+    >>> # 内连接
     >>> stmt = select(User.name, Order.product).join(Order)
     >>> print(session.execute(stmt).fetchall())
     [('Alice', 'Book'), ('Alice', 'Pen')]
 
-    >>> # Left outer join (includes users without orders)
+    >>> # 左外连接（包括没有订单的用户）
     >>> stmt = select(User.name, Order.product).outerjoin(Order)
     >>> print(session.execute(stmt).fetchall())
     [('Alice', 'Book'), ('Alice', 'Pen'), ('Bob', None)]
     >>> session.close()
 
-Subqueries
-----------
+子查询（Subqueries）
+------------------------------
 
-Subqueries are queries nested inside other queries. Use ``subquery()`` to create
-a subquery that can be used in the FROM clause, or ``scalar_subquery()`` for single-value
-subqueries in SELECT or WHERE clauses. Subqueries are useful for complex filtering,
-computing derived values, or when you need to reference aggregated data in the main query.
+子查询是嵌套在其他查询中的查询。使用 ``subquery()`` 创建可在 FROM 子句中使用的子查询，或使用 ``scalar_subquery()`` 创建用于 SELECT 或 WHERE 子句中的单个 value 子查询。子查询对于 complex 过滤、计算派生的 values 或需要在主查询中引用聚合数据时非常有用。
 
 .. code-block:: python
 
@@ -221,21 +198,17 @@ computing derived values, or when you need to reference aggregated data in the m
     ...     User(name="Carol", score=75)])
     >>> session.commit()
 
-    >>> # Scalar subquery: users with above-average score
+    >>> # 标量子查询：得分高于平均水平的用户
     >>> avg_score = select(func.avg(User.score)).scalar_subquery()
     >>> stmt = select(User).where(User.score > avg_score)
     >>> print([u.name for u in session.execute(stmt).scalars()])
     ['Alice', 'Bob']
     >>> session.close()
 
-Common Table Expressions (CTE)
-------------------------------
+公用表表达式 (CTE)（Common Table Expressions (CTE)）
+----------------------------------------------------------------------------------------
 
-CTEs (WITH clauses) improve query readability by naming subqueries. They're especially
-useful for recursive queries and when the same subquery is referenced multiple times.
-Use ``cte()`` to create a CTE from a select statement. CTEs can reference themselves
-for recursive queries, which is powerful for hierarchical data like organizational
-charts or category trees.
+CTE（WITH 子句）通过命名子查询来提高查询的可读性。它们对于 recursive 查询以及多次引用同一子查询时特别有用。使用 ``cte()`` 从选定的 statement 创建 CTE。 CTE 可以在 recursive 查询中引用自身，这对于组织结构图或类别树等分层数据非常有用。
 
 .. code-block:: python
 
@@ -259,26 +232,22 @@ charts or category trees.
     ...     Sale(region="West", amount=150)])
     >>> session.commit()
 
-    >>> # CTE for regional totals
+    >>> # CTE 为地区总数
     >>> regional_totals = select(
     ...     Sale.region,
     ...     func.sum(Sale.amount).label("total")
     ... ).group_by(Sale.region).cte("regional_totals")
 
-    >>> # Use CTE in main query
+    >>> # 在主查询中使用 CTE
     >>> stmt = select(regional_totals).where(regional_totals.c.total > 200)
     >>> print(session.execute(stmt).fetchall())
     [('East', 300)]
     >>> session.close()
 
-Exists and Correlated Subqueries
---------------------------------
+EXISTS 与相关子查询（Exists and Correlated Subqueries）
+----------------------------------------------------------------------------------------------
 
-The ``exists()`` construct creates an EXISTS subquery, which returns true if the
-subquery returns any rows. This is efficient for checking the existence of related
-records without loading them. Correlated subqueries reference columns from the outer
-query, allowing row-by-row comparisons. Use ``correlate()`` to explicitly specify
-which tables the subquery should correlate with.
+``exists()`` 构造创建一个 EXISTS 子查询，如果子查询返回任何行，则返回 true。这对于检查相关记录是否存在而不加载它们非常有效。相关子查询引用外部查询中的列，允许逐行比较。使用 ``correlate()`` 显式指定子查询应与哪些表关联。
 
 .. code-block:: python
 
@@ -306,26 +275,22 @@ which tables the subquery should correlate with.
     >>> session.add(Order(user_id=alice.id))
     >>> session.commit()
 
-    >>> # Users with orders
+    >>> # 有订单的用户
     >>> has_orders = exists().where(Order.user_id == User.id)
     >>> stmt = select(User).where(has_orders)
     >>> print([u.name for u in session.execute(stmt).scalars()])
     ['Alice']
 
-    >>> # Users without orders
+    >>> # 无订单用户
     >>> stmt = select(User).where(~has_orders)
     >>> print([u.name for u in session.execute(stmt).scalars()])
     ['Bob']
     >>> session.close()
 
-Union Queries
--------------
+联合查询（Union Queries）
+--------------------------------------
 
-Use ``union()`` to combine results from multiple SELECT statements, removing duplicates.
-Use ``union_all()`` to keep all rows including duplicates, which is faster when you
-know there are no duplicates or don't care about them. The queries must have the same
-number of columns with compatible types. Unions are useful for combining data from
-different tables or different filtered views of the same table.
+使用 ``union()`` 合并多个 SELECT statements 的结果，删除重复项。使用 ``union_all()`` 保留包括重复项在内的所有行，当您知道没有重复项或不关心它们时，速度会更快。查询必须具有与兼容的 types 相同的列数。联合对于组合来自不同表或同一表的不同筛选视图的数据非常有用。
 
 .. code-block:: python
 
@@ -351,7 +316,7 @@ different tables or different filtered views of the same table.
     >>> session.add_all([Supplier(name="Acme"), Supplier(name="Bob")])
     >>> session.commit()
 
-    >>> # Union all names
+    >>> # 联合所有名称
     >>> stmt = union_all(
     ...     select(Customer.name),
     ...     select(Supplier.name))
@@ -359,13 +324,10 @@ different tables or different filtered views of the same table.
     ['Acme', 'Alice', 'Bob', 'Bob']
     >>> session.close()
 
-Case Expressions
-----------------
+CASE 表达式（Case Expressions）
+----------------------------------------------------
 
-The ``case()`` construct creates SQL CASE expressions for conditional logic in queries.
-It's useful for computed columns, conditional aggregations, and data transformations.
-Pass a list of (condition, result) tuples, with an optional ``else_`` for the default
-value. Case expressions can be used in SELECT, WHERE, ORDER BY, and other clauses.
+``case()`` 构造为查询中的条件逻辑创建 SQL CASE expressions。它对于计算列、条件聚合和数据转换非常有用。传递（条件，结果）tuples 的 list，并使用可选的 ``else_`` 作为默认 value。大小写 expressions 可用于 SELECT、WHERE、ORDER、BY 和其他子句中。
 
 .. code-block:: python
 
@@ -389,7 +351,7 @@ value. Case expressions can be used in SELECT, WHERE, ORDER BY, and other clause
     ...     User(name="Carol", score=55)])
     >>> session.commit()
 
-    >>> # Grade based on score
+    >>> # 根据分数评分
     >>> grade = case(
     ...     (User.score >= 90, "A"),
     ...     (User.score >= 70, "B"),
@@ -402,13 +364,10 @@ value. Case expressions can be used in SELECT, WHERE, ORDER BY, and other clause
     Carol: C
     >>> session.close()
 
-Distinct and Count Distinct
----------------------------
+去重与去重计数（Distinct and Count Distinct）
+------------------------------------------------------------------------
 
-Use ``distinct()`` to remove duplicate rows from results. For counting unique values,
-combine ``func.count()`` with ``distinct()``. The ``distinct()`` method can be applied
-to the entire query or to specific columns. This is essential for accurate counting
-when dealing with joined tables that may produce duplicate rows.
+使用 ``distinct()`` 从结果中删除重复行。要计算唯一的 values，请将 ``func.count()`` 与 ``distinct()`` 组合起来。 ``distinct()`` method 可以应用于整个查询或特定列。在处理可能产生重复行的连接表时，这对于准确计数至关重要。
 
 .. code-block:: python
 
@@ -432,24 +391,21 @@ when dealing with joined tables that may produce duplicate rows.
     ...     Order(customer="Bob", product="Book")])
     >>> session.commit()
 
-    >>> # Distinct customers
+    >>> # 不同的客户
     >>> stmt = select(Order.customer).distinct()
     >>> print(session.execute(stmt).fetchall())
     [('Alice',), ('Bob',)]
 
-    >>> # Count distinct products
+    >>> # 计算不同产品的数量
     >>> stmt = select(func.count(distinct(Order.product)))
     >>> print(session.execute(stmt).scalar())
     2
     >>> session.close()
 
-Aliased Tables
---------------
+别名表（Aliased Tables）
+--------------------------------------
 
-Use ``aliased()`` to create aliases for tables, allowing you to reference the same
-table multiple times in a query with different names. This is essential for self-joins
-and queries that need to compare rows within the same table. Aliases create independent
-references that can have different join conditions and filters.
+使用 ``aliased()`` 为表创建别名，允许您在查询中使用不同名称多次引用同一个表。这对于需要比较同一表中的行的自联接和查询至关重要。别名创建可以具有不同连接条件和过滤器的独立引用。
 
 .. code-block:: python
 
@@ -473,7 +429,7 @@ references that can have different join conditions and filters.
     ...     Employee(name="Carol", salary=55000)])
     >>> session.commit()
 
-    >>> # Find employees earning more than Alice
+    >>> # 查找收入超过 Alice 的员工
     >>> alice_alias = aliased(Employee, name="alice")
     >>> stmt = select(Employee.name).select_from(Employee).join(
     ...     alice_alias, alice_alias.name == "Alice"
@@ -482,14 +438,10 @@ references that can have different join conditions and filters.
     ['Bob', 'Carol']
     >>> session.close()
 
-Bulk Operations
----------------
+批量操作（Bulk Operations）
+------------------------------------------
 
-For inserting or updating many rows, bulk operations are much faster than adding
-objects one by one. Use ``session.bulk_insert_mappings()`` for inserts and
-``session.bulk_update_mappings()`` for updates. These methods bypass the ORM's
-unit of work pattern for better performance. For even faster inserts, use Core's
-``insert()`` with ``execute()`` passing a list of dictionaries.
+对于插入或更新多行，批量操作比逐一添加 objects 要快得多。使用 ``session.bulk_insert_mappings()`` 进行插入，使用 ``session.bulk_update_mappings()`` 进行更新。这些 methods 绕过 ORM 的工作单元模式以获得更好的性能。为了获得更快的插入速度，请使用 Core 的 ``insert()`` 和 ``execute()`` ，传递 dictionaries 的 list。
 
 .. code-block:: python
 
@@ -507,25 +459,21 @@ unit of work pattern for better performance. For even faster inserts, use Core's
     >>> Session = sessionmaker(bind=engine)
     >>> session = Session()
 
-    >>> # Bulk insert with Core (fastest)
+    >>> # 带 Core 的批量插入（最快）
     >>> data = [{"name": f"User{i}"} for i in range(100)]
     >>> session.execute(insert(User), data)
     >>> session.commit()
 
-    >>> # Verify
+    >>> # 核实
     >>> count = session.execute(select(func.count()).select_from(User)).scalar()
     >>> print(count)
     100
     >>> session.close()
 
-Raw SQL with Text
------------------
+使用 text 执行原始 SQL（Raw SQL with Text）
+----------------------------------------------------------------------
 
-When you need to execute raw SQL that's difficult to express with SQLAlchemy's
-constructs, use ``text()`` to wrap SQL strings. Always use bound parameters (`:name`
-syntax) instead of string formatting to prevent SQL injection. The ``text()`` construct
-can be used with both Core and ORM queries, and results can be mapped to ORM objects
-using ``from_statement()``.
+当您需要执行难以用 SQLAlchemy 的构造表达的原始 SQL 时，请使用 ``text()`` 来包装 SQL strings。始终使用绑定的 parameters （ `:name` 语法）而不是 string 格式来防止 SQL 注入。 ``text()`` 构造可与 Core 查询和 ORM 查询一起使用，并且可使用 ``from_statement()`` 将结果映射到 ORM objects。
 
 .. code-block:: python
 
@@ -545,14 +493,14 @@ using ``from_statement()``.
     >>> session.add_all([User(name="Alice"), User(name="Bob")])
     >>> session.commit()
 
-    >>> # Raw SQL with parameters
+    >>> # 原始 SQL 与 parameters
     >>> result = session.execute(
     ...     text("SELECT * FROM users WHERE name = :name"),
     ...     {"name": "Alice"})
     >>> print(result.fetchall())
     [(1, 'Alice')]
 
-    >>> # Map raw SQL to ORM objects
+    >>> # 将原始 SQL 映射到 ORM objects
     >>> stmt = select(User).from_statement(text("SELECT * FROM users ORDER BY name"))
     >>> users = session.execute(stmt).scalars().all()
     >>> print([u.name for u in users])

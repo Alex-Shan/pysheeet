@@ -1,24 +1,20 @@
 .. meta::
-    :description lang=en: PyTorch cheat sheet covering tensors, operations, gradients, GPU usage, neural networks, and NumPy interoperability
+    :description lang=zh_CN: PyTorch 速查表涵盖 tensors、操作、梯度、GPU 用法、神经网络和 NumPy 互操作性
     :keywords: Python, Python3, PyTorch, tensor, deep learning, GPU, CUDA, gradient, autograd, numpy, neural network
 
-=======
-PyTorch
-=======
+======================================
+PyTorch 框架（PyTorch）
+======================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-PyTorch is an open-source machine learning framework developed by Meta AI. It provides
-a flexible and intuitive interface for building and training neural networks with strong
-GPU acceleration support. PyTorch uses dynamic computation graphs, making it easier to
-debug and experiment with different model architectures compared to static graph frameworks.
+PyTorch是Meta AI开发的开源机器学习框架。它为构建和训练神经网络提供了灵活直观的界面，并具有强大的 GPU 加速支持。 PyTorch使用动态计算图，与静态图框架相比，更容易调试和试验不同的模型架构。
 
-Check CUDA
-----------
+检查CUDA（Check CUDA）
+------------------------------------
 
-Before running GPU-accelerated computations, verify that CUDA is properly installed and
-accessible. These commands help check GPU availability and configure device settings.
+在运行 GPU 加速计算之前，请验证 CUDA 是否已正确安装且可访问。这些命令有助于检查 GPU 可用性并配置设备设置。
 
 .. code-block:: python
 
@@ -35,10 +31,10 @@ accessible. These commands help check GPU availability and configure device sett
     >>> torch.cuda.current_device()
     0
 
-Check Device
-------------
+检查设备（Check Device）
+------------------------------------
 
-Determine where a tensor is stored (CPU or GPU) to ensure computations run on the intended device.
+确定 tensor 的存储位置（CPU 或 GPU），以确保计算在预期设备上运行。
 
 .. code-block:: python
 
@@ -49,12 +45,10 @@ Determine where a tensor is stored (CPU or GPU) to ensure computations run on th
     >>> tensor.device
     device(type='cuda', index=0)
 
-Create Tensors
---------------
+创建张量（Create Tensors）
+----------------------------------------
 
-Tensors are the fundamental data structure in PyTorch, similar to NumPy arrays but with
-GPU acceleration support. You can create tensors from Python lists, with specific values,
-or using various initialization methods.
+Tensors是PyTorch中的基本数据结构，类似于NumPy arrays，但具有GPU加速支持。您可以从 Python lists 创建 tensors，使用特定的 values，或使用各种初始化 methods。
 
 .. code-block:: python
 
@@ -72,11 +66,10 @@ or using various initialization methods.
     >>> x
     tensor([1, 2, 3, 4, 5], device='cuda:0')
 
-Tensor Properties
------------------
+张量属性（Tensor Properties）
+----------------------------------------------
 
-Understanding tensor properties like shape, data type, and device location is crucial
-for debugging and ensuring compatibility between operations.
+了解 tensor properties（如 shape、data type）和设备位置对于 debugging 和确保操作之间的兼容性至关重要。
 
 .. code-block:: python
 
@@ -92,12 +85,10 @@ for debugging and ensuring compatibility between operations.
     >>> x.numel()
     24
 
-Contiguous Tensors
-------------------
+连续张量（Contiguous Tensors）
+------------------------------------------------
 
-Tensors must be stored in contiguous memory blocks for certain operations. After operations
-like ``transpose`` or ``permute``, tensors may not be contiguous. Use ``contiguous()`` to
-create a contiguous copy when needed.
+对于某些操作，Tensors 必须存储在连续的内存块中。经过 ``transpose`` 或 ``permute`` 等操作后，tensors 可能不连续。需要时使用 ``contiguous()`` 创建连续副本。
 
 .. code-block:: python
 
@@ -111,12 +102,10 @@ create a contiguous copy when needed.
     >>> z.is_contiguous()
     True
 
-View vs Reshape
----------------
+视图与重塑（View vs Reshape）
+--------------------------------------------
 
-``view()`` requires tensors to be contiguous and returns a view sharing the same memory.
-``reshape()`` works on both contiguous and non-contiguous tensors, creating a copy if needed.
-Use ``view()`` when you know the tensor is contiguous for better performance.
+``view()`` 要求 tensors 是连续的，并返回共享相同内存的视图。 ``reshape()`` 适用于连续和非连续的 tensors，并根据需要创建副本。当您知道 tensor 是连续的时，请使用 ``view()`` 以获得更好的性能。
 
 .. code-block:: python
 
@@ -137,10 +126,10 @@ Use ``view()`` when you know the tensor is contiguous for better performance.
     >>> y.contiguous().view(3, 8).shape
     torch.Size([3, 8])
 
-Reshape Tensors
----------------
+重塑张量（Reshape Tensors）
+------------------------------------------
 
-Common reshaping operations for preparing data for neural network layers.
+用于为神经网络层准备数据的常见重塑操作。
 
 .. code-block:: python
 
@@ -150,11 +139,10 @@ Common reshaping operations for preparing data for neural network layers.
     x.squeeze()
     x.unsqueeze(0)
 
-Move Tensors
-------------
+移动张量（Move Tensors）
+------------------------------------
 
-Transfer tensors between CPU and GPU, or between different GPU devices. This is necessary
-when working with models and data on different devices.
+在CPU和GPU之间，或在不同的GPU设备之间传输tensors。在不同设备上处理模型和数据时，这是必要的。
 
 .. code-block:: python
 
@@ -167,11 +155,10 @@ when working with models and data on different devices.
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     x = x.to(device)
 
-Arithmetic
-----------
+算术（Arithmetic）
+----------------------------
 
-PyTorch supports element-wise operations and matrix operations. Most operations have
-both functional and method forms, and support broadcasting for tensors of different shapes.
+PyTorch支持element明智的运算和矩阵运算。大多数操作都有函数式和method两种形式，并且支持broadcasting到tensors不同的shapes。
 
 .. code-block:: python
 
@@ -209,11 +196,10 @@ both functional and method forms, and support broadcasting for tensors of differ
     tensor([[0.3370, 0.0463],
             [0.6563, 0.1404]], device='cuda:0')
 
-In-place Operations
--------------------
+原地操作（In-place Operations）
+--------------------------------------------------
 
-Operations ending with ``_`` modify tensors directly without creating new tensors,
-saving memory. Use these carefully as they can affect gradient computation.
+以 ``_`` 结尾的操作直接修改tensors，无需创建新的tensors，节省内存。小心使用它们，因为它们会影响梯度计算。
 
 .. code-block:: python
 
@@ -226,11 +212,10 @@ saving memory. Use these carefully as they can affect gradient computation.
     y.zero_()
     y.fill_(5)
 
-Transpose
----------
+转置（Transpose）
+--------------------------
 
-Swap dimensions of multi-dimensional tensors. This is commonly used when preparing
-data for different neural network layers that expect specific input shapes.
+交换多维tensors的维度。当为需要特定输入 shapes 的不同神经网络层准备数据时，通常会使用此方法。
 
 .. code-block:: python
 
@@ -245,11 +230,10 @@ data for different neural network layers that expect specific input shapes.
     >>> x.permute(2, 0, 1).shape
     torch.Size([2, 2, 6])
 
-Matrix Multiplication
----------------------
+矩阵乘法（Matrix Multiplication）
+------------------------------------------------------
 
-Perform batch matrix operations on high-dimensional tensors. This is fundamental for
-neural network computations where you process multiple samples simultaneously.
+对高维 tensors 执行批量矩阵运算。这是神经网络计算的基础，您可以同时进行多个样本 process。
 
 .. code-block:: python
 
@@ -266,11 +250,10 @@ neural network computations where you process multiple samples simultaneously.
     >>> torch.bmm(x, x.transpose(2, 3))
     >>> torch.einsum('bijk,bikl->bijl', x, x.transpose(2, 3))
 
-Aggregation
------------
+聚合（Aggregation）
+------------------------------
 
-Reduce tensors along specified dimensions using aggregation functions. These operations
-are essential for computing statistics and reducing dimensionality.
+使用聚合 functions 沿指定维度减少 tensors。这些操作对于计算统计数据和降维至关重要。
 
 .. code-block:: python
 
@@ -301,11 +284,10 @@ are essential for computing statistics and reducing dimensionality.
     indices=tensor([[1, 2, 0, 1],
                     [2, 0, 1, 2]]))
 
-Slicing
--------
+切片（Slicing）
+----------------------
 
-Extract parts of tensors using NumPy-style indexing. Slicing is essential for accessing
-specific elements, rows, columns, or sub-tensors without copying data.
+使用 NumPy 样式索引提取 tensors 的部分内容。切片对于在不复制数据的情况下访问特定的 elements、行、列或子 tensors 至关重要。
 
 .. code-block:: python
 
@@ -326,11 +308,10 @@ specific elements, rows, columns, or sub-tensors without copying data.
             [0., 1., 1.],
             [0., 0., 1.]])
 
-Advanced Indexing
------------------
+高级索引（Advanced Indexing）
+----------------------------------------------
 
-Use boolean masks and fancy indexing to select elements based on conditions or
-specific index arrays.
+使用 boolean 掩码和花式索引根据条件或特定 index arrays 选择 elements。
 
 .. code-block:: python
 
@@ -345,11 +326,10 @@ specific index arrays.
     x[indices]
     x[[0, 1], [1, 2]]
 
-Concatenation
--------------
+拼接（Concatenation）
+----------------------------------
 
-Combine multiple tensors along existing or new dimensions. This is useful for
-building batches or combining features from different sources.
+沿现有或新尺寸组合多个 tensors。这对于构建批次或组合来自不同来源的功能非常有用。
 
 .. code-block:: python
 
@@ -366,11 +346,10 @@ building batches or combining features from different sources.
     >>> torch.hstack([x, y]).shape
     torch.Size([2, 6])
 
-Splitting
----------
+拆分（Splitting）
+--------------------------
 
-Split tensors into multiple chunks or along specific dimensions. Useful for
-distributing data across multiple GPUs or processing in smaller batches.
+将 tensors 拆分为多个块或沿特定维度。对于跨多个 GPU 分发数据或小批量处理非常有用。
 
 .. code-block:: python
 
@@ -385,11 +364,10 @@ distributing data across multiple GPUs or processing in smaller batches.
     >>> len(tensors)
     6
 
-Gradient
---------
+梯度（Gradient）
+------------------------
 
-Automatic differentiation is PyTorch's core feature for training neural networks.
-Enable gradient tracking on tensors to compute derivatives during backpropagation.
+自动微分是PyTorch训练神经网络的核心功能。在 tensors 上启用梯度跟踪以在反向传播期间计算导数。
 
 .. code-block:: python
 
@@ -404,11 +382,10 @@ Enable gradient tracking on tensors to compute derivatives during backpropagatio
     >>> x.requires_grad_(False)
     tensor([-1.1442, -0.8709, -0.2581], device='cuda:0')
 
-Disable Gradient
-----------------
+禁用梯度（Disable Gradient）
+--------------------------------------------
 
-Temporarily disable gradient computation for inference or when you don't need gradients.
-This reduces memory usage and speeds up computations.
+暂时禁用梯度计算以进行推理或不需要梯度时。这减少了内存使用并加快了计算速度。
 
 .. code-block:: python
 
@@ -426,11 +403,10 @@ This reduces memory usage and speeds up computations.
     def predict(x):
         return model(x)
 
-Backpropagation
----------------
+反向传播（Backpropagation）
+------------------------------------------
 
-Compute gradients using automatic differentiation. PyTorch builds a computation graph
-during the forward pass and computes gradients during the backward pass using the chain rule.
+使用自动微分计算梯度。 PyTorch 在前向传递过程中构建计算图，并在后向传递过程中使用链式法则计算梯度。
 
 .. code-block:: python
 
@@ -445,11 +421,10 @@ during the forward pass and computes gradients during the backward pass using th
     x.grad.zero_()
     z.backward()
 
-Gradient Accumulation
----------------------
+梯度累积（Gradient Accumulation）
+------------------------------------------------------
 
-Accumulate gradients over multiple backward passes. This is useful for simulating
-larger batch sizes when GPU memory is limited.
+在多次向后传递中累积梯度。当 GPU 内存有限时，这对于模拟较大的批量大小非常有用。
 
 .. code-block:: python
 
@@ -462,11 +437,10 @@ larger batch sizes when GPU memory is limited.
             optimizer.step()
             optimizer.zero_grad()
 
-Neural Network Module
----------------------
+神经网络模块（Neural Network Module）
+----------------------------------------------------------
 
-Define neural networks by subclassing ``nn.Module``. This provides a clean interface
-for building complex models with automatic parameter management.
+通过子类化 ``nn.Module`` 来定义神经网络。这为构建具有自动 parameter 管理的 complex 模型提供了一个干净的界面。
 
 .. code-block:: python
 
@@ -486,10 +460,10 @@ for building complex models with automatic parameter management.
     model = Net()
     model.to('cuda')
 
-Common Layers
--------------
+常用网络层（Common Layers）
+----------------------------------------
 
-PyTorch provides a wide variety of pre-built layers for constructing neural networks.
+PyTorch 提供了多种用于构建神经网络的预构建层。
 
 .. code-block:: python
 
@@ -508,11 +482,10 @@ PyTorch provides a wide variety of pre-built layers for constructing neural netw
     gru = nn.GRU(input_size=10, hidden_size=20)
     embedding = nn.Embedding(1000, 128)
 
-Loss Functions
---------------
+损失函数（Loss Functions）
+----------------------------------------
 
-Loss functions measure how well the model's predictions match the target values.
-Choose the appropriate loss function based on your task.
+损失 functions 衡量模型的预测与目标 values 的匹配程度。根据您的任务选择合适的损失 function。
 
 .. code-block:: python
 
@@ -528,11 +501,10 @@ Choose the appropriate loss function based on your task.
     outputs = model(inputs)
     loss = cross_entropy(outputs, targets)
 
-Optimizers
-----------
+优化器（Optimizers）
+------------------------------
 
-Optimizers update model parameters based on computed gradients. Different optimizers
-use different strategies for parameter updates.
+优化器根据计算的梯度更新模型 parameters。不同的优化器对 parameter 更新使用不同的策略。
 
 .. code-block:: python
 
@@ -547,10 +519,10 @@ use different strategies for parameter updates.
     loss.backward()
     optimizer.step()
 
-Learning Rate Scheduler
------------------------
+学习率调度器（Learning Rate Scheduler）
+--------------------------------------------------------------
 
-Adjust the learning rate during training to improve convergence and model performance.
+在训练过程中调整学习率以提高收敛性和模型性能。
 
 .. code-block:: python
 
@@ -564,11 +536,10 @@ Adjust the learning rate during training to improve convergence and model perfor
         val_loss = validate(...)
         scheduler.step(val_loss)
 
-Training Loop
--------------
+训练循环（Training Loop）
+--------------------------------------
 
-A typical training loop involves forward pass, loss computation, backward pass,
-and parameter updates.
+典型的训练 loop 涉及前向传递、损失计算、后向传递和 parameter 更新。
 
 .. code-block:: python
 
@@ -585,11 +556,10 @@ and parameter updates.
 
             print(f'Loss: {loss.item():.4f}')
 
-Evaluation Mode
----------------
+评估模式（Evaluation Mode）
+------------------------------------------
 
-Switch between training and evaluation modes to control behavior of layers like
-dropout and batch normalization.
+在训练和评估模式之间切换以控制层的行为，例如 dropout 和批量归一化。
 
 .. code-block:: python
 
@@ -600,10 +570,10 @@ dropout and batch normalization.
             outputs = model(inputs)
             predictions = outputs.argmax(dim=1)
 
-Save and Load Models
---------------------
+保存和加载模型（Save and Load Models）
+----------------------------------------------------------
 
-Save trained models to disk and load them later for inference or continued training.
+将经过训练的模型保存到磁盘并稍后加载以进行推理或继续训练。
 
 .. code-block:: python
 
@@ -621,11 +591,10 @@ Save trained models to disk and load them later for inference or continued train
     model.load_state_dict(checkpoint['model_state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 
-DataLoader
-----------
+DataLoader 数据加载（DataLoader）
+------------------------------------------------------
 
-Efficiently load and batch data for training. DataLoader handles shuffling, batching,
-and parallel data loading.
+高效加载和批量训练数据。 DataLoader 处理洗牌、批处理和并行数据加载。
 
 .. code-block:: python
 
@@ -638,10 +607,10 @@ and parallel data loading.
         outputs = model(batch_x)
         loss = criterion(outputs, batch_y)
 
-Custom Dataset
---------------
+自定义数据集（Custom Dataset）
+--------------------------------------------
 
-Create custom datasets by subclassing ``Dataset`` for loading data from various sources.
+通过子类化 ``Dataset`` 来创建自定义数据集，以从各种源加载数据。
 
 .. code-block:: python
 
@@ -661,11 +630,10 @@ Create custom datasets by subclassing ``Dataset`` for loading data from various 
     dataset = CustomDataset(x_train, y_train)
     loader = DataLoader(dataset, batch_size=32)
 
-NumPy Conversion
-----------------
+NumPy 转换（NumPy Conversion）
+----------------------------------------------------
 
-Convert between PyTorch tensors and NumPy arrays for interoperability with other
-libraries. Note that tensors on GPU must be moved to CPU first.
+在 PyTorch tensors 和 NumPy arrays 之间进行转换，以实现与其他 libraries 的互操作性。请注意，GPU 上的 tensors 必须先移至 CPU。
 
 .. code-block:: python
 
@@ -679,11 +647,10 @@ libraries. Note that tensors on GPU must be moved to CPU first.
     arr = np.array([[1, 2], [3, 4]])
     tensor = torch.from_numpy(arr)
 
-Shared Memory
--------------
+共享内存（Shared Memory）
+--------------------------------------
 
-CPU tensors and NumPy arrays can share the same underlying memory, so modifications
-to one will affect the other.
+CPU tensors 和 NumPy arrays 可以共享相同的底层内存，因此对其中一个的修改会影响另一个。
 
 .. code-block:: python
 
@@ -696,11 +663,10 @@ to one will affect the other.
     array([[[ 1.8194908 ,  3.0258512 ,  0.67326605],
             [ 2.6539469 ,  1.1561831 , -0.98211455]]], dtype=float32)
 
-Random Seed
------------
+随机种子（Random Seed）
+----------------------------------
 
-Set random seeds for reproducibility across different runs. This ensures consistent
-results when debugging or comparing experiments.
+Set 随机种子，用于不同运行之间的再现性。这可以确保 debugging 或比较实验时得到一致的结果。
 
 .. code-block:: python
 
@@ -715,10 +681,10 @@ results when debugging or comparing experiments.
     np.random.seed(42)
     random.seed(42)
 
-GPU Memory Management
----------------------
+GPU 内存管理（GPU Memory Management）
+--------------------------------------------------------------
 
-Monitor and manage GPU memory usage to avoid out-of-memory errors and optimize performance.
+监控和管理 GPU 内存使用情况，以避免内存不足错误并优化性能。
 
 .. code-block:: python
 
@@ -734,11 +700,10 @@ Monitor and manage GPU memory usage to avoid out-of-memory errors and optimize p
     print(torch.cuda.memory_summary())
 
 
-Distributed Training
---------------------
+分布式训练（Distributed Training）
+------------------------------------------------------
 
-NCCL (NVIDIA Collective Communication Library) enables efficient multi-GPU and multi-node
-training. Initialize the distributed process group and check its status.
+NCCL（NVIDIA集体通信Library）可实现高效的多GPU和多节点训练。初始化分布式process组并检查其状态。
 
 .. code-block:: python
 
@@ -761,18 +726,17 @@ training. Initialize the distributed process group and check its status.
     >>> dist.get_backend()
     'nccl'
 
-Launch with torchrun
---------------------
+使用 torchrun 启动（Launch with torchrun）
+------------------------------------------------------------------------
 
-Use ``torchrun`` to launch distributed training across multiple GPUs or nodes. It automatically
-sets up environment variables for distributed training.
+使用 ``torchrun`` 跨多个 GPU 或节点启动分布式训练。它自动将sets搭建环境variables进行分布式训练。
 
 .. code-block:: bash
 
-    # single node, multiple GPUs
+    # 单节点、多GPU
     torchrun --nproc_per_node=4 train.py
 
-    # multiple nodes
+    # 多个节点
     torchrun --nproc_per_node=4 \
              --nnodes=2 \
              --node_rank=0 \
@@ -780,11 +744,10 @@ sets up environment variables for distributed training.
              --master_port=29500 \
              train.py
 
-Launch with Slurm
------------------
+使用 Slurm 启动（Launch with Slurm）
+------------------------------------------------------------
 
-Submit distributed training jobs to Slurm clusters. Slurm manages resource allocation
-and node assignment. See :doc:`../hpc/slurm` for more Slurm examples.
+向Slurm集群提交分布式训练作业。 Slurm 管理资源分配和节点分配。有关更多 Slurm 示例，请参阅 :doc:`../hpc/slurm` 。
 
 .. code-block:: bash
 
@@ -805,11 +768,10 @@ and node assignment. See :doc:`../hpc/slurm` for more Slurm examples.
                   --master_port=$MASTER_PORT \
                   train.py
 
-DistributedDataParallel
-------------------------
+DistributedDataParallel 分布式训练（DistributedDataParallel）
+------------------------------------------------------------------------------------------------------------
 
-Wrap your model with DDP for multi-GPU training. DDP uses NCCL for efficient gradient
-synchronization across GPUs.
+用 DDP 包裹您的模型以进行多 GPU 训练。 DDP 使用 NCCL 实现跨 GPU 的高效梯度同步。
 
 .. code-block:: python
 
@@ -825,10 +787,10 @@ synchronization across GPUs.
         loss.backward()
         optimizer.step()
 
-Collective Operations
----------------------
+集合通信操作（Collective Operations）
+----------------------------------------------------------
 
-NCCL provides collective communication operations for distributed training.
+NCCL为分布式训练提供集体通信操作。
 
 .. code-block:: python
 

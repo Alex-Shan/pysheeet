@@ -1,110 +1,43 @@
 {% extends "!layout.html" %}
-{%- block extrahead %}
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="{% if pagename == 'index' %}Comprehensive Python cheat sheet with practical code snippets for developers. Learn Python basics, advanced topics, databases, networking, and more.{% else %}{{ title }} - Python code examples and snippets from the comprehensive Python cheat sheet.{% endif %}">
-<meta name="keywords" content="Python, Python cheat sheet, Python tutorial, Python examples, Python code snippets, programming, development">
+{% block extrahead %}
+{{ super() }}
+<meta name="description" content="{{ title | striptags | e }} — Python 速查表，包含基础语法、并发、网络、数据库、LLM 与 HPC 的实用示例。">
 <meta name="author" content="crazyguitar">
-<meta name="robots" content="index, follow">
-{# Canonical URLs are emitted by Sphinx via html_baseurl; do not duplicate
-   them here or Google reports "Duplicate without user-selected canonical". #}
-{%- if pagename == 'index' %}
-<meta property="og:url" content="https://www.pythonsheets.com/">
-<meta property="og:type" content="website">
-<meta property="og:description" content="Comprehensive Python cheat sheet with practical code snippets for developers. Learn Python basics, advanced topics, databases, networking, and more.">
-{%- elif pagename == '404' -%}
-{%- else %}
-<meta property="og:url" content="https://www.pythonsheets.com/{{ pagename }}{{ file_suffix }}">
-<meta property="og:type" content="article">
-<meta property="og:description" content="{{ title }} - Python code examples and snippets from the comprehensive Python cheat sheet.">
-{%- endif %}
-<meta property="og:locale" content="en_US">
-<meta property="og:title" content="{{ title }}{{ titlesuffix }}">
-<meta property="og:site_name" content="Python Cheat Sheet">
-<meta property="og:image" content="https://www.pythonsheets.com/_static/logo.png">
-<meta property="og:image:alt" content="Python Cheat Sheet">
+<meta property="og:url" content="{{ site_pageurl }}">
+<meta property="og:type" content="{{ 'website' if pagename == 'index' else 'article' }}">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:title" content="{{ title | striptags | e }}{{ titlesuffix }}">
+<meta property="og:description" content="Python 速查表：实用代码示例与简体中文说明。">
+<meta property="og:site_name" content="Python 速查表">
+<meta property="og:image" content="{{ site_baseurl }}_static/logo.png">
+<meta property="og:image:alt" content="pysheeet 标志">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="{{ title }}{{ titlesuffix }}">
-<meta name="twitter:description" content="{% if pagename == 'index' %}Comprehensive Python cheat sheet with practical code snippets for developers{% else %}{{ title }} - Python code examples and snippets{% endif %}">
-<meta name="twitter:image" content="https://www.pythonsheets.com/_static/logo.png">
-<meta name="twitter:image:alt" content="Python Cheat Sheet">
-{%- if pagename == 'index' %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Python Cheat Sheet",
-  "alternateName": "pysheeet",
-  "url": "https://www.pythonsheets.com/",
-  "description": "Comprehensive Python cheat sheet with practical code snippets for developers. Learn Python basics, advanced topics, databases, networking, and more.",
-  "inLanguage": "en",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": {
-      "@type": "EntryPoint",
-      "urlTemplate": "https://www.pythonsheets.com/search.html?q={search_term_string}"
-    },
-    "query-input": "required name=search_term_string"
-  },
-  "publisher": {
-    "@type": "Person",
-    "name": "crazyguitar",
-    "url": "https://github.com/crazyguitar"
-  }
-}
-</script>
-{%- elif pagename not in ['404', 'search', 'genindex'] and title is defined and title %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "TechArticle",
-  "headline": {{ (title ~ (titlesuffix or '')) | tojson }},
-  "name": {{ title | tojson }},
-  "url": {{ ("https://www.pythonsheets.com/" ~ pagename ~ file_suffix) | tojson }},
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": {{ ("https://www.pythonsheets.com/" ~ pagename ~ file_suffix) | tojson }}
-  },
-  "inLanguage": "en",
-  {%- if last_updated %}
-  "dateModified": {{ last_updated | tojson }},
-  {%- endif %}
-  "image": "https://www.pythonsheets.com/_static/logo.png",
-  "author": {
-    "@type": "Person",
-    "name": "crazyguitar",
-    "url": "https://github.com/crazyguitar"
-  },
-  "publisher": {
-    "@type": "Person",
-    "name": "crazyguitar",
-    "url": "https://github.com/crazyguitar"
-  },
-  "isPartOf": {
-    "@type": "WebSite",
-    "name": "Python Cheat Sheet",
-    "url": "https://www.pythonsheets.com/"
-  }
-}
-</script>
-{%- endif %}
-{%- if tracking_id %}
-<!-- Global site tag (gtag.js) - Google Analytics -->
+<meta name="twitter:title" content="{{ title | striptags | e }}{{ titlesuffix }}">
+<meta name="twitter:description" content="Python 实用代码示例与简体中文说明。">
+<meta name="twitter:image" content="{{ site_baseurl }}_static/logo.png">
+<script type="application/ld+json">{{ {
+  '@context': 'https://schema.org', '@type': 'WebSite' if pagename == 'index' else 'TechArticle',
+  'name': title | striptags, 'url': site_pageurl, 'inLanguage': 'zh-CN',
+  'author': {'@type': 'Person', 'name': 'crazyguitar', 'url': 'https://github.com/crazyguitar'}
+} | tojson }}</script>
+{% if tracking_id %}
 <script async src="https://www.googletagmanager.com/gtag/js?id={{ tracking_id }}"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', '{{ tracking_id }}');
-</script>
-{% endif -%}
-{%- if pagename == '404' -%}
-<script>
-  gtag('event', '404', {
-    'event_category': 'error',
-    'event_label': document.referrer,
-    'non_interaction': true
-  });
-</script>
-{%- endif -%}
+<script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', {{ tracking_id | tojson }});</script>
+{% endif %}
+{% endblock %}
+{% block docs_toc %}
+{% if cn_page_sections %}
+<aside id="cn-page-toc" aria-label="本页目录">
+  <details open>
+    <summary>本页目录（Contents）</summary>
+    <nav id="cn-toc-scroll" aria-label="章节导航" tabindex="0">
+      <ol>
+      {% for section in cn_page_sections %}
+        <li style="--toc-depth: {{ section.depth }}"><a href="#{{ section.id | e }}">{{ section.title | e }}</a></li>
+      {% endfor %}
+      </ol>
+    </nav>
+  </details>
+</aside>
+{% endif %}
 {% endblock %}

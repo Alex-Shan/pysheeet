@@ -120,3 +120,10 @@ Session.vim
 tags
 
 # End of https://www.gitignore.io/api/vim,python
+
+# 文档浏览器验证依赖与报告
+node_modules/
+playwright-report/
+
+# 固定中文文档构建所用的 Python 版本
+!/.python-version

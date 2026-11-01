@@ -8,7 +8,7 @@ import heapq
 import pytest
 
 
-# Basic Heap Operations
+# 基本堆操作
 def heapify_list(items: list) -> list:
     """Convert list to heap in-place."""
     h = items.copy()
@@ -37,7 +37,7 @@ def heap_replace(h: list, item):
     return heapq.heapreplace(h, item)
 
 
-# Heap Sort
+# 堆排序
 def heap_sort(items: list) -> list:
     """Sort using heap."""
     h = items.copy()
@@ -45,7 +45,7 @@ def heap_sort(items: list) -> list:
     return [heapq.heappop(h) for _ in range(len(h))]
 
 
-# Max Heap
+# 最大堆
 def max_heap_sort(items: list) -> list:
     """Sort descending using negated values."""
     h = [-x for x in items]
@@ -63,7 +63,7 @@ class MaxHeapItem:
         return self.val > other.val
 
 
-# Priority Queue
+# 优先级 Queue
 def priority_queue_example():
     """Priority queue using tuples."""
     pq = []
@@ -73,7 +73,7 @@ def priority_queue_example():
     return [heapq.heappop(pq) for _ in range(len(pq))]
 
 
-# Custom Objects
+# 定制Objects
 class Task:
     """Task with priority for heap."""
 
@@ -97,7 +97,7 @@ def task_queue():
     return [heapq.heappop(h) for _ in range(len(h))]
 
 
-# K Smallest/Largest
+# K 最小/最大
 def k_smallest(items: list, k: int) -> list:
     """Find k smallest elements."""
     return heapq.nsmallest(k, items)
@@ -113,7 +113,7 @@ def k_largest_by_key(items: list, k: int, key) -> list:
     return heapq.nlargest(k, items, key=key)
 
 
-# Merge Sorted
+# 合并排序
 def merge_sorted(*iterables) -> list:
     """Merge sorted iterables."""
     return list(heapq.merge(*iterables))
@@ -124,7 +124,7 @@ def merge_sorted_reverse(*iterables) -> list:
     return list(heapq.merge(*iterables, reverse=True))
 
 
-# Fixed-Size Heap
+# 固定大小的堆
 def top_k(items: list, k: int) -> list:
     """Keep track of k largest elements."""
     h = []
@@ -136,7 +136,7 @@ def top_k(items: list, k: int) -> list:
     return sorted(h, reverse=True)
 
 
-# Indexed Heap
+# 索引堆
 class IndexedHeap:
     """Heap with priority updates."""
 
@@ -166,7 +166,7 @@ class IndexedHeap:
         raise KeyError("pop from empty heap")
 
 
-# Tests
+# 测试
 class TestBasicHeap:
     def test_heapify(self):
         h = heapify_list([5, 1, 3, 2, 6])
@@ -264,5 +264,5 @@ class TestIndexedHeap:
         h = IndexedHeap()
         h.push("task1", 3)
         h.push("task2", 1)
-        h.push("task1", 0)  # update priority
+        h.push("task1", 0)  # 更新优先级
         assert h.pop() == "task1"

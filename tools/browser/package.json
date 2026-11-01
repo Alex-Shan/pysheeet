@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "scripts": {
+    "test": "node check.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.64.1"
+  },
+  "name": "pysheeet-browser-checks",
+  "version": "1.0.0"
+}

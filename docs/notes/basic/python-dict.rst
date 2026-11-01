@@ -1,35 +1,29 @@
 .. meta::
-    :description lang=en: Python dictionary cheat sheet covering creation, manipulation, merging, comprehensions, defaultdict, OrderedDict, and LRU cache with code examples
+    :description lang=zh_CN: Python dictionary 速查表涵盖创建、操作、合并、comprehensions、defaultdict、OrderedDict 和 LRU cache 以及代码示例
     :keywords: Python, Python3, Python dictionary, Python dict cheat sheet, dict, hashmap, key-value pairs, defaultdict, OrderedDict, dictionary comprehension, LRU cache, dict methods
 
-==========
-Dictionary
-==========
+============================
+字典（Dictionary）
+============================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-Dictionaries are one of Python's most powerful and frequently used data structures.
-They store key-value pairs and provide O(1) average time complexity for lookups,
-insertions, and deletions. Since Python 3.7, dictionaries maintain insertion order
-as a language feature. This cheat sheet covers essential dictionary operations,
-from basic manipulation to advanced patterns like emulating dictionary behavior
-with special methods and implementing an LRU (Least Recently Used) cache.
+Dictionaries 是 Python 最强大且最常用的数据结构之一。它们存储 key-value 对，并提供 O(1) 查找、插入和删除的平均时间复杂度。自 Python 3.7 起，dictionaries 将插入顺序保持为语言功能。本速查表涵盖了基本的 dictionary 操作，从基本操作到高级模式，例如使用 special methods 模拟 dictionary 行为以及实现 LRU（最近最少使用）cache。
 
-The source code is available on `GitHub <https://github.com/crazyguitar/pysheeet/blob/master/src/basic/dict.py>`_.
+源代码可在 `GitHub <https://github.com/crazyguitar/pysheeet/blob/master/src/basic/dict.py>`_ 上获取。
 
-References
-----------
+参考资料（References）
+--------------------------------
 
-- `Mapping Types — dict <https://docs.python.org/3/library/stdtypes.html#mapping-types-dict>`_
+- `Mapping Types — dict <https://docs.python.org/3/library/stdtypes.html#mapping-types-dict-frozendict>`_
 - `collections — Container datatypes <https://docs.python.org/3/library/collections.html>`_
-- `PEP 584 -- Add Union Operators To dict <https://www.python.org/dev/peps/pep-0584/>`_
+- `PEP 584：为 dict 添加 Union Operators <https://www.python.org/dev/peps/pep-0584/>`_
 
-Get All Keys with ``dict.keys()``
----------------------------------
+使用 ``dict.keys()`` 获取所有键（Get All Keys with ``dict.keys()`` ）
+------------------------------------------------------------------------------------------------------------------------
 
-The ``keys()`` method returns a view object containing all dictionary keys.
-In Python 3, this is a dynamic view that reflects changes to the dictionary.
+``keys()`` method 返回包含所有 dictionary keys 的视图​​ object。在 Python 3 中，这是反映 dictionary 更改的动态视图。
 
 .. code-block:: python
 
@@ -38,22 +32,20 @@ In Python 3, this is a dynamic view that reflects changes to the dictionary.
     >>> a.keys()
     ['1', '3', '2']
 
-Get Key-Value Pairs with ``dict.items()``
------------------------------------------
+使用 ``dict.items()`` 获取键值对（Get Key-Value Pairs with ``dict.items()`` ）
+------------------------------------------------------------------------------------------------------------------------------------------
 
-The ``items()`` method returns key-value pairs as tuples, which is useful for
-iterating over both keys and values simultaneously.
+``items()`` method 将 key-value 对返回为 tuples，这对于同时迭代 keys 和 values 非常有用。
 
 .. code-block:: python
 
     >>> a = {"1":1, "2":2, "3":3}
     >>> a.items()
 
-Find Common Keys Between Dictionaries
--------------------------------------
+查找字典之间的公共键（Find Common Keys Between Dictionaries）
+--------------------------------------------------------------------------------------------------
 
-Finding keys that exist in multiple dictionaries is a common operation. Using
-set intersection is the most efficient approach.
+查找多个dictionaries中存在的keys是一个常见的操作。使用 set 交集是最有效的方法。
 
 .. code-block:: python
 
@@ -61,24 +53,23 @@ set intersection is the most efficient approach.
     >>> b = {"2":2, "3":3, "4":4}
     >>> [_ for _ in a.keys() if _ in b.keys()]
     ['3', '2']
-    >>> # better way
+    >>> # 更好的方法
     >>> c = set(a).intersection(set(b))
     >>> list(c)
     ['3', '2']
-    >>> # or
+    >>> # 或者
     >>> [_ for _ in a if _ in b]
     ['3', '2']
     [('1', 1), ('3', 3), ('2', 2)]
 
-Set Default Values with ``setdefault()`` and ``defaultdict``
-------------------------------------------------------------
+使用 ``setdefault()`` 和 ``defaultdict`` 设置默认值（Set Default Values with ``setdefault()`` and ``defaultdict`` ）
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-When working with dictionaries, you often need to set default values for missing
-keys. Python provides ``setdefault()`` and ``collections.defaultdict`` for this.
+使用 dictionaries 时，您经常需要将 set 默认为 values，以弥补缺少的 keys。 Python为此提供了 ``setdefault()`` 和 ``collections.defaultdict`` 。
 
 .. code-block:: python
 
-    >>> # intuitive but not recommend
+    >>> # 直观但不推荐
     >>> d = {}
     >>> key = "foo"
     >>> if key not in d:
@@ -94,7 +85,7 @@ keys. Python provides ``setdefault()`` and ``collections.defaultdict`` for this.
     >>> d
     {'foo': 'bar'}
 
-    # using collections.defaultdict
+    # 使用collections.defaultdict
     >>> from collections import defaultdict
     >>> d = defaultdict(list)
     >>> d["key"]
@@ -105,9 +96,7 @@ keys. Python provides ``setdefault()`` and ``collections.defaultdict`` for this.
     >>> d
     defaultdict(<class 'list'>, {'key': [], 'foo': ['bar']})
 
-``dict.setdefault(key[, default])`` returns its default value if *key* is not in
-the dictionary. However, if the key exists in the dictionary, the function will
-return its value.
+如果 *key* 不在 dictionary 中， ``dict.setdefault(key[, default])`` 返回其默认值 value。但是，如果 key 存在于 dictionary 中，则 function 将返回其 value。
 
 .. code-block:: python
 
@@ -118,11 +107,10 @@ return its value.
     >>> d.setdefault("key", [])
     'bar'
 
-Update Dictionary with ``dict.update()``
-----------------------------------------
+使用 ``dict.update()`` 更新字典（Update Dictionary with ``dict.update()`` ）
+----------------------------------------------------------------------------------------------------------------------------------------
 
-The ``update()`` method merges another dictionary into the current one. Keys from
-the second dictionary overwrite existing keys in the first.
+``update()`` method 将另一个 dictionary 合并到当前 dictionary。第二个 dictionary 中的 keys 会覆盖第一个 dictionary 中已有的 keys。
 
 .. code-block:: python
 
@@ -132,13 +120,12 @@ the second dictionary overwrite existing keys in the first.
     >>> a
     {'1': 1, '3': 3, '2': 2, '4': 4}
 
-Merge Two Dictionaries in Python
---------------------------------
+在 Python 中合并两个字典（Merge Two Dictionaries in Python）
+----------------------------------------------------------------------------------------------------
 
-There are several ways to merge dictionaries depending on your Python version.
-Python 3.9+ also supports the ``|`` operator for dictionary merging.
+有多种方法可以合并 dictionaries，具体取决于您的 Python 版本。 Python 3.9+ 还支持 ``|`` operator 进行 dictionary 合并。
 
-Python 3.4 or lower
+Python 3.4 或更低
 
 .. code-block:: python
 
@@ -150,7 +137,7 @@ Python 3.4 or lower
     {'y': 66, 'x': 55, 'b': 'bar', 'a': 'foo'}
 
 
-Python 3.5 or above
+Python 3.5 或以上
 
 .. code-block:: python
 
@@ -160,11 +147,10 @@ Python 3.5 or above
     >>> c
     {'x': 55, 'y': 66, 'a': 'foo', 'b': 'bar'}
 
-Emulate a Dictionary with Special Methods
------------------------------------------
+用特殊方法模拟字典（Emulate a Dictionary with Special Methods）
+--------------------------------------------------------------------------------------------------------
 
-You can create dictionary-like objects by implementing special methods:
-``__getitem__``, ``__setitem__``, ``__delitem__``, ``__contains__``, and ``__iter__``.
+您可以通过实现 special methods 来创建类似 dictionary 的 objects： ``__getitem__`` 、 ``__setitem__`` 、 ``__delitem__`` 、 ``__contains__`` 和 ``__iter__`` 。
 
 .. code-block:: python
 
@@ -205,11 +191,10 @@ You can create dictionary-like objects by implementing special methods:
     >>> '1' in emud  # __contains__
     True
 
-Implement LRU Cache with OrderedDict
-------------------------------------
+使用 OrderedDict 实现 LRU 缓存（Implement LRU Cache with OrderedDict）
+----------------------------------------------------------------------------------------------------------------------------
 
-An LRU (Least Recently Used) cache evicts the least recently accessed items when
-full. ``OrderedDict.move_to_end()`` makes implementation straightforward.
+当 LRU（最近最少使用）cache 已满时，将逐出最近最少访问的 items。 ``OrderedDict.move_to_end()`` 使实施变得简单。
 
 .. code-block:: python
 
@@ -241,9 +226,7 @@ full. ``OrderedDict.move_to_end()`` makes implementation straightforward.
 		def __repr__(self):
 			return self.__str__()
 
-Note that dictionaries preserve insertion order from Python 3.7. Moreover,
-updating a key does not affect the order. Therefore, a dictionary can also
-simulate an LRU cache, which is similar to using an OrderedDict.
+请注意，dictionaries 保留 Python 3.7 的插入顺序。而且，更新key不会影响订单。因此，dictionary 也可以模拟 LRU cache，这与使用 OrderedDict 类似。
 
 .. code-block:: python
 

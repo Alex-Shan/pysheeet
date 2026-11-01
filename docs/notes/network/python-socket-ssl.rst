@@ -1,37 +1,22 @@
 .. meta::
-    :description lang=en: Python TLS/SSL socket programming tutorial covering secure servers, certificate handling, cipher configuration, mutual TLS (mTLS), and non-blocking SSL for HTTPS and encrypted communication
+    :description lang=zh_CN: Python TLS/SSL socket 编程教程，涵盖安全服务器、证书处理、密码配置、双向 TLS (mTLS) 以及用于 HTTPS 和加密通信的非阻塞 SSL
     :keywords: Python, socket, SSL, TLS, secure socket, certificate, cipher, HTTPS, encryption, network security, mTLS, mutual TLS, X.509, OpenSSL, cryptography
 
-==================
-SSL/TLS Sockets
-==================
+========================================================
+SSL/TLS 套接字（SSL/TLS Sockets）
+========================================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-Transport Layer Security (TLS), formerly known as Secure Sockets Layer (SSL), is the
-standard protocol for encrypting network communication. TLS provides three essential
-security properties: confidentiality (data is encrypted and cannot be read by
-eavesdroppers), integrity (data cannot be modified in transit without detection),
-and authentication (parties can verify each other's identity using certificates).
-Every HTTPS connection, secure email, and VPN uses TLS under the hood.
+传输层安全 (TLS)，以前称为安全 Sockets 层 (SSL)，是加密网络通信的标准协议。 TLS为properties提供了三个基本安全性：机密性（数据经过加密，窃听者无法读取）、完整性（数据在传输过程中不能被修改而不被检测到）和身份验证（各方可以使用证书验证彼此的身份）。每个 HTTPS 连接、安全电子邮件和 VPN 在底层都使用 TLS。
 
-Python's ``ssl`` module provides a comprehensive interface for TLS, allowing you to
-wrap regular sockets with encryption. This section covers creating TLS-enabled servers
-and clients, configuring cipher suites for security compliance, handling X.509
-certificates, implementing mutual TLS (mTLS) for client authentication, and building
-non-blocking TLS servers for high-performance applications. Whether you're building
-a secure API server, implementing certificate pinning, or debugging TLS handshake
-issues, these examples provide the foundation you need.
+Python的 ``ssl`` module为TLS提供了全面的接口，允许您对常规sockets进行加密包装。本节介绍创建支持 TLS 的服务器和客户端、配置密码套件以实现安全合规性、处理 X.509 证书、实现用于客户端身份验证的相互 TLS (mTLS) 以及为高性能应用程序构建非阻塞 TLS 服务器。无论您是构建安全的 API 服务器、实施证书固定，还是 debugging TLS 握手问题，这些示例都可以为您提供所需的基础。
 
-Simple TLS Echo Server
-----------------------
+简单 TLS Echo 服务器（Simple TLS Echo Server）
+------------------------------------------------------------------------------
 
-A basic TLS server wraps accepted TCP connections with an SSL context to provide
-encryption. The server requires a certificate (public key) and private key, which
-can be self-signed for testing or obtained from a Certificate Authority (CA) for
-production use. The ``SSLContext`` object manages all TLS settings including protocol
-version, cipher suites, and certificate verification options.
+基本的 TLS 服务器将接受的 TCP 连接与 SSL 上下文包装起来以提供加密。服务器需要证书（公共key）和私有key，可以自签名用于测试或从证书颁发机构（CA）获取用于生产使用。 ``SSLContext`` object 管理所有 TLS 设置，包括协议版本、密码套件和证书验证选项。
 
 .. code-block:: python
 
@@ -57,26 +42,26 @@ version, cipher suites, and certificate verification options.
     finally:
         sock.close()
 
-Generate self-signed certificate and test:
+生成自签名证书并测试：
 
 .. code-block:: bash
 
-    # Generate private key and self-signed certificate
+    # 生成私有key和自签名证书
     $ openssl genrsa -out key.pem 2048
     $ openssl req -x509 -new -nodes -key key.pem -days 365 -out cert.pem
 
-    # Run server
+    # 运行服务器
     $ python3 ssl_server.py &
 
-    # Test with openssl client
+    # 使用openssl客户端进行测试
     $ openssl s_client -connect localhost:5566
     Hello SSL
     Hello SSL
 
-TLS Server with Cipher Configuration
-------------------------------------
+带密码配置的 TLS 服务器（TLS Server with Cipher Configuration）
+--------------------------------------------------------------------------------------------------------
 
-Configure specific cipher suites for security compliance or compatibility.
+配置特定的密码套件以实现安全合规性或兼容性。
 
 .. code-block:: python
 
@@ -92,10 +77,10 @@ Configure specific cipher suites for security compliance or compatibility.
     sslctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     sslctx.load_cert_chain(certfile='cert.pem', keyfile='key.pem')
 
-    # Set specific ciphers (TLS 1.2)
+    # Set 特定密码 (TLS 1.2)
     sslctx.set_ciphers('ECDHE+AESGCM:DHE+AESGCM')
 
-    # Print configured ciphers
+    # 打印配置的密码
     print(json.dumps(sslctx.get_ciphers(), indent=2))
 
     try:
@@ -110,10 +95,10 @@ Configure specific cipher suites for security compliance or compatibility.
     finally:
         sock.close()
 
-TLS Client
-----------
+TLS 客户端（TLS Client）
+--------------------------------------
 
-Connect to a TLS server with certificate verification.
+连接到带有证书验证的 TLS 服务器。
 
 .. code-block:: python
 
@@ -123,7 +108,7 @@ Connect to a TLS server with certificate verification.
     hostname = 'www.google.com'
     port = 443
 
-    # Create default SSL context (verifies certificates)
+    # 创建默认 SSL 上下文（验证证书）
     context = ssl.create_default_context()
 
     with socket.create_connection((hostname, port)) as sock:
@@ -131,15 +116,15 @@ Connect to a TLS server with certificate verification.
             print(f"TLS version: {ssock.version()}")
             print(f"Cipher: {ssock.cipher()}")
 
-            # Send HTTP request
+            # 发送 HTTP 请求
             ssock.send(b"GET / HTTP/1.1\r\nHost: www.google.com\r\n\r\n")
             response = ssock.recv(4096)
             print(response[:200])
 
-TLS Client with Custom CA
--------------------------
+TLS 自定义 CA 客户端（TLS Client with Custom CA）
+----------------------------------------------------------------------------------
 
-Verify server certificate against a custom Certificate Authority.
+根据自定义证书颁发机构验证服务器证书。
 
 .. code-block:: python
 
@@ -150,7 +135,7 @@ Verify server certificate against a custom Certificate Authority.
     port = 5566
 
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-    context.load_verify_locations('ca-cert.pem')  # CA certificate
+    context.load_verify_locations('ca-cert.pem')  # CA 证书
     context.check_hostname = True
     context.verify_mode = ssl.CERT_REQUIRED
 
@@ -159,12 +144,12 @@ Verify server certificate against a custom Certificate Authority.
             ssock.send(b"Hello")
             print(ssock.recv(1024))
 
-Mutual TLS (mTLS)
------------------
+双向 TLS（mTLS）（Mutual TLS (mTLS)）
+--------------------------------------------------------------
 
-Both client and server present certificates for mutual authentication.
+客户端和服务器都提供证书以进行相互身份验证。
 
-Server:
+服务器：
 
 .. code-block:: python
 
@@ -179,13 +164,13 @@ Server:
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     context.load_cert_chain('server-cert.pem', 'server-key.pem')
     context.load_verify_locations('ca-cert.pem')
-    context.verify_mode = ssl.CERT_REQUIRED  # Require client cert
+    context.verify_mode = ssl.CERT_REQUIRED  # 需要客户证书
 
     try:
         while True:
             conn, addr = sock.accept()
             sslconn = context.wrap_socket(conn, server_side=True)
-            # Get client certificate info
+            # 获取客户端证书信息
             cert = sslconn.getpeercert()
             print(f"Client: {cert.get('subject')}")
             msg = sslconn.recv(1024)
@@ -195,7 +180,7 @@ Server:
     finally:
         sock.close()
 
-Client:
+客户：
 
 .. code-block:: python
 
@@ -211,10 +196,10 @@ Client:
             ssock.send(b"Hello mTLS")
             print(ssock.recv(1024))
 
-Non-blocking TLS with selectors
--------------------------------
+使用 selectors 的非阻塞 TLS（Non-blocking TLS with selectors）
+------------------------------------------------------------------------------------------------------------
 
-Handle TLS handshake and I/O asynchronously using the selectors module.
+使用选择器 module 异步处理 TLS 握手和 I/O。
 
 .. code-block:: python
 
@@ -238,7 +223,7 @@ Handle TLS handshake and I/O asynchronously using the selectors module.
             sslconn.do_handshake()
             sel.modify(sslconn, selectors.EVENT_READ, read)
         except ssl.SSLWantReadError:
-            pass  # Need more data, wait for next event
+            pass  # 需要更多数据，等待下一个事件
         except ssl.SSLWantWriteError:
             sel.modify(sslconn, selectors.EVENT_WRITE, do_handshake)
 
@@ -262,7 +247,7 @@ Handle TLS handshake and I/O asynchronously using the selectors module.
         except ssl.SSLWantWriteError:
             pass
 
-    # Main server loop
+    # 主服务器 loop
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind(('localhost', 5566))
@@ -283,10 +268,10 @@ Handle TLS handshake and I/O asynchronously using the selectors module.
         sock.close()
         sel.close()
 
-Get Certificate Information
----------------------------
+获取证书信息（Get Certificate Information）
+----------------------------------------------------------------------
 
-Retrieve and inspect server certificate details.
+检索并检查服务器证书详细信息。
 
 .. code-block:: python
 
@@ -304,20 +289,20 @@ Retrieve and inspect server certificate details.
             cert = ssock.getpeercert()
             pprint.pprint(cert)
 
-            # Get specific fields
+            # 获取特定字段
             print(f"Subject: {dict(x[0] for x in cert['subject'])}")
             print(f"Issuer: {dict(x[0] for x in cert['issuer'])}")
             print(f"Not Before: {cert['notBefore']}")
             print(f"Not After: {cert['notAfter']}")
 
-            # Get certificate in DER format
+            # 获取DER格式的证书
             der_cert = ssock.getpeercert(binary_form=True)
             print(f"Certificate size: {len(der_cert)} bytes")
 
-TLS Version and Security Settings
----------------------------------
+TLS 版本和安全设置（TLS Version and Security Settings）
+--------------------------------------------------------------------------------------------
 
-Configure minimum TLS version and security options.
+配置最低 TLS 版本和安全选项。
 
 .. code-block:: python
 
@@ -325,25 +310,25 @@ Configure minimum TLS version and security options.
 
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 
-    # Set minimum TLS version (TLS 1.2+)
+    # Set 最低 TLS 版本（TLS 1.2+）
     context.minimum_version = ssl.TLSVersion.TLSv1_2
 
-    # Disable older protocols explicitly
+    # 显式禁用旧协议
     context.options |= ssl.OP_NO_SSLv2
     context.options |= ssl.OP_NO_SSLv3
     context.options |= ssl.OP_NO_TLSv1
     context.options |= ssl.OP_NO_TLSv1_1
 
-    # Disable compression (CRIME attack mitigation)
+    # 禁用压缩（CRIME 攻击缓解）
     context.options |= ssl.OP_NO_COMPRESSION
 
-    # Use server's cipher preference
+    # 使用服务器的密码首选项
     context.options |= ssl.OP_CIPHER_SERVER_PREFERENCE
 
-    # Load certificate
+    # 加载证书
     context.load_cert_chain('cert.pem', 'key.pem')
 
-    # Set strong ciphers only
+    # Set 仅强密码
     context.set_ciphers('ECDHE+AESGCM:DHE+AESGCM:!aNULL:!MD5:!DSS')
 
     print(f"Min version: {context.minimum_version}")

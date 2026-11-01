@@ -8,7 +8,7 @@ from collections import defaultdict, OrderedDict
 from functools import lru_cache
 
 
-# Create a Dictionary
+# 创建 Dictionary
 def create_dict_literal():
     """Create dict using literal syntax."""
     return {"key": "value", "num": 42}
@@ -24,7 +24,7 @@ def create_dict_comprehension(n: int) -> dict:
     return {x: x**2 for x in range(n)}
 
 
-# Get Keys, Values, Items
+# 获取 Keys、Values、Items
 def get_keys(d: dict) -> list:
     """Get all keys from dictionary."""
     return list(d.keys())
@@ -40,13 +40,13 @@ def get_items(d: dict) -> list:
     return list(d.items())
 
 
-# Find Common Keys
+# 查找常见的 Keys
 def find_common_keys(a: dict, b: dict) -> set:
     """Find keys that exist in both dictionaries."""
     return a.keys() & b.keys()
 
 
-# Set Default Value
+# Set 默认 Value
 def setdefault_example():
     """Use setdefault to initialize missing keys."""
     d = {}
@@ -61,7 +61,7 @@ def defaultdict_example():
     return dict(d)
 
 
-# Merge Dictionaries
+# 合并Dictionaries
 def merge_dicts_operator(a: dict, b: dict) -> dict:
     """Merge dicts using | operator (Python 3.9+)."""
     return a | b
@@ -83,7 +83,7 @@ def swap_keys_values(d: dict) -> dict:
     return {v: k for k, v in d.items()}
 
 
-# Emulating a Dictionary
+# 模拟 Dictionary
 class EmuDict:
     """Custom dictionary-like class."""
 
@@ -142,7 +142,7 @@ def fibonacci(n: int) -> int:
     return fibonacci(n - 1) + fibonacci(n - 2)
 
 
-# Tests
+# 测试
 class TestDictCreation:
     def test_literal(self):
         assert create_dict_literal() == {"key": "value", "num": 42}
@@ -220,7 +220,7 @@ class TestLRUCache:
         cache = LRUCache(maxsize=2)
         cache.put("a", 1)
         cache.put("b", 2)
-        cache.put("c", 3)  # evicts "a"
+        cache.put("c", 3)  # 驱逐 "a"
         assert cache.get("a") is None
 
     def test_fibonacci(self):

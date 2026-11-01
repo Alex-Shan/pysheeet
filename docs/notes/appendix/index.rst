@@ -1,19 +1,15 @@
 :orphan:
 
 .. meta::
-    :description lang=en: Python appendix covering advanced topics including the walrus operator (PEP 572) and Python debugging with GDB
+    :description lang=zh_CN: Python 附录涵盖高级主题，包括海象 operator (PEP 572) 和 Python debugging 和 GDB
     :keywords: Python, Python3, walrus operator, PEP 572, GDB, debugging, advanced Python
 
-Blog
-----
+博客（Blog）
+----------------
 
-This section explores advanced programming topics to help users build a deeper
-understanding of complex concepts and practical techniques. Programmers working
-in other languages, such as C/C++, often use Python as a versatile debugging
-tool. With debuggers like GDB, they may write Python scripts to parse memory
-regions, improve output readability, or automate troubleshooting tasks.
+本节探讨高级编程主题，以帮助用户更深入地了解 complex 概念和实用技术。使用其他语言（例如 C/C++）的程序员经常使用 Python 作为多功能 debugging 工具。使用 GDB 等调试器，他们可以编写 Python 脚本来解析内存区域、提高输出可读性或自动执行故障排除任务。
 
-More advanced topics and examples can be found in the following link.
+可以在以下链接中找到更高级的主题和示例。
 
 .. toctree::
     :maxdepth: 1

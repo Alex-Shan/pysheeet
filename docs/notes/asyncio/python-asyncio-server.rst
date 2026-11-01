@@ -1,32 +1,25 @@
 .. meta::
-    :description lang=en: Python asyncio networking - TCP/UDP servers, HTTP clients, SSL/TLS, protocols
+    :description lang=zh_CN: Python asyncio 网络 - TCP/UDP 服务器、HTTP 客户端、SSL/TLS、协议
     :keywords: Python, Python3, Asyncio, TCP Server, UDP Server, HTTP Client, SSL TLS, Network Programming
 
-===================
-Asyncio Networking
-===================
+================================================
+异步网络（Asyncio Networking）
+================================================
 
 :Source: `src/basic/asyncio_.py <https://github.com/crazyguitar/pysheeet/blob/master/src/basic/asyncio_.py>`_
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-Introduction
-------------
+介绍（Introduction）
+--------------------------------
 
-Asyncio excels at network programming because network I/O is inherently
-asynchronous - you send a request and wait for a response. Instead of blocking
-a thread while waiting, asyncio allows other tasks to run. This section covers
-building TCP/UDP servers and clients, HTTP requests, SSL/TLS encryption, and
-the Transport/Protocol API for low-level control.
+Asyncio 擅长网络编程，因为网络 I/O 本质上就是 asynchronous - 您发送请求并等待响应。 asyncio 允许其他任务运行，而不是在等待时阻塞 thread。本节介绍构建 TCP/UDP 服务器和客户端、HTTP 请求、SSL/TLS 加密以及用于低级控制的传输/协议 API。
 
-TCP Echo Server with Streams
-----------------------------
+TCP 带流的 Echo 服务器（TCP Echo Server with Streams）
+--------------------------------------------------------------------------------------------
 
-The streams API (``asyncio.start_server``, ``open_connection``) provides a
-high-level interface for TCP networking. It handles buffering, encoding, and
-connection management automatically, making it the recommended approach for
-most applications.
+streams API（ ``asyncio.start_server`` 、 ``open_connection`` ）为 TCP 网络提供高级接口。它自动处理缓冲、encoding 和连接管理，使其成为大多数应用程序的推荐方法。
 
 .. code-block:: python
 
@@ -61,12 +54,10 @@ most applications.
 
     asyncio.run(main())
 
-TCP Client with Streams
------------------------
+TCP 带流的客户端（TCP Client with Streams）
+----------------------------------------------------------------------
 
-The client side uses ``asyncio.open_connection()`` to establish a connection.
-The returned reader and writer objects provide async methods for sending and
-receiving data.
+客户端使用 ``asyncio.open_connection()`` 建立连接。返回的读写器objects提供异步methods用于发送和接收数据。
 
 .. code-block:: python
 
@@ -89,12 +80,10 @@ receiving data.
 
     asyncio.run(tcp_client("Hello, Server!"))
 
-Low-Level TCP with Sockets
---------------------------
+使用 Sockets 的底层 TCP（Low-Level TCP with Sockets）
+--------------------------------------------------------------------------------------------
 
-For more control, you can use raw sockets with the event loop's socket methods.
-This approach is useful when you need fine-grained control over socket options
-or when integrating with existing socket-based code.
+为了获得更多控制，您可以将原始 sockets 与 event loop 的 socket methods 一起使用。当您需要对 socket 选项进行细粒度控制或与现有的基于 socket 的代码集成时，此方法非常有用。
 
 .. code-block:: python
 
@@ -126,12 +115,10 @@ or when integrating with existing socket-based code.
 
     asyncio.run(server())
 
-UDP Echo Server
----------------
+UDP 回显服务器（UDP Echo Server）
+----------------------------------------------------
 
-UDP is connectionless, so the API is different from TCP. Use
-``create_datagram_endpoint()`` with a protocol class to handle UDP packets.
-Each packet is independent and may arrive out of order or not at all.
+UDP 是无连接的，因此 API 与 TCP 不同。使用 ``create_datagram_endpoint()`` 和协议 class 来处理 UDP 数据包。每个数据包都是独立的，并且可能不按顺序到达或根本不到达。
 
 .. code-block:: python
 
@@ -155,17 +142,16 @@ Each packet is independent and may arrive out of order or not at all.
         print("UDP server listening on localhost:9999")
 
         try:
-            await asyncio.sleep(3600)  # Run for 1 hour
+            await asyncio.sleep(3600)  # 跑1小时
         finally:
             transport.close()
 
     asyncio.run(main())
 
-HTTP Client with SSL
---------------------
+HTTP 客户端与 SSL（HTTP Client with SSL）
+----------------------------------------------------------------------
 
-Making HTTPS requests requires SSL context configuration. This example shows
-how to fetch web pages using low-level streams with proper SSL verification.
+发出 HTTPS 请求需要 SSL 上下文配置。此示例演示如何使用低级 streams 和适当的 SSL 验证来获取网页。
 
 .. code-block:: python
 
@@ -173,19 +159,19 @@ how to fetch web pages using low-level streams with proper SSL verification.
     import ssl
 
     async def fetch_https(host, path="/"):
-        # Create SSL context with certificate verification
+        # 创建带有证书验证的 SSL 上下文
         ctx = ssl.create_default_context()
 
         reader, writer = await asyncio.open_connection(
             host, 443, ssl=ctx
         )
 
-        # Send HTTP request
+        # 发送 HTTP 请求
         request = f"GET {path} HTTP/1.1\r\nHost: {host}\r\nConnection: close\r\n\r\n"
         writer.write(request.encode())
         await writer.drain()
 
-        # Read response
+        # 阅读回复
         response = await reader.read()
         writer.close()
         await writer.wait_closed()
@@ -206,11 +192,10 @@ how to fetch web pages using low-level streams with proper SSL verification.
 
     asyncio.run(main())
 
-HTTPS Server with SSL
----------------------
+HTTPS 服务器与 SSL（HTTPS Server with SSL）
+--------------------------------------------------------------------------
 
-Creating an HTTPS server requires SSL certificates. This example shows a
-simple HTTPS server that serves static content with TLS encryption.
+创建 HTTPS 服务器需要 SSL 证书。此示例显示了一个简单的 HTTPS 服务器，该服务器通过 TLS 加密提供静态内容。
 
 .. code-block:: python
 
@@ -230,7 +215,7 @@ simple HTTPS server that serves static content with TLS encryption.
         await writer.wait_closed()
 
     async def main():
-        # Create SSL context
+        # 创建 SSL 上下文
         ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         ctx.load_cert_chain('cert.pem', 'key.pem')
 
@@ -242,16 +227,14 @@ simple HTTPS server that serves static content with TLS encryption.
         async with server:
             await server.serve_forever()
 
-    # Generate self-signed cert:
-    # openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes
+    # 生成自签名证书：
+    # openssl 请求 -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -天 365 -节点
     asyncio.run(main())
 
-Transport and Protocol API
---------------------------
+传输和协议 API（Transport and Protocol API）
+--------------------------------------------------------------------------
 
-The Transport/Protocol API provides low-level control over network connections.
-Transports handle the actual I/O while Protocols handle the data processing.
-This separation allows for flexible and reusable network code.
+传输/协议 API 提供对网络连接的低级控制。传输处理实际的 I/O，而协议处理数据处理。这种分离允许灵活且可重用的网络代码。
 
 .. code-block:: python
 
@@ -281,11 +264,10 @@ This separation allows for flexible and reusable network code.
 
     asyncio.run(main())
 
-DNS Resolution
---------------
+DNS 解析（DNS Resolution）
+--------------------------------------------
 
-Asyncio provides async DNS resolution through ``getaddrinfo()``. This is
-useful when you need to resolve hostnames without blocking the event loop.
+Asyncio 通过 ``getaddrinfo()`` 提供异步 DNS 分辨率。当您需要解析主机名而不阻止 event loop 时，这非常有用。
 
 .. code-block:: python
 
@@ -311,12 +293,10 @@ useful when you need to resolve hostnames without blocking the event loop.
 
     asyncio.run(main())
 
-Simple HTTP Server
-------------------
+简单 HTTP 服务器（Simple HTTP Server）
+--------------------------------------------------------------
 
-A minimal HTTP server implementation showing how to parse requests and
-send responses. For production use, consider frameworks like aiohttp or
-FastAPI.
+最小的 HTTP 服务器实现，展示如何解析请求和发送响应。对于生产使用，请考虑 aiohttp 或 FastAPI 等框架。
 
 .. code-block:: python
 
@@ -329,7 +309,7 @@ FastAPI.
 
         print(f"{method} {path}")
 
-        # Simple routing
+        # 简单的路由
         if path == '/':
             body = b"<h1>Home</h1>"
             status = "200 OK"
@@ -360,33 +340,31 @@ FastAPI.
 
     asyncio.run(main())
 
-Using sendfile for Efficient File Transfer
-------------------------------------------
+使用 sendfile 进行高效文件传输（Using sendfile for Efficient File Transfer）
+--------------------------------------------------------------------------------------------------------------------------------
 
-The ``sendfile()`` method (Python 3.7+) efficiently transfers file contents
-to a transport using the OS's sendfile syscall, avoiding copying data through
-Python.
+``sendfile()`` method (Python 3.7+) 使用 OS 的 sendfile 系统调用有效地将文件内容传输到传输，避免通过 Python 复制数据。
 
 .. code-block:: python
 
     import asyncio
 
     async def handle_request(reader, writer):
-        await reader.read(1024)  # Read request
+        await reader.read(1024)  # 读取请求
 
         with open('index.html', 'rb') as f:
-            # Get file size
+            # 获取文件大小
             f.seek(0, 2)
             size = f.tell()
             f.seek(0)
 
-            # Send headers
+            # 发送标头
             headers = f"HTTP/1.1 200 OK\r\n"
             headers += f"Content-Length: {size}\r\n"
             headers += "Content-Type: text/html\r\n\r\n"
             writer.write(headers.encode())
 
-            # Send file efficiently
+            # 高效发送文件
             loop = asyncio.get_event_loop()
             await loop.sendfile(writer.transport, f)
 
@@ -402,12 +380,10 @@ Python.
 
     asyncio.run(main())
 
-Connection Pool
----------------
+连接池（Connection Pool）
+----------------------------------------
 
-Connection pools reuse connections to avoid the overhead of establishing
-new connections for each request. This is essential for high-performance
-clients that make many requests to the same server.
+连接池重用连接以避免为每个请求建立新连接的开销。这对于向同一服务器发出许多请求的高性能客户端至关重要。
 
 .. code-block:: python
 
@@ -427,7 +403,7 @@ clients that make many requests to the same server.
                 if self._pool:
                     return self._pool.popleft()
 
-            # Create new connection
+            # 创建新连接
             reader, writer = await asyncio.open_connection(
                 self.host, self.port
             )

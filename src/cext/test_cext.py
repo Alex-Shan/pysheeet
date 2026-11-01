@@ -14,7 +14,7 @@ from datetime import datetime
 
 import pytest
 
-# Try to import compiled modules (path set by conftest.py)
+# 尝试导入编译好的modules（conftest.py的路径set）
 try:
     import example
 
@@ -188,8 +188,8 @@ class TestGIL:
             t.join()
 
         elapsed = (datetime.now() - start).total_seconds()
-        # If GIL was released, all 3 should complete in ~1 second
-        # If GIL was held, it would take ~3 seconds
+        # 如果 GIL 已发布，所有 3 个操作应在约 1 秒内完成
+        # 如果持有 GIL，大约需要 3 秒
         assert elapsed < 2.0, f"Took {elapsed}s, GIL may not be released"
         assert len(results) == 3
 

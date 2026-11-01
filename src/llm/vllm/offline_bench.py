@@ -103,14 +103,14 @@ def generate_random_prompts(
     num_prompts: int, input_len: int, tokenizer
 ) -> List[str]:
     """Generate random prompts with specified input length."""
-    # Use a fixed vocabulary for reproducibility
-    vocab = list(range(1000, 10000))  # Use token IDs from vocab
+    # 使用固定词汇以实现可重复性
+    vocab = list(range(1000, 10000))  # 使用 vocab 中的令牌 ID
     prompts = []
 
     for _ in range(num_prompts):
-        # Generate random token IDs
+        # 生成随机令牌 ID
         token_ids = [vocab[i % len(vocab)] for i in range(input_len)]
-        # Decode to text
+        # Decode 转文字
         prompt = tokenizer.decode(token_ids)
         prompts.append(prompt)
 
@@ -133,7 +133,7 @@ def generate_dummy_prompts(num_prompts: int) -> List[str]:
 def parse_args():
     parser = argparse.ArgumentParser(description="Offline vLLM benchmark")
 
-    # Model args
+    # 模型参数
     parser.add_argument(
         "--model", type=str, required=True, help="Model name or path"
     )
@@ -147,7 +147,7 @@ def parse_args():
         help="GPU memory utilization",
     )
 
-    # Parallelism args
+    # 并行参数
     parser.add_argument(
         "--tensor-parallel-size",
         "--tp-size",
@@ -180,7 +180,7 @@ def parse_args():
         help="Enable expert parallel",
     )
 
-    # Benchmark args
+    # Benchmark 参数
     parser.add_argument(
         "--num-prompts", type=int, default=50, help="Number of prompts"
     )
@@ -210,7 +210,7 @@ def parse_args():
     )
     parser.add_argument("--seed", type=int, default=0, help="Random seed")
 
-    # Profiling args
+    # Profiling 参数
     parser.add_argument(
         "--nsys",
         type=str,
@@ -223,7 +223,7 @@ def parse_args():
         default=None,
         help="Enable VizTracer profiling and save to file (e.g., ./vllm-trace.json)",
     )
-    # vLLM args
+    # vLLM 参数
     parser.add_argument(
         "--enforce-eager", action="store_true", help="Disable CUDA graph"
     )
@@ -240,19 +240,19 @@ def parse_args():
 def main():
     args = parse_args()
 
-    # Map --output-len to --max-tokens
+    # 将 --output-len 映射到 --max-tokens
     if args.output_len:
         args.max_tokens = args.output_len
 
-    # Sampling params
+    # 采样参数
     sampling_params = SamplingParams(
         temperature=args.temperature,
         max_tokens=args.max_tokens,
         seed=args.seed,
-        ignore_eos=args.input_len is not None,  # Ignore EOS for random prompts
+        ignore_eos=args.input_len is not None,  # 忽略 EOS 随机提示
     )
 
-    # Initialize LLM first to get tokenizer
+    # 首先初始化LLM以获取分词器
     llm_kwargs = {
         "model": args.model,
         "tensor_parallel_size": args.tp_size,
@@ -271,7 +271,7 @@ def main():
     if args.all2all_backend:
         llm_kwargs["all2all_backend"] = args.all2all_backend
 
-    # Use external launcher for multi-process
+    # 使用多 process 的外部启动器
     if args.dp_size > 1:
         llm_kwargs["distributed_executor_backend"] = "external_launcher"
 
@@ -279,7 +279,7 @@ def main():
 
     llm = LLM(**llm_kwargs)
 
-    # Load prompts
+    # 加载提示
     if args.input_len:
         prompts = generate_random_prompts(
             args.num_prompts, args.input_len, llm.get_tokenizer()
@@ -289,26 +289,26 @@ def main():
     else:
         prompts = generate_dummy_prompts(args.num_prompts)
 
-    # Get data parallel rank/size
+    # 获取 data parallel rank 与 size
     dp_rank = llm.llm_engine.vllm_config.parallel_config.data_parallel_rank
     dp_size = llm.llm_engine.vllm_config.parallel_config.data_parallel_size
 
-    # Get world rank for printing
+    # 获取用于打印的 world rank
     import torch.distributed as dist
 
     world_rank = dist.get_rank() if dist.is_initialized() else 0
 
-    # Distribute prompts across DP ranks
+    # 将 prompts 分配到各个 DP ranks
     local_prompts = [
         p for i, p in enumerate(prompts) if i % dp_size == dp_rank
     ]
 
-    # Warmup
+    # 预热
     if world_rank == 0:
         print("Warming up...")
     _ = llm.generate(local_prompts[:1], sampling_params)
 
-    # Benchmark with profiling
+    # 执行带 profiling 的 benchmark
     if world_rank == 0:
         print(f"Running benchmark with {len(prompts)} total prompts...")
 
@@ -319,13 +319,13 @@ def main():
         outputs = llm.generate(local_prompts, sampling_params)
         elapsed = time.perf_counter() - start
 
-    # Collect per-request metrics
+    # 收集每个请求的 metrics
     metrics = []
     for output in outputs:
         num_output_tokens = len(output.outputs[0].token_ids)
         input_tokens = len(output.prompt_token_ids)
 
-        # Check if detailed metrics are available
+        # 检查是否存在详细 metrics
         req_metrics = output.metrics
         if req_metrics and hasattr(req_metrics, "first_token_ts"):
             ttft = (
@@ -351,17 +351,17 @@ def main():
             }
         )
 
-    # Aggregate stats
+    # 汇总统计数据
     total_input = sum(m["input_tokens"] for m in metrics)
     total_output = sum(m["output_tokens"] for m in metrics)
     ttfts = [m["ttft"] for m in metrics]
     tpots = [m["tpot"] for m in metrics if m["tpot"] > 0]
 
-    # Aggregate across DP ranks
+    # 跨 DP ranks 汇总
     if dp_size > 1:
         import torch.distributed as dist
 
-        # Collect stats from all ranks
+        # 收集所有 ranks 的统计数据
         local_stats = [
             len(metrics),
             elapsed,
@@ -375,27 +375,27 @@ def main():
             np.percentile(tpots, 99) if tpots else 0,
         ]
 
-        # Gather from all world ranks
+        # 从全部 world ranks 汇集数据
         world_size = dist.get_world_size()
         world_rank = dist.get_rank()
         all_stats = [None] * world_size
         dist.all_gather_object(all_stats, local_stats)
 
-        # Only print from world rank 0
+        # 仅在 world rank 0 打印
         if world_rank == 0:
-            # Filter to only DP ranks (every TP_SIZE-th rank)
+            # 仅保留 DP ranks（每隔 TP_SIZE 个 rank 取一个）
             tp_size = (
                 llm.llm_engine.vllm_config.parallel_config.tensor_parallel_size
             )
             dp_stats = [all_stats[i] for i in range(0, world_size, tp_size)]
 
-            # Aggregate
+            # 汇总
             total_reqs = sum(s[0] for s in dp_stats)
             max_time = max(s[1] for s in dp_stats)
             total_in = sum(s[2] for s in dp_stats)
             total_out = sum(s[3] for s in dp_stats)
 
-            # Average latency metrics
+            # 平均 latency 指标
             mean_ttft = np.mean([s[4] for s in dp_stats])
             median_ttft = np.mean([s[5] for s in dp_stats])
             p99_ttft = max(s[6] for s in dp_stats)
@@ -417,10 +417,10 @@ def main():
                 p99_tpot,
             )
 
-        # Barrier to ensure all ranks finish before cleanup
+        # 通过 barrier 确保所有 ranks 完成后再清理
         dist.barrier()
     else:
-        # Single process
+        # 单process
         print_results(
             len(metrics),
             0,

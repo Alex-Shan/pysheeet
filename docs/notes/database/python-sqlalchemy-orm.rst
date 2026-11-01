@@ -1,31 +1,20 @@
 .. meta::
-    :description lang=en: SQLAlchemy ORM tutorial covering declarative models, sessions, relationships, and object-relational mapping patterns
+    :description lang=zh_CN: SQLAlchemy ORM 教程，涵盖声明性模型、会话、关系和 object 关系映射模式
     :keywords: Python, SQLAlchemy, ORM, database, model, session, relationship, declarative, object-relational mapping
 
-==============
-SQLAlchemy ORM
-==============
+==================================================================
+SQLAlchemy ORM 用法（SQLAlchemy ORM）
+==================================================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-SQLAlchemy's Object-Relational Mapper (ORM) provides a high-level abstraction that
-allows you to work with database tables as Python classes and rows as objects. The
-ORM builds on top of SQLAlchemy Core and adds features like identity mapping, unit
-of work pattern, and relationship management. This approach lets you write database
-code in a more Pythonic way, focusing on objects and their relationships rather than
-SQL statements. The ORM is ideal for applications with complex domain models where
-you want to leverage object-oriented programming patterns.
+SQLAlchemy 的 Object 关系映射器 (ORM) 提供高级抽象，允许您使用 Python classes 形式的数据库表和 objects 形式的行。 ORM 构建在 SQLAlchemy 核心之上，并添加了身份映射、工作单元模式和关系管理等功能。这种方法允许您以更加 Pythonic 的方式编写数据库代码，重点关注 objects 及其关系，而不是 SQL statements。 ORM 非常适合具有 complex 域模型的应用程序，在这些应用程序中您想要利用面向 object 的编程模式。
 
-Define Models with Declarative Base
------------------------------------
+使用声明性基础定义模型（Define Models with Declarative Base）
+------------------------------------------------------------------------------------------------
 
-The declarative system is the most common way to define ORM models in SQLAlchemy.
-You create a base class using ``declarative_base()`` and then define your models
-as subclasses. Each model class represents a database table, with class attributes
-defining columns. The ``__tablename__`` attribute specifies the table name. This
-approach keeps your model definitions clean and readable while providing full
-access to SQLAlchemy's features.
+声明式系统是在 SQLAlchemy 中定义 ORM 模型的最常见方法。您使用 ``declarative_base()`` 创建 base class，然后将模型定义为 subclasses。每个模型 class 代表一个数据库表，其中 class attributes 定义列。 ``__tablename__`` attribute 指定表名称。这种方法使您的模型定义保持干净和可读，同时提供对 SQLAlchemy 功能的完全访问。
 
 .. code-block:: python
 
@@ -44,15 +33,10 @@ access to SQLAlchemy's features.
     >>> engine = create_engine("sqlite:///:memory:")
     >>> Base.metadata.create_all(engine)
 
-Session Basics
---------------
+会话基础知识（Session Basics）
+--------------------------------------------
 
-The ``Session`` is the primary interface for persistence operations in the ORM.
-It manages a "holding zone" for objects you've loaded or associated with it, and
-handles the communication with the database. Sessions track changes to objects
-and synchronize them with the database when you call ``commit()``. The recommended
-pattern is to use ``sessionmaker`` to create a session factory, then create sessions
-as needed. Always close sessions when done to release database connections.
+``Session`` 是 ORM 中持久性操作的主要接口。它管理您已加载或与之关联的 objects 的 "holding zone"，并处理与数据库的通信。会话跟踪对 objects 的更改，并在您调用 ``commit()`` 时将其与数据库同步。推荐的模式是使用 ``sessionmaker`` 创建会话工厂，然后根据需要创建会话。完成后始终关闭会话以释放数据库连接。
 
 .. code-block:: python
 
@@ -79,14 +63,10 @@ as needed. Always close sessions when done to release database connections.
     ...     session.close()
     Created user with id: 1
 
-Add and Commit Objects
-----------------------
+添加并提交对象（Add and Commit Objects）
+--------------------------------------------------------------
 
-To persist new objects to the database, add them to the session with ``add()`` or
-``add_all()`` for multiple objects. Objects remain in a "pending" state until you
-call ``commit()``, which flushes all pending changes to the database in a transaction.
-If an error occurs, call ``rollback()`` to undo all changes since the last commit.
-After commit, auto-generated values like primary keys are available on the objects.
+要将新的 objects 持久保存到数据库，请将它们添加到具有多个 objects 的 ``add()`` 或 ``add_all()`` 的会话中。 Objects 保持在 "pending" 状态，直到您调用 ``commit()`` ，这会刷新事务中数据库的所有挂起更改。如果发生错误，请调用 ``rollback()`` 撤消自上次提交以来的所有更改。提交后，自动生成的 values（如主 keys）可在 objects 上使用。
 
 .. code-block:: python
 
@@ -104,11 +84,11 @@ After commit, auto-generated values like primary keys are available on the objec
     >>> Session = sessionmaker(bind=engine)
     >>> session = Session()
 
-    >>> # Add single object
+    >>> # 添加单个object
     >>> user1 = User(name="Alice")
     >>> session.add(user1)
 
-    >>> # Add multiple objects
+    >>> # 添加多个objects
     >>> users = [User(name="Bob"), User(name="Carol")]
     >>> session.add_all(users)
     >>> session.commit()
@@ -117,14 +97,10 @@ After commit, auto-generated values like primary keys are available on the objec
     [1, 2, 3]
     >>> session.close()
 
-Query Objects
--------------
+查询对象（Query Objects）
+--------------------------------------
 
-SQLAlchemy 2.0 uses ``select()`` with ``session.execute()`` for queries, replacing
-the legacy ``session.query()`` API. The ``select()`` construct accepts model classes
-or specific columns. Use ``scalars()`` to get model instances directly, or ``execute()``
-for row tuples. The result supports iteration, ``all()`` for a list, ``first()`` for
-the first result, and ``one()`` when exactly one result is expected.
+SQLAlchemy 2.0 使用 ``select()`` 和 ``session.execute()`` 进行查询，替换旧版 ``session.query()`` API。 ``select()`` 构造接受模型 classes 或特定列。使用 ``scalars()`` 直接获取型号 instances，或使用 ``execute()`` 获取行 tuples。结果支持 iteration、list 的 ``all()`` 、第一个结果的 ``first()`` ，以及当预期只有一个结果时的 ``one()`` 。
 
 .. code-block:: python
 
@@ -148,7 +124,7 @@ the first result, and ``one()`` when exactly one result is expected.
     ...     User(name="Carol", age=35)])
     >>> session.commit()
 
-    >>> # Get all users
+    >>> # 获取所有用户
     >>> users = session.execute(select(User)).scalars().all()
     >>> print([u.name for u in users])
     ['Alice', 'Bob', 'Carol']
@@ -159,14 +135,10 @@ the first result, and ``one()`` when exactly one result is expected.
     Alice
     >>> session.close()
 
-Filter Queries
---------------
+过滤查询（Filter Queries）
+----------------------------------------
 
-The ``where()`` method accepts filter conditions using column comparisons. SQLAlchemy
-overloads Python operators to generate SQL: ``==`` becomes ``=``, ``!=`` becomes ``<>``,
-and so on. For complex conditions, use ``and_()``, ``or_()``, and ``not_()`` from
-SQLAlchemy. Columns also provide methods like ``in_()``, ``like()``, ``between()``,
-``is_()``, and ``isnot()`` for SQL-specific operations.
+``where()`` method 使用列比较接受过滤条件。 SQLAlchemy 重载 Python operators 生成 SQL： ``==`` 变为 ``=`` ， ``!=`` 变为 ``<>`` ，依此类推。对于 complex 条件，请使用 SQLAlchemy 中的 ``and_()`` 、 ``or_()`` 和 ``not_()`` 。列还提供 methods，如 ``in_()`` 、 ``like()`` 、 ``between()`` 、 ``is_()`` 和 ``isnot()`` ，用于 SQL 特定操作。
 
 .. code-block:: python
 
@@ -191,30 +163,26 @@ SQLAlchemy. Columns also provide methods like ``in_()``, ``like()``, ``between()
     ...     User(name="Fred", age=30)])
     >>> session.commit()
 
-    >>> # AND condition
+    >>> # AND 状况
     >>> stmt = select(User).where(and_(User.age >= 30, User.name.like("A%")))
     >>> print([u.name for u in session.execute(stmt).scalars()])
     ['Alice']
 
-    >>> # OR condition
+    >>> # OR 状况
     >>> stmt = select(User).where(or_(User.name == "Alice", User.name == "Bob"))
     >>> print([u.name for u in session.execute(stmt).scalars()])
     ['Alice', 'Bob']
 
-    >>> # IN clause
+    >>> # IN条款
     >>> stmt = select(User).where(User.age.in_([25, 35]))
     >>> print([u.name for u in session.execute(stmt).scalars()])
     ['Bob', 'Carol']
     >>> session.close()
 
-Update Objects
---------------
+更新对象（Update Objects）
+----------------------------------------
 
-To update objects, simply modify their attributes and call ``commit()``. The session
-tracks changes to loaded objects automatically through a mechanism called "dirty
-tracking". When you commit, SQLAlchemy generates UPDATE statements only for changed
-attributes. You can also use bulk updates with ``update()`` for efficiency when
-modifying many rows without loading them into memory.
+要更新objects，只需修改其attributes并调用 ``commit()`` 即可。会话通过称为 "dirty tracking" 的机制自动跟踪加载的 objects 的更改。当您提交时，SQLAlchemy 仅针对更改的 attributes 生成 UPDATE statements。您还可以使用 ``update()`` 进行批量更新，以提高修改多行而不将其加载到内存中时的效率。
 
 .. code-block:: python
 
@@ -234,25 +202,21 @@ modifying many rows without loading them into memory.
     >>> session.add(User(name="Alice"))
     >>> session.commit()
 
-    >>> # Update via object modification
+    >>> # 通过object修改更新
     >>> user = session.execute(select(User).where(User.name == "Alice")).scalars().first()
     >>> user.name = "Alicia"
     >>> session.commit()
 
-    >>> # Verify update
+    >>> # 验证更新
     >>> user = session.execute(select(User)).scalars().first()
     >>> print(user.name)
     Alicia
     >>> session.close()
 
-Delete Objects
---------------
+删除对象（Delete Objects）
+----------------------------------------
 
-To delete objects, use ``session.delete()`` followed by ``commit()``. The session
-will generate a DELETE statement for the object. For bulk deletes without loading
-objects, use the ``delete()`` construct with ``session.execute()``. Be careful with
-cascading deletes when objects have relationships - SQLAlchemy can automatically
-delete related objects based on your cascade configuration.
+要删除 objects，请使用 ``session.delete()`` ，然后使用 ``commit()`` 。该会话将为 object 生成 DELETE statement。对于不加载 objects 的批量删除，请使用 ``delete()`` 构造和 ``session.execute()`` 。当 objects 有关系时，请小心级联删除 - SQLAlchemy 可以根据您的级联配置自动删除相关的 objects。
 
 .. code-block:: python
 
@@ -272,25 +236,21 @@ delete related objects based on your cascade configuration.
     >>> session.add_all([User(name="Alice"), User(name="Bob"), User(name="Carol")])
     >>> session.commit()
 
-    >>> # Delete via object
+    >>> # 通过 object 删除
     >>> user = session.execute(select(User).where(User.name == "Bob")).scalars().first()
     >>> session.delete(user)
     >>> session.commit()
 
-    >>> # Verify deletion
+    >>> # 验证删除
     >>> users = session.execute(select(User)).scalars().all()
     >>> print([u.name for u in users])
     ['Alice', 'Carol']
     >>> session.close()
 
-One-to-Many Relationship
-------------------------
+一对多关系（One-to-Many Relationship）
+--------------------------------------------------------------
 
-Relationships define how tables are connected. A one-to-many relationship means one
-record in the parent table can have multiple related records in the child table.
-Use ``relationship()`` on the parent side and ``ForeignKey`` on the child side.
-The ``back_populates`` parameter creates a bidirectional relationship, allowing
-navigation from both sides. SQLAlchemy handles the foreign key management automatically.
+关系定义表的连接方式。一对多关系是指父表中的一条记录可以在子表中拥有多条相关记录。父端使用 ``relationship()`` ，子端使用 ``ForeignKey`` 。 ``back_populates`` parameter 创建双向关系，允许从两侧进行导航。 SQLAlchemy自动处理国外key管理。
 
 .. code-block:: python
 
@@ -322,20 +282,16 @@ navigation from both sides. SQLAlchemy handles the foreign key management automa
     >>> session.add(user)
     >>> session.commit()
 
-    >>> # Access relationship
+    >>> # 访问关系
     >>> user = session.execute(select(User)).scalars().first()
     >>> print([p.title for p in user.posts])
     ['First Post', 'Second Post']
     >>> session.close()
 
-Many-to-Many Relationship
--------------------------
+多对多关系（Many-to-Many Relationship）
+----------------------------------------------------------------
 
-Many-to-many relationships require an association table that contains foreign keys
-to both related tables. Define the association table using ``Table``, then use
-``relationship()`` with the ``secondary`` parameter pointing to it. Both sides can
-have a relationship, and SQLAlchemy manages the association table entries automatically
-when you add or remove items from the relationship collections.
+多对多关系需要一个关联表，其中包含两个相关表的外部 keys。使用 ``Table`` 定义关联表，然后使用 ``relationship()`` ，其中 ``secondary`` parameter指向它。双方都可以有关系，当您在关系 collections 中添加或删除 items 时，SQLAlchemy 会自动管理关联表条目。
 
 .. code-block:: python
 
@@ -343,7 +299,7 @@ when you add or remove items from the relationship collections.
     >>> from sqlalchemy.orm import declarative_base, sessionmaker, relationship
     >>> Base = declarative_base()
 
-    >>> # Association table
+    >>> # 关联表
     >>> student_course = Table(
     ...     "student_course", Base.metadata,
     ...     Column("student_id", Integer, ForeignKey("students.id"), primary_key=True),
@@ -373,20 +329,16 @@ when you add or remove items from the relationship collections.
     >>> session.add_all([alice, bob])
     >>> session.commit()
 
-    >>> # Query relationships
+    >>> # 查询关系
     >>> math = session.execute(select(Course).where(Course.name == "Math")).scalars().first()
     >>> print([s.name for s in math.students])
     ['Alice', 'Bob']
     >>> session.close()
 
-Self-Referential Relationship
------------------------------
+自我参照关系（Self-Referential Relationship）
+--------------------------------------------------------------------------
 
-Self-referential relationships connect a table to itself, useful for hierarchical
-data like organizational charts, categories, or threaded comments. Use ``ForeignKey``
-pointing to the same table and ``relationship()`` with ``remote_side`` to indicate
-which side is the "parent". This pattern allows you to model tree structures where
-each node can have a parent and multiple children.
+自引用关系将表连接到自身，这对于组织结构图、类别或线索注释等分层数据很有用。使用指向同一张表的 ``ForeignKey`` 和 ``relationship()`` 与 ``remote_side`` 来指示哪一侧是"parent"。此模式允许您对树结构进行建模，其中每个节点可以有一个父节点和多个子节点。
 
 .. code-block:: python
 
@@ -417,7 +369,7 @@ each node can have a parent and multiple children.
     >>> session.add_all([worker1, worker2])
     >>> session.commit()
 
-    >>> # Navigate hierarchy
+    >>> # 导航层次结构
     >>> mgr = session.execute(select(Employee).where(Employee.name == "Manager")).scalars().first()
     >>> print(f"Manager: {mgr.name}, Boss: {mgr.manager.name}")
     Manager: Manager, Boss: CEO
@@ -425,14 +377,10 @@ each node can have a parent and multiple children.
     Subordinates: ['Worker1', 'Worker2']
     >>> session.close()
 
-Cascade Deletes
----------------
+级联删除（Cascade Deletes）
+------------------------------------------
 
-Cascade options control what happens to related objects when a parent is deleted
-or modified. The ``cascade`` parameter on ``relationship()`` accepts a comma-separated
-string of cascade rules. Common options include ``"all, delete-orphan"`` which deletes
-children when the parent is deleted and when children are removed from the collection.
-This ensures referential integrity and prevents orphaned records.
+级联选项控制删除或修改父项时相关 objects 发生的情况。 ``relationship()`` 上的 ``cascade`` parameter 接受级联规则的逗号分隔 string。常见选项包括 ``"all, delete-orphan"`` ，当删除父级以及从 collection 中删除子级时，该选项也会删除子级。这可确保引用完整性并防止出现孤立记录。
 
 .. code-block:: python
 
@@ -464,7 +412,7 @@ This ensures referential integrity and prevents orphaned records.
     >>> session.add(parent)
     >>> session.commit()
 
-    >>> # Delete parent - children are also deleted
+    >>> # 删除父项 - 子项也被删除
     >>> session.delete(parent)
     >>> session.commit()
     >>> children = session.execute(select(Child)).scalars().all()
@@ -472,14 +420,10 @@ This ensures referential integrity and prevents orphaned records.
     0
     >>> session.close()
 
-Eager Loading
--------------
+预先加载（Eager Loading）
+--------------------------------------
 
-By default, SQLAlchemy uses lazy loading for relationships, executing a new query
-when you access related objects. This can cause the "N+1 query problem" when iterating
-over many objects. Eager loading fetches related objects in the same query using
-JOIN or subqueries. Use ``joinedload()`` for single objects or small collections,
-and ``selectinload()`` for larger collections to avoid cartesian products.
+默认情况下，SQLAlchemy 对关系使用延迟加载，当您访问相关的 objects 时执行新查询。当迭代多个 objects 时，这可能会导致 "N+1 query problem"。预加载使用 JOIN 或子查询在同一查询中获取相关的 objects。对于单个 objects 或小型 collections 使用 ``joinedload()`` ，对于较大的 collections 使用 ``selectinload()`` 以避免笛卡尔积。
 
 .. code-block:: python
 
@@ -509,21 +453,17 @@ and ``selectinload()`` for larger collections to avoid cartesian products.
     >>> session.add(user)
     >>> session.commit()
 
-    >>> # Eager load posts with user in single query
+    >>> # 在单个查询中急切地加载用户的帖子
     >>> stmt = select(User).options(joinedload(User.posts))
     >>> user = session.execute(stmt).scalars().unique().first()
-    >>> print([p.title for p in user.posts])  # No additional query
+    >>> print([p.title for p in user.posts])  # 无需额外查询
     ['Post1', 'Post2']
     >>> session.close()
 
-Hybrid Properties
------------------
+混合属性（Hybrid Properties）
+----------------------------------------------
 
-Hybrid properties allow you to define Python properties that work both at the instance
-level (in Python) and at the class level (in SQL queries). This is useful for computed
-attributes that you want to filter or sort by in database queries. Use the
-``@hybrid_property`` decorator and optionally ``@property.expression`` to customize
-the SQL expression.
+混合 properties 允许您定义在 instance 级别（在 Python 中）和 class 级别（在 SQL 查询中）工作的 Python properties。这对于您想要在数据库查询中过滤或排序的计算 attributes 非常有用。使用 ``@hybrid_property`` 、decorator 和可选的 ``@property.expression`` 来自定义 SQL expression。
 
 .. code-block:: python
 
@@ -554,15 +494,10 @@ the SQL expression.
     Alice Smith
     >>> session.close()
 
-Event Hooks
------------
+事件挂钩（Event Hooks）
+----------------------------------
 
-SQLAlchemy provides an event system that lets you hook into various ORM operations
-like before/after insert, update, or delete. Use ``@event.listens_for()`` decorator
-to register event handlers. Events are useful for auditing, validation, automatic
-timestamps, or triggering side effects. Common events include ``before_insert``,
-``after_insert``, ``before_update``, ``after_update``, ``before_delete``, and
-``after_delete``.
+SQLAlchemy 提供了一个事件系统，可让您挂钩各种 ORM 操作，例如插入、更新或删除之前/之后。使用 ``@event.listens_for()`` decorator 注册事件处理程序。事件对于审核、验证、自动时间戳或触发副作用很有用。常见事件包括 ``before_insert`` 、 ``after_insert`` 、 ``before_update`` 、 ``after_update`` 、 ``before_delete`` 和 ``after_delete`` 。
 
 .. code-block:: python
 

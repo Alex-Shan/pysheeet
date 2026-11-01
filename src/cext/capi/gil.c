@@ -1,4 +1,4 @@
-/* Demonstrate GIL release and acquire in Python C API. */
+/* 在Python C API中演示GIL的释放和获取。 */
 #include <Python.h>
 
 #ifdef _WIN32
@@ -8,7 +8,7 @@
 #include <unistd.h>
 #endif
 
-/* Sleep WITHOUT releasing GIL - blocks other threads */
+/* 睡眠 WITHOUT 释放 GIL - 阻止其他 threads */
 static PyObject* sleep_with_gil(PyObject* self, PyObject* args) {
   int seconds;
   if (!PyArg_ParseTuple(args, "i", &seconds)) {
@@ -18,7 +18,7 @@ static PyObject* sleep_with_gil(PyObject* self, PyObject* args) {
   Py_RETURN_NONE;
 }
 
-/* Sleep WITH releasing GIL - allows other threads to run */
+/* 睡眠 WITH 释放 GIL - 允许其他 threads 运行 */
 static PyObject* sleep_no_gil(PyObject* self, PyObject* args) {
   int seconds;
   if (!PyArg_ParseTuple(args, "i", &seconds)) {
@@ -31,7 +31,7 @@ static PyObject* sleep_no_gil(PyObject* self, PyObject* args) {
       Py_RETURN_NONE;
 }
 
-/* CPU work without GIL */
+/* CPU 无需 GIL 即可工作 */
 static unsigned long fib_impl(unsigned long n) {
   if (n < 2) return n;
   return fib_impl(n - 1) + fib_impl(n - 2);

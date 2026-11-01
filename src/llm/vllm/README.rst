@@ -1,120 +1,110 @@
-============
-vLLM Serving
-============
+========================================
+法学硕士服务（vLLM Serving）
+========================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-This cheat sheet provides quick-reference commands for launching a vLLM server in both
-local (single-node) and SLURM (multi-node) environments. It covers building the Docker
-image, running with different parallelism strategies, and testing the server endpoints.
+此速查表提供了在本地（单节点）和 SLURM（多节点）环境中启动 vLLM 服务器的快速参考命令。它涵盖了构建 Docker 映像、使用不同的并行策略运行以及测试服务器端点。
 
-For more details, see the
-`vLLM documentation <https://docs.vllm.ai/>`_ and
-`GitHub repository <https://github.com/vllm-project/vllm>`_.
+有关更多详细信息，请参阅 `vLLM documentation <https://docs.vllm.ai/>`_ 和 `GitHub repository <https://github.com/vllm-project/vllm>`_ 。
 
-For detailed explanations of tensor parallelism, pipeline parallelism, data parallelism,
-and expert parallelism, see the
-For parallelism strategies and benchmark methodology, see the
-`LLM Serving Guide <https://github.com/crazyguitar/pysheeet/blob/master/docs/notes/llm/llm-serving.rst>`_ and
-`LLM Benchmark Guide <https://github.com/crazyguitar/pysheeet/blob/master/docs/notes/llm/llm-bench.rst>`_.
+有关 tensor 并行性、管道并行性、数据并行性和专家并行性的详细说明，请参阅并行策略和 benchmark 方法，请参阅 `LLM Serving Guide <https://github.com/crazyguitar/pysheeet/blob/master/docs/notes/llm/llm-serving.rst>`_ 和 `LLM Benchmark Guide <https://github.com/crazyguitar/pysheeet/blob/master/docs/notes/llm/llm-bench.rst>`_ 。
 
-Build Docker Image
-------------------
+.. _build-docker-image:
 
-The Dockerfile bundles vLLM with EFA drivers, NCCL, NVSHMEM, and GDRCopy for
-high-performance multi-node inference on GPU clusters. Build the image and save it
-as a compressed tarball for distribution to SLURM nodes via a shared filesystem.
+构建 Docker 镜像（Build Docker Image）
+----------------------------------------------------------------
+
+Dockerfile 将 vLLM 与 EFA 驱动程序、NCCL、NVSHMEM 和 GDRCopy 捆绑在一起，以在 GPU 集群上进行高性能多节点推理。构建映像并将其保存为压缩 tarball，以便通过共享文件系统分发到 SLURM 节点。
 
 .. code-block:: bash
 
-    # Build the Docker image with all dependencies
+    # 构建具有所有依赖项的 Docker 映像
     make docker
 
-    # Save as a compressed tarball for SLURM nodes
-    # Output: vllm-serve-latest.tar.gz
+    # 保存为 SLURM 节点的压缩 tarball
+    # 输出：vllm-服务-latest.tar.gz
     make save
 
-Local Serving (Single Node)
----------------------------
+.. _local-serving-single-node:
 
-For development or single-node deployments, vLLM can run directly on the host or
-inside a Docker container. The server exposes an OpenAI-compatible API on port 8000.
+本地服务（单节点）（Local Serving (Single Node)）
+----------------------------------------------------------------------------
 
-**Bare metal** — run vLLM directly without Docker:
+对于开发或单节点部署，vLLM 可以直接在主机上或 Docker 容器内运行。服务器在端口 8000 上公开 OpenAI 兼容的 API。
+
+**裸机** — 直接运行vLLM，无需Docker：
 
 .. code-block:: bash
 
-    # Single GPU — simplest way to serve a model
+    # 单个 GPU — 服务模型的最简单方法
     vllm serve Qwen/Qwen2.5-7B-Instruct --host 0.0.0.0 --port 8000
 
-    # Tensor parallel across 8 GPUs — for models too large for a single GPU
+    # Tensor 跨 8 个 GPU 并行 — 适用于对于单个 GPU 来说太大的模型
     vllm serve Qwen/Qwen2.5-14B-Instruct --tensor-parallel-size 8
 
-**Using Docker (via Makefile)** — convenient targets for common configurations:
+**使用 Docker（通过 Makefile）** — 常见配置的便捷目标：
 
 .. code-block:: bash
 
-    # Single GPU with default model
+    # 单GPU 默认型号
     make single
 
-    # Tensor parallel across 8 GPUs
+    # Tensor 跨 8 个 GPU 并行
     make mp TP=8
 
     # Pipeline parallel — split model into 2 stages, each with TP=4
     make mp TP=4 PP=2
 
-    # Ray backend with data parallelism — 2 replicas, each using 4 GPUs
+    # 具有数据并行性的 Ray 后端 — 2 个副本，每个副本使用 4 个 GPU
     make ray TP=4 DP=2
 
-**Using Docker (via run.sh)** — the entrypoint script supports multiple serving modes
-(single, ray, mp, rpc) with explicit control over parallelism settings:
+**使用 Docker（通过 run.sh）** — 入口点脚本支持多种服务模式（单一、ray、mp、rpc），并可显式控制并行设置：
 
 .. code-block:: bash
 
-    # Single GPU mode
+    # 单GPU模式
     docker run --gpus all --rm --net=host -v /fsx:/fsx \
       vllm-serve:latest ./run.sh single --model Qwen/Qwen2.5-7B-Instruct
 
-    # Multiprocessing mode with tensor parallelism
+    # 具有 tensor 并行度的 Multiprocessing 模式
     docker run --gpus all --rm --net=host -v /fsx:/fsx \
       vllm-serve:latest ./run.sh mp --model Qwen/Qwen2.5-14B-Instruct --tp 8
 
-SLURM Serving (Multi-Node)
----------------------------
+.. _slurm-serving-multi-node:
 
-``run.sbatch`` orchestrates multi-node vLLM serving on SLURM clusters. It handles
-Docker image distribution, container launch with EFA/GPU passthrough, parallelism
-computation, and health checking. The server runs until you stop it with ``Ctrl+C``
-or ``scancel``.
+SLURM 服务（多节点）（SLURM Serving (Multi-Node)）
+----------------------------------------------------------------------------------
 
-**Script flags** — these are consumed by the script and not passed to vLLM:
+``run.sbatch`` 编排在 SLURM 集群上服务的多节点 vLLM。它处理 Docker 映像分发、使用 EFA/GPU 直通的容器启动、并行计算和运行状况检查。服务器会一直运行，直到您使用 ``Ctrl+C`` 或 ``scancel`` 停止它为止。
+
+**脚本标志** — 这些由脚本使用，不会传递给 vLLM：
 
 .. list-table::
    :widths: 30 70
    :header-rows: 1
 
-   * - Flag
-     - Description
+   * - 旗帜
+     - 描述
    * - ``--image PATH``
-     - Docker image tarball or registry path (default: ``$WORKSPACE/vllm-serve-latest.tar.gz``)
+     - Docker 映像 tarball 或注册表路径（默认值： ``$WORKSPACE/vllm-serve-latest.tar.gz`` ）
    * - ``--workspace, -w PATH``
-     - Base directory for default image and logs (default: ``$PWD``)
+     - 默认图像和日志的基目录（默认： ``$PWD`` ）
    * - ``--container-mount PATH``
-     - Host path to bind-mount into containers (default: ``/fsx``)
+     - 绑定挂载到容器中的主机路径（默认值： ``/fsx`` ）
    * - ``--force, -f``
-     - Force remove existing containers and images before loading
+     - 加载前强制删除现有容器和镜像
    * - ``--nsys``
-     - Enable Nsight Systems profiling (writes to ``$WORKSPACE/nsys-vllm/``)
+     - 启用 Nsight Systems profiling（写入 ``$WORKSPACE/nsys-vllm/`` ）
 
-All other arguments are passed directly to ``vllm serve`` as-is.
+所有其他 arguments 均按原样直接传递到 ``vllm serve`` 。
 
-**Basic usage** — allocate nodes with ``salloc``, then run the script. The script
-auto-detects the SLURM allocation and computes DP based on total GPUs and TP/PP:
+**基本用法** — 使用 ``salloc`` 分配节点，然后运行脚本。该脚本自动检测 SLURM 分配并根据 GPU 总数和 TP/PP 计算 DP：
 
 .. code-block:: bash
 
-    # Allocate 2 nodes with 8 GPUs each
+    # 分配 2 个节点，每个节点 8 个 GPU
     salloc -N 2 --gpus-per-node=8 --exclusive
 
     # Expert parallel for MoE models (TP=8, DP=2, EP=16 auto-computed)
@@ -123,7 +113,7 @@ auto-detects the SLURM allocation and computes DP based on total GPUs and TP/PP:
       --tensor-parallel-size 8 \
       --enable-expert-parallel
 
-**Custom image** — specify a different Docker image tarball or registry path:
+**自定义映像** — 指定不同的 Docker 映像 tarball 或注册表路径：
 
 .. code-block:: bash
 
@@ -133,8 +123,7 @@ auto-detects the SLURM allocation and computes DP based on total GPUs and TP/PP:
       --tensor-parallel-size 8 \
       --enable-expert-parallel
 
-**Pipeline parallel** — for large dense models that need to be split across nodes.
-The script auto-selects the multiprocessing backend when PP > 1:
+**管道并行** - 适用于需要跨节点拆分的大型密集模型。当 PP > 1 时，脚本自动选择 multiprocessing 后端：
 
 .. code-block:: bash
 
@@ -143,7 +132,7 @@ The script auto-selects the multiprocessing backend when PP > 1:
       --tensor-parallel-size 8 \
       --pipeline-parallel-size 2
 
-**Force reload** — remove cached containers and images before loading:
+**强制重新加载** — 在加载之前删除 cached 容器和图像：
 
 .. code-block:: bash
 
@@ -152,42 +141,41 @@ The script auto-selects the multiprocessing backend when PP > 1:
       --tensor-parallel-size 8 \
       --enable-expert-parallel
 
-**Backend selection** — the script supports three distributed backends. RPC is the
-default and works best for most cases. Ray is useful when you need its scheduling
-features. Multiprocessing is auto-selected for pipeline parallelism:
+**后端选择** — 该脚本支持三个分布式后端。 RPC 是默认值，最适合大多数情况。当您需要其调度功能时，Ray 非常有用。自动选择 Multiprocessing 以实现管道并行性：
 
 .. code-block:: bash
 
-    # RPC backend (default) — lightweight, best for DP + EP
+    # RPC 后端（默认）——轻量级，最适合 DP + EP
     bash run.sbatch Qwen/Qwen3-30B-A3B-FP8 --tensor-parallel-size 8
 
-    # Ray backend — uses Ray cluster for worker management
+    # Ray 后端 — 使用 Ray 集群进行工作人员管理
     DP_BACKEND=ray bash run.sbatch \
       Qwen/Qwen3-30B-A3B-FP8 \
       --tensor-parallel-size 8 \
       --enable-expert-parallel
 
-    # Multiprocessing backend — auto-selected when PP > 1
+    # Multiprocessing 后端 — 当 PP > 1 时自动选择
     bash run.sbatch \
       deepseek-ai/DeepSeek-V2-Lite \
       --tensor-parallel-size 8 \
       --pipeline-parallel-size 2
 
-Test the Server
----------------
+.. _test-the-server:
 
-Once the server is ready, it prints the head node IP address. Use standard HTTP
-requests to interact with the OpenAI-compatible API:
+测试服务器（Test the Server）
+--------------------------------------------
+
+一旦服务器准备就绪，它就会打印头节点 IP 地址。使用标准 HTTP 请求与 OpenAI 兼容的 API 进行交互：
 
 .. code-block:: bash
 
-    # Health check — returns 200 when server is ready
+    # 健康检查 — 当服务器准备就绪时返回 200
     curl http://<HEAD_IP>:8000/health
 
-    # List available models
+    # List 可用型号
     curl http://<HEAD_IP>:8000/v1/models
 
-    # Chat completion request
+    # 聊天完成请求
     curl -X POST http://<HEAD_IP>:8000/v1/chat/completions \
       -H "Content-Type: application/json" \
       -d '{
@@ -196,57 +184,57 @@ requests to interact with the OpenAI-compatible API:
         "max_tokens": 50
       }'
 
-    # Or run the included test script
+    # 或者运行附带的测试脚本
     bash test.sh
 
-    # Test against a remote server
+    # 针对远程服务器进行测试
     bash test.sh -H 10.0.128.193
 
-    # Test with specific port and model
+    # 使用特定端口和型号进行测试
     bash test.sh -H 10.0.128.193 -p 8000 -m Qwen/Qwen3-30B-A3B-FP8
 
-Benchmark
----------
+.. _benchmark:
 
-``bench.sh`` measures serving performance (throughput, TTFT, ITL, latency) by sending
-requests to a running vLLM server. It handles Docker image loading and container
-management automatically.
+基准（Benchmark）
+--------------------------
+
+``bench.sh`` 通过向正在运行的 vLLM 服务器发送请求来测量服务性能（throughput、TTFT、ITL、latency）。它自动处理 Docker 图像加载和容器管理。
 
 .. code-block:: bash
 
-    # Run all benchmarks
+    # 运行所有基准测试
     bash bench.sh -H 10.0.128.193 -i vllm-serve:latest
 
-    # Run specific benchmarks
+    # 运行特定基准测试
     bash bench.sh -H 10.0.128.193 -i vllm-serve:latest --type throughput,prefill
 
-    # Via Makefile
+    # 通过生成文件
     make bench HOST=10.0.128.193
     make bench HOST=10.0.128.193 BENCH_TYPE=throughput,prefill
 
-Sweep
------
+.. _sweep:
 
-``sweep.sh`` runs predefined sweep suites by calling ``sweep.sbatch`` for each
-configuration. Each suite launches its own ``vllm serve``, sweeps a parameter, and
-collects results. Requires GPU access.
+扫（Sweep）
+----------------
+
+``sweep.sh`` 通过为每个配置调用 ``sweep.sbatch`` 来运行预定义的扫描套件。每个套件都会启动自己的 ``vllm serve`` ，扫描 parameter，并收集结果。需要 GPU 访问权限。
 
 .. code-block:: bash
 
-    # All suites (rate, concurrency, input, output)
+    # 所有套件（速率、并发、输入、输出）
     bash sweep.sh -m Qwen/Qwen3-0.6B
 
-    # Select specific suites
+    # 选择特定套房
     bash sweep.sh -m Qwen/Qwen3-30B-A3B-FP8 \
         -i vllm-serve:latest \
         --serve-cmd "vllm serve Qwen/Qwen3-30B-A3B-FP8 -tp 8 --enable-expert-parallel" \
         --type rate,input
 
-    # Via Makefile
+    # 通过生成文件
     make sweep
     make sweep SWEEP_MODEL=Qwen/Qwen3-30B-A3B-FP8 SWEEP_TYPE=rate,concurrency
 
-    # Show vllm serve stdout (model loading, request logs) — very useful for debugging
+    # 显示 vllm 服务 stdout（模型加载、请求日志）——对于 debugging 非常有用
     bash sweep.sh -m Qwen/Qwen3-0.6B --show-stdout
 
     # Custom serve command — TP=2 with expert parallel, rate sweep only
@@ -254,105 +242,97 @@ collects results. Requires GPU access.
         --serve-cmd "vllm serve Qwen/Qwen1.5-MoE-A2.7B -tp 2 --enable-expert-parallel" \
         --type rate --show-stdout
 
-Available suites:
+可用套房：
 
-- **rate** — Sweeps request rate (1, 2, 4, 8, 16, 32, inf) to find saturation point
-- **concurrency** — Sweeps concurrent requests (1–128) to find optimal batch size
-- **input** — Sweeps input length (128–16K) to measure TTFT scaling with context
-- **output** — Sweeps output length (64–2048) to measure ITL as KV cache grows
+- **rate** — 扫描请求率（1、2、4、8、16、32、inf）以查找饱和点
+- **concurrency** — 扫描并发请求 (1–128) 以找到最佳批量大小
+- **input** — 扫描输入长度 (128–16K) 以测量 TTFT 与上下文的缩放
+- **output** — 随着 KV cache 的增长，扫描输出长度 (64–2048) 以测量 ITL
 
-For direct control over sweep parameters, use ``sweep.sbatch`` which passes all args
-through to ``vllm bench sweep serve``:
+要直接控制扫描 parameters，请使用 ``sweep.sbatch`` 将所有参数传递给 ``vllm bench sweep serve`` ：
 
 .. code-block:: bash
 
-    # Custom serve + bench commands
+    # 自定义服务+替补命令
     bash sweep.sbatch -m Qwen/Qwen3-30B-A3B-FP8 \
         --serve-cmd "vllm serve Qwen/Qwen3-30B-A3B-FP8 -tp 8 --enable-expert-parallel" \
         --bench-cmd "vllm bench serve --model Qwen/Qwen3-30B-A3B-FP8 --dataset-name sharegpt" \
         --bench-params results/bench_params.json --show-stdout
 
-See the `LLM Benchmark Guide <https://github.com/crazyguitar/pysheeet/blob/master/docs/notes/llm/llm-bench.rst>`_
-for detailed explanations of each benchmark type and metric.
+有关每个 benchmark type 和指标的详细说明，请参阅 `LLM Benchmark Guide <https://github.com/crazyguitar/pysheeet/blob/master/docs/notes/llm/llm-bench.rst>`_ 。
 
-Notes and Limitations
----------------------
+.. _notes-and-limitations:
 
-**Profiling:**
+注意事项和限制（Notes and Limitations）
+------------------------------------------------------------
 
-vLLM supports PyTorch profiler tracing via ``--profiler-config``. The server must be
-started with profiling enabled, then the benchmark client triggers ``/start_profile``
-and ``/stop_profile`` endpoints via ``--profile``.
+**分析：**
+
+vLLM 支持通过 ``--profiler-config`` 跟踪 PyTorch profiler。服务器必须在启用 profiling 的情况下启动，然后 benchmark 客户端通过 ``--profile`` 触发 ``/start_profile`` 和 ``/stop_profile`` 端点。
 
 .. code-block:: bash
 
-    # Server — start with profiling enabled (default writes to $PWD/vllm_profile)
+    # 服务器 — 以启用 profiling 的方式启动（默认写入 $PWD/vllm_profile）
     bash run.sbatch --profile \
       Qwen/Qwen3-30B-A3B-FP8 \
       --tensor-parallel-size 8
 
-    # Server — custom profiler config
+    # 服务器 — 自定义 profiler 配置
     bash run.sbatch \
       --profiler-config '{"profiler": "torch", "torch_profiler_dir": "/fsx/traces"}' \
       Qwen/Qwen3-30B-A3B-FP8 \
       --tensor-parallel-size 8
 
-    # Client — run benchmark with profiling
+    # 客户端 — 使用 profiling 运行 benchmark
     bash bench.sh -H 10.0.128.193 --type throughput --profile
 
-View traces at https://ui.perfetto.dev/ (supports ``.gz`` files directly).
+在 https://ui.perfetto.dev/ 查看跟踪（直接支持 ``.gz`` 文件）。
 
-See the `vLLM Profiling Guide <https://docs.vllm.ai/en/latest/contributing/profiling/>`_
-for more details.
+有关更多详细信息，请参阅 `vLLM Profiling Guide <https://docs.vllm.ai/en/latest/contributing/profiling/>`_ 。
 
-**Nsight Systems profiling:**
+**Nsight 系统 profiling:**
 
-``--nsys`` wraps the ``vllm serve`` command with ``nsys profile`` for GPU-level tracing
-(CUDA kernels, NVTX ranges, memory usage). Profiles are saved per-node to
-``$WORKSPACE/nsys-vllm/``. The script sends ``SIGINT`` to nsys on cleanup for graceful
-finalization.
+``--nsys`` 将 ``vllm serve`` 命令与 ``nsys profile`` 包装在一起，以进行 GPU 级别的跟踪（CUDA 内核、NVTX ranges、内存使用情况）。配置文件按节点保存到 ``$WORKSPACE/nsys-vllm/`` 。该脚本在清理时将 ``SIGINT`` 发送到 nsys 以顺利完成。
 
 .. code-block:: bash
 
-    # Server — enable nsys + vLLM's CUDA profiler (terminal 0)
+    # 服务器 — 启用 nsys + vLLM 的 CUDA profiler (terminal 0)
     bash run.sbatch --nsys \
       Qwen/Qwen3-30B-A3B-FP8 \
       --tensor-parallel-size 8 \
       --enable-expert-parallel \
       --profiler-config '{"profiler": "cuda"}'
 
-    # Client — run benchmark with profiling (terminal 1)
+    # 客户端 — 使用 profiling 运行 benchmark (terminal 1)
     bash bench.sh -H <server-host> --type throughput --profile
 
-    # Stop server with Ctrl+C (terminal 0)
-    # Nsys will finalize profiles (~30s)
-    # Profile files: nsys-vllm/profile-node*.nsys-rep
+    # 使用 Ctrl+C (terminal 0) 停止服务器
+    # Nsys 将最终确定配置文件（约 30 秒）
+    # 配置文件：nsys-vllm/profile-node*.nsys-rep
 
-Open ``.nsys-rep`` files with `Nsight Systems <https://developer.nvidia.com/nsight-systems>`_
-or export to JSON for custom analysis.
+使用 `Nsight Systems <https://developer.nvidia.com/nsight-systems>`_ 打开 ``.nsys-rep`` 文件或导出到 JSON 进行自定义分析。
 
-**Parallelism constraints:**
+**并行度约束：**
 
-- vLLM does not support combining PP, TP, and DP simultaneously. When using PP mode,
-  DP is not available (``TOTAL_GPUS = TP × PP``).
-- EP and PP are mutually exclusive. Use EP for MoE models and PP for large dense models.
-- EP is computed automatically: ``EP = TP × DP = world_size``. As TP increases, DP
-  decreases proportionally to maintain the same total parallelism.
+- vLLM 不支持同时组合 PP、TP 和 DP。使用 PP 模式时，DP 不可用（ ``TOTAL_GPUS = TP × PP`` ）。
+- EP 和 PP 是互斥的。对于 MoE 模型使用 EP，对于大型密集模型使用 PP。
+- EP 自动计算： ``EP = TP × DP = world_size`` 。随着 TP 的增加，DP 按比例减少以保持相同的总并行度。
 
-**Formulas:**
+**公式：**
 
-- EP mode: ``TOTAL_GPUS = DP × TP``, EP auto-computed by vLLM
-- PP mode: ``TOTAL_GPUS = TP × PP`` (no DP)
-- DP mode: ``TOTAL_GPUS = DP × TP``
+- EP模式： ``TOTAL_GPUS = DP × TP`` 、EP由vLLM自动计算
+- PP 模式： ``TOTAL_GPUS = TP × PP`` （无 DP）
+- DP 模式： ``TOTAL_GPUS = DP × TP``
 
 
-Offline Benchmarking
----------------------
+.. _offline-benchmarking:
 
-``offline_bench.sh`` measures raw inference performance without API server overhead.
-Uses ``torchrun`` for multi-node coordination and supports profiling with Nsight Systems.
+离线基准测试（Offline Benchmarking）
+--------------------------------------------------------
 
-**Single GPU:**
+``offline_bench.sh`` 测量原始推理性能，无需 API 服务器开销。使用 ``torchrun`` 进行多节点协调，并支持profiling和Nsight Systems。
+
+**单GPU：**
 
 .. code-block:: bash
 
@@ -361,7 +341,7 @@ Uses ``torchrun`` for multi-node coordination and supports profiling with Nsight
       --input-len 512 --output-len 128 \
       --num-prompts 100
 
-**Multi-GPU with tensor parallelism:**
+**多 GPU 与 tensor 并行度：**
 
 .. code-block:: bash
 
@@ -371,7 +351,7 @@ Uses ``torchrun`` for multi-node coordination and supports profiling with Nsight
       --input-len 1024 --output-len 256 \
       --num-prompts 100
 
-    # Multi-node with custom docker image
+    # 具有自定义 docker 映像的多节点
     salloc -N 4 bash offline_bench.sh \
       --image "$PWD/vllm-serve-latest.tar.gz" \
       --model Qwen/Qwen2-57B-A14B \
@@ -381,7 +361,7 @@ Uses ``torchrun`` for multi-node coordination and supports profiling with Nsight
       --input-len 2048 --output-len 512 \
       --num-prompts 50
 
-    # ShareGPT dataset
+    # ShareGPT 数据集
     wget -O ShareGPT_V3_unfiltered_cleaned_split.json \
       https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/ShareGPT_V3_unfiltered_cleaned_split.json
 
@@ -390,11 +370,9 @@ Uses ``torchrun`` for multi-node coordination and supports profiling with Nsight
       --dataset-path ShareGPT_V3_unfiltered_cleaned_split.json \
       --num-prompts 100
 
-**Nsight Systems profiling:**
+**Nsight 系统 profiling:**
 
-Similar to the server workflow above, ``--nsys`` wraps the ``torchrun`` command (instead
-of ``vllm serve``) with ``nsys profile``. Profiles are saved per-node to
-``$WORKSPACE/nsys-offline/``.
+与上面的服务器工作流程类似， ``--nsys`` 用 ``nsys profile`` 包装 ``torchrun`` 命令（而不是 ``vllm serve`` ）。配置文件按节点保存到 ``$WORKSPACE/nsys-offline/`` 。
 
 .. code-block:: bash
 
@@ -404,14 +382,11 @@ of ``vllm serve``) with ``nsys profile``. Profiles are saved per-node to
       --all2all-backend allgather_reducescatter \
       --input-len 2048 --output-len 512 \
       --num-prompts 50
-    # Profile files: nsys-offline/profile-node*.nsys-rep
+    # 配置文件：nsys-offline/profile-node*.nsys-rep
 
-**VizTracer profiling (Python-level tracing):**
+**VizTracer profiling（Python级跟踪）：**
 
-VizTracer is a lightweight Python profiler that traces function calls without the memory
-overhead of PyTorch profiler. It works reliably with multi-node/high data-parallelism
-setups where PyTorch profiler may cause OOM. Use VizTracer to understand Python-level
-execution flow and identify bottlenecks in application logic.
+VizTracer 是一个轻量级的 Python profiler，它可以跟踪 function 调用，而不会产生 PyTorch profiler 的内存开销。它可以在多节点/高数据并行设置下可靠地工作，其中 PyTorch profiler 可能会导致 OOM。使用 VizTracer 了解 Python 级别的执行流程并识别应用程序逻辑中的瓶颈。
 
 .. code-block:: bash
 
@@ -420,10 +395,10 @@ execution flow and identify bottlenecks in application logic.
       --tensor-parallel-size 4 --enable-expert-parallel \
       --viztracer ./vllm-trace.json \
       --num-prompts 50
-    # View trace at https://ui.perfetto.dev/
+    # 在 https://ui.perfetto.dev/ 查看跟踪
 
-**Profiling comparison:**
+**剖面比较：**
 
-- **nsys**: GPU kernel-level profiling (CUDA operations, memory transfers, NCCL)
-- **VizTracer**: Python function-level profiling (application logic, scheduling)
-- Use nsys for GPU performance analysis, VizTracer for Python code analysis
+- **nsys** ：GPU内核级profiling（CUDA操作、内存传输、NCCL）
+- **VizTracer** ：Python function级profiling（应用逻辑、调度）
+- 使用nsys进行GPU性能分析，使用VizTracer进行Python代码分析

@@ -1,63 +1,57 @@
 .. meta::
-    :description lang=en: Python list cheat sheet covering list operations, comprehensions, slicing, sorting, filtering, and common list manipulation patterns with code examples
+    :description lang=zh_CN: Python list 速查表涵盖 list 操作、comprehensions、切片、排序、过滤和常见的 list 操作模式以及代码示例
     :keywords: Python, Python3, Python list, Python list cheat sheet, list comprehension, slicing, sorting, filtering, append, extend, iteration
 
-====
-List
-====
+================
+列表（List）
+================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-The list is a common data structure which we use to store objects. Most of the
-time, programmers concern about getting, setting, searching, filtering, and
-sorting. Furthermore, sometimes, we waltz ourself into common pitfalls of
-the memory management. Thus, the main goal of this cheat sheet is to collect
-some common operations and pitfalls.
+list 是我们用来存储 objects 的常见数据结构。大多数时候，程序员关心的是获取、设置、搜索、过滤和排序。此外，有时我们会陷入内存管理的常见陷阱。因此，本速查表的主要目标是收集一些常见的操作和陷阱。
 
-Python List Basics and Common Operations
-----------------------------------------
+Python列表基础知识和常用操作（Python List Basics and Common Operations）
+----------------------------------------------------------------------------------------------------------------------
 
-There are so many ways that we can manipulate lists in Python. Before we start
-to learn those versatile manipulations, the following snippet shows the most
-common operations of lists.
+我们可以通过多种方式来操纵Python中的lists。在我们开始学习这些通用操作之前，以下代码片段显示了 lists 最常见的操作。
 
 .. code-block:: python
 
     >>> a = [1, 2, 3, 4, 5]
-    >>> # contains
+    >>> # 包含
     >>> 2 in a
     True
-    >>> # positive index
+    >>> # 正向 index
     >>> a[0]
     1
-    >>> # negative index
+    >>> # 负向 index
     >>> a[-1]
     5
-    >>> # slicing list[start:end:step]
+    >>> # 切片 list[start:end:step]
     >>> a[1:]
     [2, 3, 4, 5]
     >>> a[1:-1]
     [2, 3, 4]
     >>> a[1:-1:2]
     [2, 4]
-    >>> # reverse
+    >>> # 反转
     >>> a[::-1]
     [5, 4, 3, 2, 1]
     >>> a[:0:-1]
     [5, 4, 3, 2]
-    >>> # set an item
+    >>> # 设置 item
     >>> a[0] = 0
     >>> a
     [0, 2, 3, 4, 5]
-    >>> # append items to list
+    >>> # 将 items 附加到 list
     >>> a.append(6)
     >>> a
     [0, 2, 3, 4, 5, 6]
     >>> a.extend([7, 8, 9])
     >>> a
     [0, 2, 3, 4, 5, 6, 7, 8, 9]
-    >>> # delete an item
+    >>> # 删除 item
     >>> del a[-1]
     >>> a
     [0, 2, 3, 4, 5, 6, 7, 8]
@@ -65,15 +59,14 @@ common operations of lists.
     >>> b = [x for x in range(3)]
     >>> b
     [0, 1, 2]
-    >>> # add two lists
+    >>> # 添加两个lists
     >>> a + b
     [0, 2, 3, 4, 5, 6, 7, 8, 0, 1, 2]
 
-Initialize Lists with Multiplication Operator
----------------------------------------------
+使用乘法运算符初始化列表（Initialize Lists with Multiplication Operator）
+----------------------------------------------------------------------------------------------------------------------
 
-Generally speaking, we can create a list through ``*`` operator if the item in
-the list expression is an immutable object.
+一般来说，如果list expression中的item是immutable object，我们可以通过 ``*`` operator创建list。
 
 .. code-block:: python
 
@@ -84,9 +77,7 @@ the list expression is an immutable object.
     >>> a
     ['foo', None, None]
 
-However, if the item in the list expression is a mutable object, the ``*``
-operator will copy the reference of the item N times. In order to avoid this
-pitfall, we should use a list comprehension to initialize a list.
+但是，如果list expression中的item是mutable object，则 ``*`` operator将复制item的引用N次。为了避免这个陷阱，我们应该使用list comprehension来初始化list。
 
 .. code-block:: python
 
@@ -99,12 +90,10 @@ pitfall, we should use a list comprehension to initialize a list.
     >>> b
     [['Python'], [], []]
 
-Copy Lists: Shallow vs Deep Copy
---------------------------------
+复制列表：浅复制与深复制（Copy Lists: Shallow vs Deep Copy）
+--------------------------------------------------------------------------------------------
 
-Assigning a list to a variable is a common pitfall. This assignment does not
-copy the list to the variable. The variable only refers to the list and increase
-the reference count of the list.
+将 list 分配给 variable 是一个常见的陷阱。此分配不会将 list 复制到 variable。 variable仅指list并增加list的reference count。
 
 .. code-block:: python
 
@@ -121,10 +110,7 @@ the reference count of the list.
     >>> a
     [1, 2, 123456]
 
-There are two types of copy. The first one is called *shallow copy* (non-recursive copy)
-and the second one is called *deep copy* (recursive copy). Most of the time, it
-is sufficient for us to copy a list by shallow copy. However, if a list is nested,
-we have to use a deep copy.
+types 副本有两份。第一个称为 *shallow copy* （非 recursive 副本），第二个称为 *deep copy* （recursive 副本）。大多数时候，我们通过shallow copy复制一个list就足够了。但是，如果 list 是嵌套的，我们必须使用 deep copy。
 
 .. code-block:: python
 
@@ -153,12 +139,10 @@ we have to use a deep copy.
     >>> b
     [[123], [2]]
 
-Slice Lists with slice Objects
-------------------------------
+使用 slice 对象切分列表（Slice Lists with slice Objects）
+----------------------------------------------------------------------------------------------
 
-Sometimes, our data may concatenate as a large segment such as packets. In
-this case, we will represent the range of data by using ``slice`` objects
-as explaining variables instead of using *slicing expressions*.
+有时，我们的数据可能会连接成一个大段，例如数据包。在这种情况下，我们将使用 ``slice`` objects 来表示数据的 range 作为解释 variables，而不是使用*切片 expressions*。
 
 .. code-block:: python
 
@@ -173,14 +157,10 @@ as explaining variables instead of using *slicing expressions*.
     >>> icmp[head]
     b'080062988e2100005bff49c20005767c'
 
-Create Lists with List Comprehensions
--------------------------------------
+使用列表推导式创建列表（Create Lists with List Comprehensions）
+----------------------------------------------------------------------------------------------------
 
-`List comprehensions <https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions>`_
-which was proposed in PEP `202 <https://www.python.org/dev/peps/pep-0202/>`_
-provides a graceful way to create a new list based on another list, sequence,
-or some object which is iterable. In addition, we can use this expression to
-substitute ``map`` and ``filter`` sometimes.
+PEP `202 <https://www.python.org/dev/peps/pep-0202/>`_ 中提出的 `List comprehensions <https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions>`_ 提供了一种优雅的方式来基于另一个 list、序列或某些 object（即 iterable）创建新的 list。另外，有时我们可以用这个expression来代替 ``map`` 和 ``filter`` 。
 
 .. code-block:: python
 
@@ -197,12 +177,10 @@ substitute ``map`` and ``filter`` sometimes.
     >>> [(x, y) for x in range(3) for y in range(2)]
     [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)]
 
-Unpack Lists into Variables
----------------------------
+将列表解包到变量（Unpack Lists into Variables）
+--------------------------------------------------------------------------
 
-Sometimes, we want to unpack our list to variables in order to make our code
-become more readable. In this case, we assign N elements to N variables as
-following example.
+有时，我们想将 list 解包为 variables，以使我们的代码变得更具可读性。在这种情况下，我们将 N elements 分配给 N variables，如下例所示。
 
 .. code-block:: python
 
@@ -211,9 +189,7 @@ following example.
     >>> a, b, c
     (1, 2, 3)
 
-Based on PEP `3132 <https://www.python.org/dev/peps/pep-3132>`_, we can use a
-single asterisk to unpack N elements to the number of variables which is less
-than N in Python 3.
+基于PEP `3132 <https://www.python.org/dev/peps/pep-3132>`_ ，我们可以使用单个星号将N个elements解压到Python 3中小于N的variables的数量。
 
 .. code-block:: python
 
@@ -224,13 +200,10 @@ than N in Python 3.
     >>> c
     [3, 4]
 
-Iterate with Index Using enumerate()
-------------------------------------
+使用 enumerate() 带索引迭代（Iterate with Index Using enumerate()）
+--------------------------------------------------------------------------------------------------------------------
 
-``enumerate`` is a built-in function. It helps us to acquire indexes
-(or a count) and elements at the same time without using ``range(len(list))``.
-Further information can be found on
-`Looping Techniques <https://docs.python.org/3/tutorial/datastructures.html#looping-techniques>`_.
+``enumerate`` 是内置 function。它帮助我们同时获取indexes（或计数）和elements，而无需使用 ``range(len(list))`` 。更多信息请参见 `Looping Techniques <https://docs.python.org/3/tutorial/datastructures.html#looping-techniques>`_ 。
 
 .. code-block:: python
 
@@ -247,15 +220,10 @@ Further information can be found on
     2 1
     3 2
 
-Combine Lists with zip()
-------------------------
+与 zip() 合并列表（Combine Lists with zip()）
+----------------------------------------------------------------------------
 
-`zip <https://docs.python.org/3/library/functions.html#zip>`_ enables us to
-iterate over items contained in multiple lists at a time. Iteration stops
-whenever one of the lists is exhausted. As a result, the length of the
-iteration is the same as the shortest list. If this behavior is not desired,
-we can use ``itertools.zip_longest`` in **Python 3** or ``itertools.izip_longest``
-in **Python 2**.
+`zip <https://docs.python.org/3/library/functions.html#zip>`_ 使我们能够一次迭代多个 lists 中包含的 items。每当 lists 之一耗尽时，Iteration 就会停止。因此，iteration 的长度与最短的 list 相同。如果不需要这种行为，我们可以在 **Python 3**中使用 ``itertools.zip_longest`` 或在**Python 2** 中使用 ``itertools.izip_longest`` 。
 
 .. code-block:: python
 
@@ -271,14 +239,10 @@ in **Python 2**.
     [(1, 4, 1), (2, 5, None), (3, 6, None)]
 
 
-Filter List Items
------------------
+过滤列表项（Filter List Items）
+------------------------------------------------
 
-`filter <https://docs.python.org/3/library/functions.html#filter>`_ is a
-built-in function to assist us to remove unnecessary items. In **Python 2**,
-``filter`` returns a list. However, in **Python 3**, ``filter`` returns an
-*iterable object*. Note that *list comprehension* or *generator
-expression* provides a more concise way to remove items.
+`filter <https://docs.python.org/3/library/functions.html#filter>`_ 是内置的function，帮助我们删除不必要的items。在 **Python 2**中， ``filter`` 返回 list。但是，在**Python 3** 中， ``filter`` 返回 *iterable object*。请注意，*list comprehension* 或 *generator expression* 提供了一种更简洁的方法来删除 items。
 
 .. code-block:: python
 
@@ -293,12 +257,10 @@ expression* provides a more concise way to remove items.
     >>> list((i for i in l if f(i)))
     [3, 4]
 
-Implement Stack with List
--------------------------
+用列表实现堆栈（Implement Stack with List）
+--------------------------------------------------------------------
 
-There is no need for an additional data structure, stack, in Python because the
-``list`` provides ``append`` and ``pop`` methods which enable us use a list as
-a stack.
+Python 中不需要额外的数据结构 stack，因为 ``list`` 提供了 ``append`` 和 ``pop`` methods，这使我们能够将 list 用作 stack。
 
 .. code-block:: python
 
@@ -315,12 +277,10 @@ a stack.
     >>> stack
     [1]
 
-Check Membership with in Operator
----------------------------------
+使用 in 运算符检查成员关系（Check Membership with in Operator）
+----------------------------------------------------------------------------------------------------
 
-We can implement the ``__contains__`` method to make a class do ``in``
-operations. It is a common way for a programmer to emulate
-a membership test operations for custom classes.
+我们可以实现 ``__contains__`` method 来使 class 执行 ``in`` 操作。程序员模拟自定义 classes 的成员资格测试操作是一种常用方法。
 
 .. code-block:: python
 
@@ -343,7 +303,7 @@ a membership test operations for custom classes.
     print(1 in stack)
     print(0 in stack)
 
-Example
+例子
 
 .. code-block:: bash
 
@@ -351,14 +311,10 @@ Example
     True
     False
 
-Access Items with __getitem__ and __setitem__
----------------------------------------------
+使用 __getitem__ 和 __setitem__ 访问元素（Access Items with __getitem__ and __setitem__）
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Making custom classes perform get and set operations like lists is simple. We
-can implement a ``__getitem__`` method and a ``__setitem__`` method to enable
-a class to retrieve and overwrite data by index. In addition, if we want to use
-the function, ``len``, to calculate the number of elements, we can implement a
-``__len__`` method.
+让自定义 classes 像 lists 一样执行 get 和 set 操作很简单。我们可以实现 ``__getitem__`` method 和 ``__setitem__`` method 来使 class 能够检索和覆盖 index 的数据。另外，如果我们想用function、 ``len`` 来计算elements的个数，我们可以实现一个 ``__len__`` method。
 
 .. code-block:: python
 
@@ -395,7 +351,7 @@ the function, ``len``, to calculate the number of elements, we can implement a
     print("stack:", stack)
     print("num items:", len(stack))
 
-Example
+例子
 
 .. code-block:: bash
 
@@ -404,13 +360,10 @@ Example
     stack: [3, 2]
     num items: 2
 
-Delegate Iteration with __iter__
---------------------------------
+使用 __iter__ 进行委托迭代（Delegate Iteration with __iter__）
+--------------------------------------------------------------------------------------------------------
 
-If a custom container class holds a list and we want iterations to work on the
-container, we can implement a ``__iter__`` method to delegate iterations to
-the list. Note that the method, ``__iter__``, should return an *iterator object*,
-so we cannot return the list directly; otherwise, Python raises a ``TypeError``.
+如果自定义容器 class 持有 list 并且我们希望迭代在容器上工作，我们可以实现 ``__iter__`` method 将迭代委托给 list。请注意，method、 ``__iter__`` 应该返回 *iterator object*，因此我们不能直接返回 list；否则，Python 引发 ``TypeError`` 。
 
 .. code-block:: python
 
@@ -434,7 +387,7 @@ so we cannot return the list directly; otherwise, Python raises a ``TypeError``.
     for s in stack:
         print(s)
 
-Example
+例子
 
 .. code-block:: bash
 
@@ -442,14 +395,10 @@ Example
     1
     2
 
-Sort Lists with sort() and sorted()
------------------------------------
+使用 sort() 和 sorted() 对列表进行排序（Sort Lists with sort() and sorted()）
+----------------------------------------------------------------------------------------------------------------------------------
 
-Python list provides a built-in ``list.sort`` method which sorts a list
-`in-place <https://en.wikipedia.org/wiki/In-place_algorithm>`_ without using
-extra memory. Moreover, the return value of ``list.sort`` is ``None`` in
-order to avoid confusion with ``sorted`` and the function can only be used for
-``list``.
+Python list 提供内置的 ``list.sort`` method，无需使用额外的内存即可对 list `in-place <https://en.wikipedia.org/wiki/In-place_algorithm>`_ 进行排序。另外，为了避免与 ``sorted`` 混淆， ``list.sort`` 的return value为 ``None`` ，而function只能用于 ``list`` 。
 
 .. code-block:: python
 
@@ -461,11 +410,7 @@ order to avoid confusion with ``sorted`` and the function can only be used for
     >>> l
     [5, 4, 3, 2, 1]
 
-The ``sorted`` function does not modify any iterable object in-place. Instead,
-it returns a new sorted list. Using ``sorted`` is safer than ``list.sort`` if
-some list's elements are read-only or immutable. Besides, another difference
-between ``list.sort`` and ``sorted`` is that ``sorted`` accepts any **iterable
-object**.
+``sorted`` function 不会就地修改任何 iterable object。相反，它返回一个新排序的 list。如果某些 list 的 elements 是只读的或 immutable，则使用 ``sorted`` 比 ``list.sort`` 更安全。此外， ``list.sort`` 和 ``sorted`` 之间的另一个区别是 ``sorted`` 接受任何 **iterable对象** 。
 
 .. code-block:: python
 
@@ -476,12 +421,10 @@ object**.
     >>> l
     [5, 4, 3, 2, 1]
     >>> d = {3: 'andy', 2: 'david', 1: 'amy'}
-    >>> sorted(d)  # sort iterable
+    >>> sorted(d)  # 排序 iterable
     [1, 2, 3]
 
-To sort a list with its elements are tuples, using ``operator.itemgetter`` is
-helpful because it assigns a key function to the ``sorted`` key parameter. Note
-that the key should be comparable; otherwise, it will raise a ``TypeError``.
+要对 list 及其 elements 为 tuples 进行排序，使用 ``operator.itemgetter`` 很有帮助，因为它将 key function 分配给 ``sorted`` key parameter。注意key应该是可比的；否则，它将引发 ``TypeError`` 。
 
 .. code-block:: python
 
@@ -491,10 +434,7 @@ that the key should be comparable; otherwise, it will raise a ``TypeError``.
     >>> l
     [('amy', 3), ('david', 8), ('andy', 10)]
 
-``operator.itemgetter`` is useful because the function returns a getter
-method which can be applied to other objects with a method ``__getitem__``. For
-example, sorting a list with its elements are dictionary can be achieved by
-using ``operator.itemgetter`` due to all elements have ``__getitem__``.
+``operator.itemgetter`` 很有用，因为 function 返回 getter method 可适用于其他 objects 和 method ``__getitem__`` 。 例如， 将 list 与其 elements 排序为 dictionary 可以通过使用 ``operator.itemgetter`` 来实现，因为所有 elements 都具有 ``__getitem__`` 。
 
 .. code-block:: python
 
@@ -511,8 +451,7 @@ using ``operator.itemgetter`` due to all elements have ``__getitem__``.
      {'age': 8, 'name': 'david'},
      {'age': 10, 'name': 'andy'}]
 
-If it is necessary to sort a list with its elements are neither comparable nor
-having ``__getitem__`` method, assigning a customized key function is feasible.
+如果需要对 list 与其 elements 既不具有可比性又不具有 ``__getitem__`` method 进行排序，则分配自定义的 key function 是可行的。
 
 .. code-block:: python
 
@@ -530,10 +469,7 @@ having ``__getitem__`` method, assigning a customized key function is feasible.
     >>> nodes
     [Node(3), Node(2), Node(1)]
 
-The above snippet can be simplified by using ``operator.attrgetter``. The
-function returns an attribute getter based on the attribute's name. Note that
-the attribute should be comparable; otherwise, ``sorted`` or ``list.sort`` will
-raise ``TypeError``.
+可以使用 ``operator.attrgetter`` 来简化上面的代码片段。 function 根据 attribute 的名称返回 attribute getter。注意attribute应该是可比的；否则， ``sorted`` 或 ``list.sort`` 将提高 ``TypeError`` 。
 
 .. code-block:: python
 
@@ -549,9 +485,7 @@ raise ``TypeError``.
     >>> nodes
     [Node(1), Node(2), Node(3)]
 
-If an object has ``__lt__`` method, it means that the object is comparable and
-``sorted`` or ``list.sort`` is not necessary to input a key function to its key
-parameter. A list or an iterable sequence can be sorted directly.
+如果 object 具有 ``__lt__`` method，则意味着 object 具有可比性，并且 ``sorted`` 或 ``list.sort`` 不需要将 key function 输入到其 key parameter。可以直接对 list 或 iterable 序列进行排序。
 
 .. code-block:: python
 
@@ -568,9 +502,7 @@ parameter. A list or an iterable sequence can be sorted directly.
     >>> nodes
     [Node(1), Node(2), Node(3)]
 
-If an object does not have ``__lt__`` method, it is likely to patch the method
-after a declaration of the object's class. In other words, after the patching,
-the object becomes comparable.
+如果 object 没有 ``__lt__`` method，则很可能在声明 object 的 class 后修补 method。也就是说，打补丁后，object就变得具有可比性了。
 
 .. code-block:: python
 
@@ -586,10 +518,7 @@ the object becomes comparable.
     >>> nodes
     [Node(1), Node(2), Node(3)]
 
-Note that ``sorted`` or ``list.sort`` in Python3 does not support ``cmp``
-parameter which is an **ONLY** valid argument in Python2. If it is necessary to
-use an old comparison function, e.g., some legacy code, ``functools.cmp_to_key``
-is useful since it converts a comparison function to a key function.
+请注意，Python3 中的 ``sorted`` 或 ``list.sort`` 不支持 ``cmp`` parameter，它是 Python2 中的 **ONLY** 有效的 argument。如果需要使用旧的比较 function、e.g。某些遗留代码， ``functools.cmp_to_key`` 很有用，因为它将比较 function 转换为 key function。
 
 .. code-block:: python
 
@@ -605,13 +534,10 @@ is useful since it converts a comparison function to a key function.
     >>> nodes
     [Node(1), Node(2), Node(3)]
 
-Maintain Sorted List with bisect
---------------------------------
+使用 bisect 维护有序列表（Maintain Sorted List with bisect）
+----------------------------------------------------------------------------------------------------
 
-The `bisect <https://docs.python.org/3/library/bisect.html>`_ module provides
-functions to maintain a list in sorted order without having to sort the list
-after each insertion. It uses a binary search algorithm, making insertions
-efficient for large lists.
+`bisect <https://docs.python.org/3/library/bisect.html>`_ module 提供 functions 以按排序顺序维护 list，而无需在每次插入后对 list 进行排序。它使用二分搜索算法，使得大型 lists 的插入高效。
 
 .. code-block:: python
 
@@ -650,14 +576,12 @@ efficient for large lists.
     for x in foo:
         bisect.insort(bar, x)
 
-    print(bar) # [Foo(0), Foo(1), Foo(2), Foo(3)]
+    print(bar) # [Foo(0)、Foo(1)、Foo(2)、Foo(3)]
 
-Create Nested Lists Correctly
------------------------------
+正确创建嵌套列表（Create Nested Lists Correctly）
+------------------------------------------------------------------------------
 
-When creating nested lists (2D lists or matrices), we should use list
-comprehension to ensure each inner list is a separate object. The following
-snippet shows the correct way to create a 2D list.
+创建嵌套lists（2D lists或矩阵）时，我们应该使用list comprehension来确保每个内部list都是一个单独的object。以下代码片段显示了创建 2D list 的正确方法。
 
 .. code-block:: python
 
@@ -666,13 +590,12 @@ snippet shows the correct way to create a 2D list.
     >>> [0] * 3
     [0, 0, 0]
 
-    # new a 2d list with size 3x3
+    # 新的 2d list，尺寸为 3x3
 
     >>> [[0] * 3 for _ in range(3)]
     [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
-Note that we should avoid creating a multi-dimension list via the following
-snippet because all objects in the list point to the same address.
+请注意，我们应该避免通过以下代码片段创建多维 list，因为 list 中的所有 objects 都指向同一地址。
 
 .. code-block:: python
 
@@ -684,13 +607,10 @@ snippet because all objects in the list point to the same address.
     [[0, 2, 0], [0, 2, 0], [0, 2, 0]]
 
 
-Implement Circular Buffer with deque
-------------------------------------
+使用 deque 实现环形缓冲区（Implement Circular Buffer with deque）
+------------------------------------------------------------------------------------------------------------
 
-`collections.deque <https://docs.python.org/3/library/collections.html#collections.deque>`_
-is a double-ended queue that supports adding and removing elements from both ends
-efficiently. By setting ``maxlen``, we can create a circular buffer that automatically
-discards old elements when new ones are added.
+`collections.deque <https://docs.python.org/3/library/collections.html#collections.deque>`_ 是 double-ended queue，支持在两端高效添加和移除 elements。设置 ``maxlen`` 可以创建 circular buffer，在添加新 elements 时自动丢弃旧 elements。
 
 .. code-block:: python
 
@@ -702,8 +622,7 @@ discards old elements when new ones are added.
     >>> d
     deque([1, 2, 3, 4, 5, 6, 7, 8], maxlen=8)
 
-The following example shows how to implement a ``tail`` function similar to
-the Unix command using ``deque``.
+以下示例显示如何使用 ``deque`` 实现类似于 Unix 命令的 ``tail`` function。
 
 .. code-block:: python
 
@@ -714,11 +633,10 @@ the Unix command using ``deque``.
     ...
     >>> tail("/etc/hosts")
 
-Split List into Chunks
-----------------------
+将列表拆分为块（Split List into Chunks）
+--------------------------------------------------------------
 
-Sometimes, we need to split a list into smaller chunks of a specific size.
-The following generator function yields successive chunks from the list.
+有时，我们需要将 list 拆分为特定大小的较小块。以下 generator function 从 list 生成连续的块。
 
 .. code-block:: python
 
@@ -730,12 +648,10 @@ The following generator function yields successive chunks from the list.
     >>> list(chunk(a, 3))
     [[1, 2, 3], [4, 5, 6], [7, 8]]
 
-Group Consecutive Elements with itertools.groupby
--------------------------------------------------
+使用 itertools.groupby 对连续元素进行分组（Group Consecutive Elements with itertools.groupby）
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-`itertools.groupby <https://docs.python.org/3/library/itertools.html#itertools.groupby>`_
-groups consecutive elements in an iterable that have the same key. It is useful
-for run-length encoding or grouping sorted data.
+`itertools.groupby <https://docs.python.org/3/library/itertools.html#itertools.groupby>`_ 将具有相同 key 的连续 elements 分组到 iterable 中。它对于游程长度 encoding 或对排序数据进行分组很有用。
 
 .. code-block:: python
 
@@ -748,7 +664,7 @@ for run-length encoding or grouping sorted data.
     B ['B', 'B']
     C ['C', 'C', 'C', 'C', 'C']
 
-    # group by key
+    # 按 key 分组
 
     >>> x = [('gp1', 'a'), ('gp2', 'b'), ('gp2', 'c')]
     >>> for k, v in itertools.groupby(x, lambda x: x[0]):
@@ -757,11 +673,10 @@ for run-length encoding or grouping sorted data.
     gp1 [('gp1', 'a')]
     gp2 [('gp2', 'b'), ('gp2', 'c')]
 
-Binary Search in Sorted List
-----------------------------
+排序列表中的二分查找（Binary Search in Sorted List）
+--------------------------------------------------------------------------------
 
-Binary search is an efficient algorithm for finding an item in a sorted list.
-The following snippet shows how to implement binary search using ``bisect_left``.
+二分查找是一种在已排序的 list 中查找 item 的有效算法。以下代码片段展示了如何使用 ``bisect_left`` 实现二分搜索。
 
 .. code-block:: python
 
@@ -776,11 +691,10 @@ The following snippet shows how to implement binary search using ``bisect_left``
     >>> binary_search(a, 2)
     3
 
-Find Lower Bound with bisect_left
----------------------------------
+使用 bisect_left 查找下界（Find Lower Bound with bisect_left）
+------------------------------------------------------------------------------------------------------------
 
-``bisect_left`` returns the leftmost position where an element can be inserted
-to keep the list sorted. This is equivalent to finding the lower bound.
+``bisect_left`` 返回可以插入 element 以保持 list 排序的最左边位置。这相当于找到下界。
 
 .. code-block:: python
 
@@ -791,11 +705,10 @@ to keep the list sorted. This is equivalent to finding the lower bound.
     >>> bisect.bisect_left(a, 3.5)
     4
 
-Find Upper Bound with bisect_right
-----------------------------------
+使用 bisect_right 求上界（Find Upper Bound with bisect_right）
+--------------------------------------------------------------------------------------------------------------
 
-``bisect_right`` (or ``bisect``) returns the rightmost position where an element
-can be inserted to keep the list sorted. This is equivalent to finding the upper bound.
+``bisect_right`` （或 ``bisect`` ）返回可以插入element以保持list排序的最右边位置。这相当于找到上限。
 
 .. code-block:: python
 
@@ -806,12 +719,10 @@ can be inserted to keep the list sorted. This is equivalent to finding the upper
     >>> bisect.bisect_right(a, 3.5)
     4
 
-Sort Tuples Lexicographically
------------------------------
+按字典顺序对元组排序（Sort Tuples Lexicographically）
+----------------------------------------------------------------------------------
 
-Python compares tuples and lists lexicographically by default. This means it
-compares the first elements, and if they are equal, it compares the second
-elements, and so on.
+默认情况下，Python 按字典顺序比较 tuples 和 lists。这意味着它会比较第一个 elements，如果它们相等，则会比较第二个 elements，依此类推。
 
 .. code-block:: python
 
@@ -822,12 +733,10 @@ elements, and so on.
     >>> a
     [(1, 0), (1, 1), (1, 2), (2, 1)]
 
-Implement Trie (Prefix Tree)
-----------------------------
+实现 Trie（前缀树）（Implement Trie (Prefix Tree)）
+------------------------------------------------------------------------------------
 
-A `Trie <https://en.wikipedia.org/wiki/Trie>`_ (prefix tree) is a tree data
-structure used for efficient retrieval of keys in a dataset of strings. The
-following snippet shows a compact implementation using ``defaultdict``.
+`Trie <https://en.wikipedia.org/wiki/Trie>`_ （前缀树）是一种树数据结构，用于在strings数据集中高效检索keys。以下代码片段显示了使用 ``defaultdict`` 的紧凑实现。
 
 .. code-block:: python
 
@@ -841,7 +750,7 @@ following snippet shows a compact implementation using ``defaultdict``.
     ...     reduce(dict.__getitem__, p, trie)[end] = p
     ...
 
-    # search prefix
+    # 搜索前缀
 
     >>> def find(trie, word):
     ...     curr = trie
@@ -858,7 +767,7 @@ following snippet shows a compact implementation using ``defaultdict``.
     >>> find(trie, "ab")
     True
 
-    # search word
+    # 搜索词
 
     >>> def find(trie, p):
     ...     curr = trie

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# SGLang serving benchmark suite
-# Usage:
+# SGLang 服务 benchmark 套件
+# 用法：
 #   salloc -N1 bash bench.sh -H 10.0.128.193 -i /fsx/sglang-serve-latest.tar.gz
-#   bash bench.sh -H 10.0.128.193 -i sglang-serve:latest
+#   bash bench.sh -H 10.0.128.193 -i sglang-服务：最新
 set -euo pipefail
 
 info() { echo "[$(date +'%H:%M:%S')] $*"; }
@@ -55,7 +55,7 @@ launch_container() {
     "
 }
 
-# If sglang is not available, load image and re-exec inside container
+# 如果 sglang 不可用，则加载映像并在容器内重新执行
 if ! python3 -c "import sglang" &>/dev/null; then
     IMAGE="" _args=("$@")
     for ((i=0; i<${#_args[@]}; i++)); do

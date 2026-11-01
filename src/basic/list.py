@@ -12,7 +12,7 @@ from functools import reduce
 import pytest
 
 
-# Initialize
+# 初始化
 def init_immutable(n: int) -> list:
     """Initialize list with immutable objects."""
     return [0] * n
@@ -23,7 +23,7 @@ def init_mutable(n: int) -> list:
     return [[] for _ in range(n)]
 
 
-# Copy
+# 复制
 def shallow_copy(lst: list) -> list:
     """Create shallow copy of list."""
     return lst.copy()
@@ -50,14 +50,14 @@ def flatten(nested: list) -> list:
     return [x for sublist in nested for x in sublist]
 
 
-# Unpacking
+# 开箱
 def extended_unpack(lst: list) -> tuple:
     """Extended unpacking with *."""
     first, *middle, last = lst
     return first, middle, last
 
 
-# Enumerate and Zip
+# Enumerate 和 Zip
 def enumerate_example(items: list) -> list:
     """Enumerate with index."""
     return [(i, v) for i, v in enumerate(items)]
@@ -73,7 +73,7 @@ def unzip(pairs: list) -> tuple:
     return tuple(zip(*pairs))
 
 
-# Sorting
+# 排序
 def sort_by_key(items: list, key_func) -> list:
     """Sort by custom key."""
     return sorted(items, key=key_func)
@@ -107,7 +107,7 @@ class Stack:
         return len(self._items)
 
 
-# Tests
+# 测试
 class TestInitialize:
     def test_immutable(self):
         a = init_immutable(3)
@@ -196,7 +196,7 @@ class TestStack:
         assert not s.is_empty()
 
 
-# Bisect - Maintain Sorted List
+# 二等分 - 维护排序 List
 def bisect_insort(items: list) -> list:
     """Insert items maintaining sorted order."""
     result = []
@@ -223,13 +223,13 @@ def binary_search(arr: list, x, lo: int = 0, hi: int = None) -> int:
     return pos if pos != hi and arr[pos] == x else -1
 
 
-# Nested Lists
+# 嵌套 Lists
 def create_2d_list(rows: int, cols: int) -> list:
     """Create 2D list correctly."""
     return [[0] * cols for _ in range(rows)]
 
 
-# Deque - Circular Buffer
+# Deque - 圆形 Buffer
 def circular_buffer(items: list, maxlen: int) -> deque:
     """Create circular buffer with deque."""
     d = deque(maxlen=maxlen)
@@ -238,7 +238,7 @@ def circular_buffer(items: list, maxlen: int) -> deque:
     return d
 
 
-# Chunk List
+# 块 List
 def chunk(lst: list, n: int) -> list:
     """Split list into chunks of size n."""
     return [lst[i : i + n] for i in range(0, len(lst), n)]
@@ -250,7 +250,7 @@ def groupby_example(s: str) -> list:
     return [(k, list(v)) for k, v in itertools.groupby(s)]
 
 
-# Trie
+# 特里树
 def create_trie(words: list) -> dict:
     """Create trie from list of words."""
     Trie = lambda: defaultdict(Trie)

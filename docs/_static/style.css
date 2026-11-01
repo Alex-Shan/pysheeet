@@ -63,3 +63,66 @@ blockquote {
   background-color: transparent;
   border: none;
 }
+
+/* 目录来自完整章节树，桌面独立滚动，手机可折叠。 */
+#cn-page-toc {
+    position: fixed;
+    right: 1rem;
+    top: 1rem;
+    width: 19rem;
+    z-index: 1040;
+    border: 1px solid var(--pst-color-border);
+    border-radius: .5rem;
+    background: var(--pst-color-background);
+    font-size: .875rem;
+}
+#cn-page-toc summary {
+    cursor: pointer;
+    padding: .8rem;
+    font-weight: 600;
+}
+#cn-toc-scroll {
+    max-height: calc(100dvh - 6rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    padding: 0 .6rem .6rem;
+}
+#cn-toc-scroll ol { list-style: none; padding: 0; margin: 0; }
+#cn-toc-scroll li { padding-left: calc(var(--toc-depth) * .65rem); }
+#cn-toc-scroll a {
+    display: block;
+    padding: .4rem .5rem;
+    overflow-wrap: anywhere;
+    border-left: 3px solid transparent;
+    line-height: 1.45;
+}
+#cn-toc-scroll a[aria-current] {
+    border-left-color: var(--pst-color-primary);
+    background: var(--pst-color-surface);
+    color: var(--pst-color-primary);
+    font-weight: 600;
+}
+#cn-toc-scroll a:focus-visible, #cn-page-toc summary:focus-visible {
+    outline: 2px solid var(--pst-color-primary);
+    outline-offset: -2px;
+}
+section { scroll-margin-top: 6rem; }
+.bd-article { overflow-wrap: anywhere; }
+.bd-article pre { overflow-wrap: normal; }
+@media (min-width: 1200px) {
+    .bd-main { margin-right: 20rem; }
+    .bd-main .bd-content .bd-article-container { width: 100%; max-width: 100%; }
+}
+@media (max-width: 1199.98px) {
+    #cn-page-toc { top: 4rem; right: 1rem; width: min(28rem, calc(100vw - 2rem)); }
+    #cn-toc-scroll { max-height: min(60dvh, 32rem); }
+    .bd-article-container { min-width: 0; }
+    .bd-main .bd-content article.bd-article { padding-top: 6rem; }
+    section { scroll-margin-top: 8.5rem; }
+    .bd-container, .bd-container .bd-container__inner { max-width: 100%; }
+}
+@media print {
+    #cn-page-toc { display: none; }
+    .bd-main { margin-right: 0; }
+}

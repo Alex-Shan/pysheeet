@@ -1,35 +1,22 @@
 .. meta::
-    :description lang=en: Python TCP and UDP server tutorial with examples for echo servers, IPv6 dual-stack, Unix domain sockets, SocketServer module, threaded servers, and zero-copy sendfile
+    :description lang=zh_CN: Python TCP 和 UDP 服务器教程，包含 echo 服务器、IPv6 双 stack、Unix 域 sockets、SocketServer module、线程服务器和零拷贝发送文件的示例
     :keywords: Python, socket, TCP server, UDP server, echo server, IPv6, dual-stack, Unix domain socket, SocketServer, network programming, threaded server, sendfile, IPC
 
-==============
-Socket Servers
-==============
+============================================
+套接字服务器（Socket Servers）
+============================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-Building network servers is one of the most common applications of socket programming.
-A server listens for incoming connections on a specific port, accepts client connections,
-and processes requests. Python's socket module provides all the primitives needed to
-build robust TCP and UDP servers, from simple single-threaded echo servers to complex
-multi-client applications.
+构建网络服务器是socket编程最常见的应用之一。服务器侦听特定端口上的传入连接，接受客户端连接和 processes 请求。 Python 的 socket module 提供了构建强大的 TCP 和 UDP 服务器所需的所有原语，从简单的单线程回显服务器到 complex 多客户端应用程序。
 
-This section covers building TCP and UDP servers in Python using the socket module,
-including simple echo servers for learning the basics, IPv6 and dual-stack servers
-for modern network compatibility, Unix domain sockets for high-performance local IPC,
-the SocketServer module for rapid development, threaded servers for handling multiple
-clients, and zero-copy file transfer with sendfile. These patterns form the foundation
-for building production-ready network services.
+本节介绍使用 socket module 在 Python 中构建 TCP 和 UDP 服务器，包括用于学习基础知识的简单回显服务器、用于现代网络兼容性的 IPv6 和双 stack 服务器、用于高性能本地的 Unix 域 sockets IPC、用于快速开发的 SocketServer module、用于处理多个客户端的线程服务器以及使用 sendfile 进行零复制文件传输。这些模式构成了构建生产就绪的网络服务的基础。
 
-Simple TCP Echo Server
-----------------------
+简单 TCP Echo 服务器（Simple TCP Echo Server）
+------------------------------------------------------------------------------
 
-A basic TCP echo server demonstrates the fundamental server pattern: create a socket,
-bind to an address, listen for connections, accept clients, and process data. This
-example uses Python's context manager protocol for proper resource cleanup, ensuring
-the socket is closed even if an exception occurs. The ``SO_REUSEADDR`` option allows
-the server to restart immediately without waiting for the TIME_WAIT state to expire.
+基本的 TCP 回显服务器演示了基本服务器模式：创建 socket、绑定到地址、侦听连接、接受客户端和 process 数据。此示例使用 Python 的 context manager 协议进行正确的资源清理，确保即使发生 exception 也关闭 socket。 ``SO_REUSEADDR`` 选项允许服务器立即重新启动，而无需等待 TIME_WAIT 状态过期。
 
 .. code-block:: python
 
@@ -62,7 +49,7 @@ the server to restart immediately without waiting for the TIME_WAIT state to exp
                 conn.send(msg)
                 conn.close()
 
-Output:
+输出：
 
 .. code-block:: console
 
@@ -70,11 +57,10 @@ Output:
     Hello World
     Hello World
 
-TCP Echo Server via IPv6
-------------------------
+TCP 通过 IPv6 的 Echo 服务器（TCP Echo Server via IPv6）
+------------------------------------------------------------------------------------------------
 
-IPv6 server using ``AF_INET6`` address family. Note the different address tuple
-format which includes flow info and scope ID.
+使用 ``AF_INET6`` 地址族的 IPv6 服务器。请注意不同的地址 tuple 格式，其中包括流信息和 scope ID。
 
 .. code-block:: python
 
@@ -106,7 +92,7 @@ format which includes flow info and scope ID.
         except KeyboardInterrupt:
             pass
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -115,11 +101,10 @@ Output:
     Hello IPv6
     Hello IPv6
 
-Dual-Stack Server (IPv4 and IPv6)
----------------------------------
+双栈服务器（IPv4 和 IPv6）（Dual-Stack Server (IPv4 and IPv6)）
+----------------------------------------------------------------------------------------------------------
 
-A server that accepts both IPv4 and IPv6 connections by binding to ``::`` and
-disabling ``IPV6_V6ONLY``. IPv4 clients appear as IPv4-mapped IPv6 addresses.
+通过绑定到 ``::`` 并禁用 ``IPV6_V6ONLY`` 来接受 IPv4 和 IPv6 连接的服务器。 IPv4 客户端显示为 IPv4 映射的 IPv6 地址。
 
 .. code-block:: python
 
@@ -153,7 +138,7 @@ disabling ``IPV6_V6ONLY``. IPv4 clients appear as IPv4-mapped IPv6 addresses.
         except KeyboardInterrupt:
             pass
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -167,11 +152,10 @@ Output:
     Hello IPv6
     Hello IPv6
 
-TCP Server via SocketServer
----------------------------
+TCP 通过 SocketServer 的服务器（TCP Server via SocketServer）
+----------------------------------------------------------------------------------------------------------
 
-The ``socketserver`` module provides a higher-level interface for building servers.
-It handles the socket setup and connection management automatically.
+``socketserver`` module 为构建服务器提供了更高级别的接口。它自动处理 socket 设置和连接管理。
 
 .. code-block:: python
 
@@ -187,11 +171,10 @@ It handles the socket setup and connection management automatically.
         with socketserver.TCPServer(('localhost', 5566), EchoHandler) as server:
             server.serve_forever()
 
-Simple UDP Echo Server
-----------------------
+简单 UDP Echo 服务器（Simple UDP Echo Server）
+------------------------------------------------------------------------------
 
-UDP servers use ``SOCK_DGRAM`` and don't require connection handling. Each
-``recvfrom()`` returns the data and sender address.
+UDP 服务器使用 ``SOCK_DGRAM`` 并且不需要连接处理。每个 ``recvfrom()`` 返回数据和发送者地址。
 
 .. code-block:: python
 
@@ -220,7 +203,7 @@ UDP servers use ``SOCK_DGRAM`` and don't require connection handling. Each
                 msg, addr = s.recvfrom(1024)
                 s.sendto(msg, addr)
 
-Output:
+输出：
 
 .. code-block:: console
 
@@ -228,8 +211,8 @@ Output:
     Hello World
     Hello World
 
-UDP Server via SocketServer
----------------------------
+UDP 通过 SocketServer 的服务器（UDP Server via SocketServer）
+----------------------------------------------------------------------------------------------------------
 
 .. code-block:: python
 
@@ -245,10 +228,10 @@ UDP Server via SocketServer
         with socketserver.UDPServer(('localhost', 5566), UDPHandler) as server:
             server.serve_forever()
 
-UDP Client - Sender
--------------------
+UDP 客户端 - 发送者（UDP Client - Sender）
+--------------------------------------------------------------------
 
-Simple UDP client that sends periodic messages.
+发送周期性消息的简单 UDP 客户端。
 
 .. code-block:: python
 
@@ -262,10 +245,10 @@ Simple UDP client that sends periodic messages.
         sock.sendto(b"Hello\n", host)
         time.sleep(5)
 
-Broadcast UDP Packets
----------------------
+广播 UDP 数据包（Broadcast UDP Packets）
+------------------------------------------------------------------
 
-Send UDP packets to all hosts on the local network using broadcast address.
+使用 broadcast 地址向本地网络上的所有主机发送 UDP 数据包。
 
 .. code-block:: python
 
@@ -281,18 +264,17 @@ Send UDP packets to all hosts on the local network using broadcast address.
         sock.sendto(msg, ('<broadcast>', 5566))
         time.sleep(5)
 
-Output:
+输出：
 
 .. code-block:: console
 
     $ nc -k -w 1 -ul 5566
     1431473025.72
 
-Unix Domain Socket
-------------------
+Unix 域套接字（Unix Domain Socket）
+----------------------------------------------------------
 
-Unix domain sockets provide inter-process communication on the same machine,
-faster than TCP/IP loopback as they bypass the network stack.
+Unix 域 sockets 在同一台机器上提供 process 之间的通信，比 TCP/IP 环回更快，因为它们绕过网络 stack。
 
 .. code-block:: python
 
@@ -322,7 +304,7 @@ faster than TCP/IP loopback as they bypass the network stack.
             conn.send(msg)
             conn.close()
 
-Output:
+输出：
 
 .. code-block:: console
 
@@ -330,11 +312,10 @@ Output:
     Hello
     Hello
 
-Socket Pair for IPC
--------------------
+用于 IPC 的 Socket Pair（Socket Pair for IPC）
+----------------------------------------------------------------------------------
 
-``socketpair()`` creates a pair of connected sockets, useful for bidirectional
-communication between parent and child processes.
+``socketpair()`` 创建一对连接的 sockets，对于父 processes 之间的双向通信很有用。
 
 .. code-block:: python
 
@@ -346,13 +327,13 @@ communication between parent and child processes.
 
     try:
         if pid == 0:
-            # Child process
+            # 儿童 process
             parent_sock.close()
             child_sock.send(b'Hello Parent!')
             msg = child_sock.recv(1024)
             print(f'Parent says: {msg}')
         else:
-            # Parent process
+            # 母体 process
             child_sock.close()
             msg = parent_sock.recv(1024)
             print(f'Child says: {msg}')
@@ -362,7 +343,7 @@ communication between parent and child processes.
         child_sock.close()
         parent_sock.close()
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -370,10 +351,10 @@ Output:
     Child says: b'Hello Parent!'
     Parent says: b'Hello Child!'
 
-Threaded TCP Server
--------------------
+线程 TCP 服务器（Threaded TCP Server）
+--------------------------------------------------------------
 
-Handle multiple clients concurrently using threads.
+使用 threads 同时处理多个客户端。
 
 .. code-block:: python
 
@@ -399,11 +380,10 @@ Handle multiple clients concurrently using threads.
         t.daemon = True
         t.start()
 
-Using sendfile for Zero-Copy Transfer
--------------------------------------
+使用 sendfile 进行零拷贝传输（Using sendfile for Zero-Copy Transfer）
+--------------------------------------------------------------------------------------------------------------------
 
-``os.sendfile()`` efficiently transfers file data to a socket without copying
-through user space (zero-copy).
+``os.sendfile()`` 高效地将文件数据传输到 socket，无需通过用户空间进行复制（零复制）。
 
 .. code-block:: python
 
@@ -432,7 +412,7 @@ through user space (zero-copy).
                 offset += sent
                 size -= sent
 
-    # Server that sends a file to each client
+    # 向每个客户端发送文件的服务器
     with server('localhost', 5566) as s:
         while True:
             conn, addr = s.accept()

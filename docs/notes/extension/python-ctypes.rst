@@ -1,38 +1,29 @@
 .. meta::
-    :description lang=en: Python ctypes tutorial for loading shared libraries, calling C functions, handling pointers, structures, and error handling
+    :description lang=zh_CN: Python ctypes 教程，用于加载共享 libraries、调用 C functions、处理指针、结构和错误处理
     :keywords: Python, ctypes, shared library, .so, .dylib, .dll, C library, FFI, foreign function interface, pointers, structures
 
-======
-ctypes
-======
+==================================
+ctypes 接口（ctypes）
+==================================
 
 :Source: `src/basic/cext_.py <https://github.com/crazyguitar/pysheeet/blob/master/src/basic/cext_.py>`_
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-ctypes is Python's built-in foreign function interface (FFI) library that allows
-calling functions in shared libraries (.so on Linux, .dylib on macOS, .dll on
-Windows) without writing any C code or compiling extensions. It's ideal for quick
-prototyping, accessing system libraries, or wrapping existing C libraries when you
-don't want a compilation step. However, ctypes requires manual type declarations
-and careful memory management, making it more error-prone than alternatives like
-cffi or pybind11 for complex use cases.
+ctypes是Python的内置外部function接口（FFI）library，允许在共享libraries上调用functions（.so在Linux上，.dylib在macOS上，.dll在Windows）无需编写任何C代码或编译扩展。它非常适合快速原型设计、访问系统 libraries 或在您不需要编译步骤时包装现有的 C libraries。但是，ctypes 需要手动 type 声明和仔细的内存管理，这使得它比 cffi 或 pybind11 等 complex 用例的替代方案更容易出错。
 
-Loading Shared Libraries
-------------------------
+加载共享库（Loading Shared Libraries）
+--------------------------------------------------------------
 
-ctypes provides platform-specific loaders for shared libraries. Use ``CDLL`` for
-standard C calling convention or ``WinDLL`` on Windows for stdcall convention.
-The library search follows system conventions: ``LD_LIBRARY_PATH`` on Linux,
-``DYLD_LIBRARY_PATH`` on macOS, and ``PATH`` on Windows.
+ctypes 为共享 libraries 提供特定于平台的加载器。使用 ``CDLL`` 进行标准 C 调用约定，或在 Windows 上使用 ``WinDLL`` 进行 stdcall 约定。 library 搜索遵循系统约定： ``LD_LIBRARY_PATH`` 位于 Linux、 ``DYLD_LIBRARY_PATH`` 位于 macOS 以及 ``PATH`` 位于 Windows。
 
 .. code-block:: python
 
     import platform
     from ctypes import CDLL
 
-    # Load platform-specific C library
+    # 加载平台特定的C library
     if platform.system() == "Darwin":
         libc = CDLL("libc.dylib")
     elif platform.system() == "Linux":
@@ -41,15 +32,13 @@ The library search follows system conventions: ``LD_LIBRARY_PATH`` on Linux,
         from ctypes import windll
         libc = windll.msvcrt
 
-    # Call printf
+    # 调用 printf
     libc.printf(b"Hello from C: %d\n", 42)
 
-Loading Custom Libraries
-------------------------
+加载自定义库（Loading Custom Libraries）
+----------------------------------------------------------------
 
-For your own compiled C libraries, provide the full path or ensure the library
-is in the system's library search path. The ``use_errno=True`` parameter enables
-proper errno handling for error detection.
+对于您自己编译的 C libraries，请提供完整路径或确保 library 位于系统的 library 搜索路径中。 ``use_errno=True`` parameter 支持正确的 errno 处理以进行错误检测。
 
 .. code-block:: python
 
@@ -57,22 +46,19 @@ proper errno handling for error detection.
     from ctypes.util import find_library
     import os
 
-    # Load from current directory
+    # 从当前目录加载
     lib_path = os.path.join(os.path.dirname(__file__), "libfoo.so")
     lib = CDLL(lib_path, use_errno=True)
 
-    # Or use find_library for system libraries
-    libm_path = find_library("m")  # finds libm.so or libm.dylib
+    # 或对系统 libraries 使用 find_library
+    libm_path = find_library("m")  # 查找 libm.so 或 libm.dylib
     if libm_path:
         libm = CDLL(libm_path)
 
-Basic Type Mapping
-------------------
+基本类型映射（Basic Type Mapping）
+----------------------------------------------------
 
-ctypes provides Python equivalents for C types. Always declare argument types
-(``argtypes``) and return types (``restype``) explicitly to avoid crashes and
-ensure correct data conversion. Without these declarations, ctypes assumes all
-arguments and return values are C ``int``.
+ctypes 为 C types 提供 Python 等效项。始终显式声明 argument types ( ``argtypes`` ) 并返回 types ( ``restype`` ) 以避免崩溃并确保正确的数据转换。如果没有这些声明，ctypes 假定所有 arguments 和 return values 都是 C ``int`` 。
 
 .. code-block:: python
 
@@ -91,18 +77,18 @@ arguments and return values are C ``int``.
     result = libc.atof(b"3.14159")
     print(result)  # 3.14159
 
-    # Common type mappings:
-    # c_int      -> int
-    # c_long     -> long
-    # c_double   -> double
-    # c_char_p   -> char* (bytes in Python)
-    # c_void_p   -> void*
-    # c_bool     -> _Bool
+    # 常见的type映射：
+    # c_int -> int
+    # c_long -> 长
+    # c_double -> 双
+    # c_char_p -> char*（Python 中的 bytes）
+    # c_void_p -> 无效*
+    # c_bool -> _Bool
 
-Calling strlen and abs
-----------------------
+调用strlen和abs（Calling strlen and abs）
+------------------------------------------------------------------------
 
-Simple examples calling standard C library functions with proper type declarations.
+使用正确的 type 声明调用标准 C library functions 的简单示例。
 
 .. code-block:: python
 
@@ -114,16 +100,16 @@ Simple examples calling standard C library functions with proper type declaratio
     else:
         libc = CDLL("libc.so.6")
 
-    # strlen
+    # 斯特伦
     libc.strlen.argtypes = [c_char_p]
     libc.strlen.restype = c_size_t
     assert libc.strlen(b"hello") == 5
 
-    # abs (default int types work)
+    # abs（默认int types工作）
     assert libc.abs(-42) == 42
 
-Calling sqrt from libm
-----------------------
+从 libm 调用 sqrt（Calling sqrt from libm）
+----------------------------------------------------------------------------
 
 .. code-block:: python
 
@@ -141,47 +127,45 @@ Calling sqrt from libm
     result = libm.sqrt(16.0)
     assert abs(result - 4.0) < 1e-10
 
-Calling C Functions
--------------------
+调用 C 函数（Calling C Functions）
+--------------------------------------------------------
 
-This example shows a complete workflow: compile a C library, load it with ctypes,
-and call functions with proper type declarations. The Fibonacci function
-demonstrates the performance benefit of C code called from Python.
+此示例显示了完整的工作流程：编译 C library，使用 ctypes 加载它，并使用正确的 type 声明调用 functions。斐波那契 function 演示了从 Python 调用的 C 代码的性能优势。
 
-**C source (fib.c):**
+**C源（fib.c）：**
 
 .. code-block:: c
 
-    // Compile:
-    //   Linux: gcc -shared -fPIC -o libfib.so fib.c
-    //   macOS: clang -shared -fPIC -o libfib.dylib fib.c
+    // 编译：
+    //   Linux：gcc -共享-fPIC -o libfib.so fib.c
+    //   macOS：clang -共享-fPIC -o libfib.dylib fib.c
 
     unsigned long fib(unsigned long n) {
         if (n < 2) return n;
         return fib(n - 1) + fib(n - 2);
     }
 
-**Python usage:**
+**Python用法：**
 
 .. code-block:: python
 
     import platform
     from ctypes import CDLL, c_ulong
 
-    # Load the library
+    # 加载library
     if platform.system() == "Darwin":
         lib = CDLL("./libfib.dylib")
     else:
         lib = CDLL("./libfib.so")
 
-    # Declare types
+    # 声明types
     lib.fib.argtypes = [c_ulong]
     lib.fib.restype = c_ulong
 
-    # Call the function
+    # 拨打function
     print(lib.fib(35))  # 9227465
 
-**Performance comparison:**
+**性能对比：**
 
 .. code-block:: python
 
@@ -195,39 +179,35 @@ demonstrates the performance benefit of C code called from Python.
     >>> s = time(); _ = lib.fib(35); e = time(); e - s
     0.07283687591552734
 
-Pointers and byref
-------------------
+指针与 byref（Pointers and byref）
+----------------------------------------------------------
 
-Use ``byref()`` to pass arguments by reference (like ``&var`` in C) and
-``POINTER()`` to create pointer types. ``byref()`` is more efficient than
-``pointer()`` when you only need to pass a reference to a function.
+使用 ``byref()`` 通过引用传递 arguments（如 C 中的 ``&var`` ）和 ``POINTER()`` 创建指针 types。当您只需要传递对 function 的引用时， ``byref()`` 比 ``pointer()`` 更高效。
 
 .. code-block:: python
 
     from ctypes import c_int, byref, pointer, POINTER
 
-    # Pointer to integer
+    # 指向 integer 的指针
     value = c_int(42)
     ptr = pointer(value)
     assert ptr.contents.value == 42
 
-    # Modify through pointer
+    # 通过指针修改
     ptr.contents.value = 100
     assert value.value == 100
 
-    # byref creates a lightweight pointer for passing to C functions
+    # byref 创建一个轻量级指针用于传递给 C functions
     ref = byref(value)
 
-    # Create pointer type and array
+    # 创建指针type和array
     IntPtr = POINTER(c_int)
     arr = (c_int * 3)(1, 2, 3)
 
-Structures
-----------
+结构（Structures）
+----------------------------
 
-Define C structures by subclassing ``Structure`` and specifying ``_fields_``.
-Field order must match the C struct exactly. Use ``_pack_`` to control alignment
-if needed (e.g., ``_pack_ = 1`` for packed structs).
+通过子类化 ``Structure`` 并指定 ``_fields_`` 来定义 C 结构。字段顺序必须与 C 结构体完全匹配。如果需要，使用 ``_pack_`` 来控制 alignment（e.g.、 ``_pack_ = 1`` 用于打包结构）。
 
 .. code-block:: python
 
@@ -240,17 +220,17 @@ if needed (e.g., ``_pack_ = 1`` for packed structs).
             ("y", ctypes.c_double),
         ]
 
-    # Create and use
+    # 创建和使用
     p = Point(3.0, 4.0)
     assert p.x == 3.0
     assert p.y == 4.0
 
-    # Calculate distance
+    # 计算距离
     distance = math.sqrt(p.x ** 2 + p.y ** 2)
     assert abs(distance - 5.0) < 1e-10
 
-Nested Structures
------------------
+嵌套结构（Nested Structures）
+----------------------------------------------
 
 .. code-block:: python
 
@@ -273,12 +253,10 @@ Nested Structures
     assert rect.top_left.y == 10
     assert rect.bottom_right.x == 10
 
-Arrays
-------
+数组（Arrays）
+--------------------
 
-Create C arrays using the multiplication syntax ``type * size``. Arrays can be
-initialized with values and accessed like Python lists. They automatically
-convert to pointers when passed to C functions.
+使用乘法语法 ``type * size`` 创建 C arrays。 Arrays 可以使用 values 进行初始化，并像 Python lists 一样进行访问。当传递给 C functions 时，它们会自动转换为指针。
 
 .. code-block:: python
 
@@ -290,23 +268,23 @@ convert to pointers when passed to C functions.
     assert arr[0] == 1
     assert arr[4] == 5
 
-    # Modify elements
+    # 修改elements
     arr[0] = 100
     assert list(arr) == [100, 2, 3, 4, 5]
 
-    # Character array (C string buffer)
+    # 字符 array (C string buffer)
     buf = (c_char * 256)()
     buf.value = b"Hello"
     assert buf.value == b"Hello"
 
-    # Double array for numerical work
+    # 双 array 用于数值工作
     data = (c_double * 3)(1.1, 2.2, 3.3)
     assert abs(sum(data) - 6.6) < 1e-10
 
-Array in Structure
-------------------
+结构体中的数组（Array in Structure）
+------------------------------------------------------
 
-Structures can contain fixed-size arrays as members.
+结构可以包含固定大小的 arrays 作为成员。
 
 .. code-block:: python
 
@@ -326,11 +304,10 @@ Structures can contain fixed-size arrays as members.
     assert list(d.values) == [0, 10, 20, 30, 40]
     assert d.count == 5
 
-Using cffi
-----------
+使用 cffi（Using cffi）
+--------------------------------------
 
-cffi is a cleaner alternative to ctypes with better PyPy compatibility. It uses
-C-like declarations instead of Python type objects.
+cffi 是 ctypes 的更干净的替代品，具有更好的 PyPy 兼容性。它使用类似 C 的声明而不是 Python type objects。
 
 .. code-block:: python
 
@@ -355,12 +332,10 @@ C-like declarations instead of Python type objects.
     assert libc.strlen(b"hello") == 5
     assert abs(libm.sqrt(16.0) - 4.0) < 1e-10
 
-Error Handling
---------------
+错误处理（Error Handling）
+----------------------------------------
 
-When calling C functions that set errno on failure, use ``use_errno=True`` when
-loading the library and ``get_errno()`` to retrieve the error code. This is
-essential for proper error handling with system calls.
+当调用 C functions 失败时出现 set errno 时，在加载 library 和 ``get_errno()`` 时使用 ``use_errno=True`` 检索错误代码。这对于系统调用的正确错误处理至关重要。
 
 .. code-block:: python
 
@@ -373,19 +348,17 @@ essential for proper error handling with system calls.
     else:
         libc = CDLL("libc.so.6", use_errno=True)
 
-    # Try to open a non-existent file
+    # 尝试打开一个不存在的文件
     fd = libc.open(b"/nonexistent/path", 0)
     if fd == -1:
         errno = get_errno()
         errmsg = f"open failed: {os.strerror(errno)}"
-        print(errmsg)  # open failed: No such file or directory
+        print(errmsg)  # 打开失败：没有这样的文件或目录
 
-Callbacks
----------
+回调（Callbacks）
+--------------------------
 
-ctypes can create C-callable function pointers from Python functions using
-``CFUNCTYPE``. This is useful for C libraries that accept callback functions,
-such as ``qsort()`` or event handlers.
+ctypes 可以使用 ``CFUNCTYPE`` 从 Python functions 创建 C 可调用的 function 指针。这对于接受 callback functions 的 C libraries 很有用，例如 ``qsort()`` 或事件处理程序。
 
 .. code-block:: python
 
@@ -406,20 +379,18 @@ such as ``qsort()`` or event handlers.
         b_val = cast(b, POINTER(c_int)).contents.value
         return a_val - b_val
 
-    # Create C callback from Python function
+    # 从 Python function 创建 C callback
     c_compare = CMPFUNC(py_compare)
 
-    # Use with qsort
+    # 与 qsort 一起使用
     arr = (c_int * 5)(5, 2, 8, 1, 9)
     libc.qsort(arr, len(arr), sizeof(c_int), c_compare)
     print(list(arr))  # [1, 2, 5, 8, 9]
 
-String Handling
----------------
+字符串处理（String Handling）
+--------------------------------------------
 
-C strings require careful handling in ctypes. Use ``c_char_p`` for immutable
-strings and ``create_string_buffer()`` for mutable buffers. Always use bytes
-(``b"string"``) not str when passing to C functions.
+C strings 需要在 ctypes 中小心处理。使用 ``c_char_p`` 表示 immutable strings，使用 ``create_string_buffer()`` 表示 mutable buffers。当传递到 C functions 时，始终使用 bytes ( ``b"string"`` ) 而不是 str。
 
 .. code-block:: python
 
@@ -435,13 +406,13 @@ strings and ``create_string_buffer()`` for mutable buffers. Always use bytes
     libc.puts.argtypes = [c_char_p]
     libc.puts(b"Hello, World!")
 
-    # Mutable buffer for functions that modify strings
+    # Mutable buffer 为修改 strings 的 functions
     buf = create_string_buffer(100)
     libc.strcpy(buf, b"Hello")
     libc.strcat(buf, b", World!")
-    print(buf.value)  # b'Hello, World!'
+    print(buf.value)  # b“你好，世界！”
 
-    # Get string length
+    # 获取string长度
     libc.strlen.argtypes = [c_char_p]
     libc.strlen.restype = c_int
     print(libc.strlen(b"Hello"))  # 5

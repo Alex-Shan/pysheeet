@@ -1,69 +1,63 @@
-====================
-TensorRT-LLM Serving
-====================
+==========================================================================
+TensorRT-LLM 服务（TensorRT-LLM Serving）
+==========================================================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-This cheat sheet provides quick-reference commands for launching a TensorRT-LLM server
-in both local (single-node) and SLURM environments. It covers building the Docker image,
-running with different parallelism strategies, and testing the server. TensorRT-LLM v1.1.0
-uses ``trtllm-serve`` for OpenAI-compatible online serving and ``trtllm-bench`` for
-benchmarking.
+此速查表提供了在本地（单节点）和 SLURM 环境中启动 TensorRT-LLM 服务器的快速参考命令。它涵盖了构建 Docker 映像、使用不同的并行策略运行以及测试服务器。 TensorRT-LLM v1.1.0 使用 ``trtllm-serve`` 进行 OpenAI 兼容的在线服务，使用 ``trtllm-bench`` 进行基准测试。
 
-For more details, see the
-`TensorRT-LLM documentation <https://nvidia.github.io/TensorRT-LLM/>`_ and
-`GitHub repository <https://github.com/NVIDIA/TensorRT-LLM>`_.
+有关更多详细信息，请参阅 `TensorRT-LLM documentation <https://nvidia.github.io/TensorRT-LLM/>`_ 和 `GitHub repository <https://github.com/NVIDIA/TensorRT-LLM>`_ 。
 
-For parallelism strategies and benchmark methodology, see the
-`LLM Serving Guide <https://github.com/crazyguitar/pysheeet/blob/master/docs/notes/llm/llm-serving.rst>`_ and
-`LLM Benchmark Guide <https://github.com/crazyguitar/pysheeet/blob/master/docs/notes/llm/llm-bench.rst>`_.
+有关并行策略和 benchmark 方法，请参阅 `LLM Serving Guide <https://github.com/crazyguitar/pysheeet/blob/master/docs/notes/llm/llm-serving.rst>`_ 和 `LLM Benchmark Guide <https://github.com/crazyguitar/pysheeet/blob/master/docs/notes/llm/llm-bench.rst>`_ 。
 
-Build Docker Image
-------------------
+.. _build-docker-image:
 
-The Dockerfile bundles TensorRT-LLM with EFA drivers, NCCL, and GDRCopy for
-high-performance inference on GPU clusters.
+构建 Docker 镜像（Build Docker Image）
+----------------------------------------------------------------
+
+Dockerfile 将 TensorRT-LLM 与 EFA 驱动程序、NCCL 和 GDRCopy 捆绑在一起，以在 GPU 集群上进行高性能推理。
 
 .. code-block:: bash
 
-    # Build the Docker image
+    # 构建 Docker 映像
     make docker
 
-    # Save as a compressed tarball for SLURM nodes
-    # Output: tensorrt-llm-serve-latest.tar.gz
+    # 保存为 SLURM 节点的压缩 tarball
+    # 输出：tensorrt-llm-服务-latest.tar.gz
     make save
 
-Local Serving (Single Node)
----------------------------
+.. _local-serving-single-node:
 
-TensorRT-LLM exposes an OpenAI-compatible API on port 8000 by default via
-``trtllm-serve``.
+本地服务（单节点）（Local Serving (Single Node)）
+----------------------------------------------------------------------------
 
-**Bare metal** — run directly (requires TensorRT-LLM installed):
+TensorRT-LLM 默认通过 ``trtllm-serve`` 在端口 8000 上公开 OpenAI 兼容的 API。
+
+**裸机** — 直接运行（需要安装TensorRT-LLM）：
 
 .. code-block:: bash
 
-    # Single GPU
+    # 单GPU
     trtllm-serve Qwen/Qwen2.5-7B-Instruct --host 0.0.0.0 --port 8000
 
-    # Tensor parallel across 8 GPUs
+    # Tensor 跨 8 个 GPU 并行
     trtllm-serve Qwen/Qwen2.5-14B-Instruct --tp_size 8
 
-    # FP8 quantized model
+    # FP8 量化模型
     trtllm-serve nvidia/Qwen3-8B-FP8
 
-**Using Docker (via Makefile)**:
+**使用 Docker（通过 Makefile）** ：
 
 .. code-block:: bash
 
-    # Single GPU with default model
+    # 单GPU 默认型号
     make serve MODEL=Qwen/Qwen2.5-7B-Instruct
 
-    # Tensor parallel across 8 GPUs
+    # Tensor 跨 8 个 GPU 并行
     make serve MODEL=Qwen/Qwen2.5-14B-Instruct TP=8
 
-**Using the NGC container directly**:
+**直接使用NGC容器** ：
 
 .. code-block:: bash
 
@@ -73,37 +67,37 @@ TensorRT-LLM exposes an OpenAI-compatible API on port 8000 by default via
       nvcr.io/nvidia/tensorrt-llm/release:1.1.0 \
       trtllm-serve Qwen/Qwen2.5-7B-Instruct --host 0.0.0.0 --port 8000
 
-SLURM Serving
--------------
+.. _slurm-serving:
 
-``run.sbatch`` orchestrates TensorRT-LLM serving on SLURM clusters. It handles Docker
-image distribution, container launch with EFA/GPU passthrough, and health checking.
-The server runs until you stop it with ``Ctrl+C`` or ``scancel``.
+SLURM 服务（SLURM Serving）
+----------------------------------------------
 
-**Script flags** — consumed by the script, not passed to trtllm-serve:
+``run.sbatch`` 负责协调 SLURM clusters 上的 TensorRT-LLM serving，处理 Docker image 分发、启用 EFA/GPU passthrough 的 container 启动及健康检查。服务器会持续运行，直到使用 ``Ctrl+C`` 或 ``scancel`` 停止它。
+
+**Script flags** — 由脚本使用，不传递给 trtllm-serve：
 
 .. list-table::
    :widths: 30 70
    :header-rows: 1
 
-   * - Flag
-     - Description
+   * - 旗帜
+     - 描述
    * - ``--image PATH``
-     - Docker image tarball or registry path (default: ``$WORKSPACE/tensorrt-llm-serve-latest.tar.gz``)
+     - Docker 映像 tarball 或注册表路径（默认值： ``$WORKSPACE/tensorrt-llm-serve-latest.tar.gz`` ）
    * - ``--workspace, -w PATH``
-     - Base directory for default image and logs (default: ``$PWD``)
+     - 默认图像和日志的基目录（默认： ``$PWD`` ）
    * - ``--container-mount PATH``
-     - Host path to bind-mount into containers (default: ``/fsx``)
+     - 绑定挂载到容器中的主机路径（默认值： ``/fsx`` ）
    * - ``--force, -f``
-     - Force remove existing containers and images before loading
+     - 加载前强制删除现有容器和镜像
 
-All other arguments are passed directly to ``trtllm-serve``.
+所有其他 arguments 都直接传递到 ``trtllm-serve`` 。
 
-**Basic usage**:
+**基本用法** ：
 
 .. code-block:: bash
 
-    # Allocate 1 node with 8 GPUs
+    # 分配1个节点8个GPU
     salloc -N 1 --gpus-per-node=8 --exclusive
 
     # Serve with TP=8
@@ -111,7 +105,7 @@ All other arguments are passed directly to ``trtllm-serve``.
       Qwen/Qwen2.5-14B-Instruct \
       --tp_size 8
 
-**Custom image**:
+**自定义图像** ：
 
 .. code-block:: bash
 
@@ -120,26 +114,28 @@ All other arguments are passed directly to ``trtllm-serve``.
       Qwen/Qwen2.5-72B-Instruct \
       --tp_size 8
 
-**FP8 quantized model**:
+**FP8量化模型** ：
 
 .. code-block:: bash
 
     bash run.sbatch nvidia/Qwen3-8B-FP8
 
-Test the Server
----------------
+.. _test-the-server:
 
-TensorRT-LLM serves on port 8000 by default:
+测试服务器（Test the Server）
+--------------------------------------------
+
+TensorRT-LLM 默认服务于端口 8000：
 
 .. code-block:: bash
 
-    # Health check
+    # 健康检查
     curl http://<HEAD_IP>:8000/health
 
-    # List models
+    # List型号
     curl http://<HEAD_IP>:8000/v1/models
 
-    # Chat completion (OpenAI-compatible)
+    # 聊天完成（兼容 OpenAI）
     curl -X POST http://<HEAD_IP>:8000/v1/chat/completions \
       -H "Content-Type: application/json" \
       -d '{
@@ -148,7 +144,7 @@ TensorRT-LLM serves on port 8000 by default:
         "max_tokens": 50
       }'
 
-    # Completions endpoint
+    # 完成终点
     curl -X POST http://<HEAD_IP>:8000/v1/completions \
       -H "Content-Type: application/json" \
       -d '{
@@ -157,92 +153,91 @@ TensorRT-LLM serves on port 8000 by default:
         "max_tokens": 20
       }'
 
-    # Run the included test script
+    # 运行包含的测试脚本
     bash test.sh
 
-    # Test against a remote server
+    # 针对远程服务器进行测试
     bash test.sh -H 10.0.128.193 -p 8000
 
-Benchmark
----------
+.. _benchmark:
 
-``bench.sh`` measures serving performance (throughput, TTFT, ITL, latency) by sending
-requests to a running TensorRT-LLM server. It handles Docker image loading and container
-management automatically.
+基准（Benchmark）
+--------------------------
+
+``bench.sh`` 通过向正在运行的 TensorRT-LLM 服务器发送请求来测量服务性能（throughput、TTFT、ITL、latency）。它自动处理 Docker 图像加载和容器管理。
 
 .. code-block:: bash
 
-    # Run all benchmarks
+    # 运行所有基准测试
     bash bench.sh -H 10.0.128.193 -i tensorrt-llm-serve:latest
 
-    # Run specific benchmarks
+    # 运行特定基准测试
     bash bench.sh -H 10.0.128.193 -i tensorrt-llm-serve:latest --type throughput,prefill
 
-    # Via Makefile
+    # 通过生成文件
     make bench HOST=10.0.128.193
     make bench HOST=10.0.128.193 BENCH_TYPE=throughput,prefill
 
-Available benchmark types:
+可用 benchmark types：
 
-- **throughput** — peak output tokens/sec at max request rate
-- **prefill** — TTFT scaling with input length (128→4096 tokens)
-- **decode** — ITL as output length grows (128→1024 tokens)
-- **latency** — end-to-end latency under minimal load
-- **concurrency** — throughput vs latency at different concurrency levels
-- **sharegpt** — realistic conversational workload
+- **吞吐量** — 最大请求速率下的峰值输出令牌/秒
+- **prefill** — TTFT 根据输入长度进行缩放（128→4096 个令牌）
+- **decode** — ITL 随着输出长度的增长（128→1024 个令牌）
+- **latency** — 最小负载下的端到端 latency
+- **concurrency** — 不同并发级别下的 throughput 与 latency
+- **sharegpt** — 真实的对话工作负载
 
-You can also use the built-in ``trtllm-bench`` CLI for more detailed benchmarking:
+您还可以使用内置的 ``trtllm-bench`` CLI 进行更详细的基准测试：
 
 .. code-block:: bash
 
-    # Static benchmark (no server needed)
+    # 静态benchmark（无需服务器）
     trtllm-bench --model Qwen/Qwen2.5-7B-Instruct \
       --dataset-type synthetic --num-requests 100
 
-Parallelism
------------
+.. _parallelism:
 
-TensorRT-LLM supports multiple parallelism strategies, configured via a YAML file
-(``parallel_config.yaml``) passed with ``--config``:
+并行性（Parallelism）
+--------------------------------
 
-- **Tensor Parallel (TP)** — shards model weights across GPUs
-- **Pipeline Parallel (PP)** — distributes layers across GPUs
-- **Data Parallel (DP)** — replicates model across GPUs for different requests
-- **Expert Parallel (EP)** — distributes MoE experts across GPUs
-- **Context Parallel (CP)** — distributes long-context processing across GPUs
-- **Wide-EP** — advanced EP with load balancing for large-scale MoE (DeepSeek-V3/R1, LLaMA4, Qwen3)
+TensorRT-LLM 支持多种并行策略，通过与 ``--config`` 一起传递的 YAML 文件 ( ``parallel_config.yaml`` ) 进行配置：
 
-**Attention module** supports TP (small batches) or DP (large batches) via
-``enable_attention_dp``. **MoE FFN** supports TP, EP, or hybrid ETP where
-``moe_tensor_parallel_size × moe_expert_parallel_size = tensor_parallel_size``.
+- **Tensor Parallel (TP)** — 跨 GPU 分片模型权重
+- **Pipeline Parallel (PP)** — 在 GPU 之间分配层
+- **Data Parallel (DP)** — 针对不同请求跨 GPU 复制模型
+- **Expert Parallel (EP)** — 跨 GPU 分配 MoE 专家
+- **Context Parallel (CP)** — 跨 GPU 分配长上下文处理
+- **Wide-EP** — 高级 EP，具有大规模 MoE 的负载平衡功能（DeepSeek-V3/R1、LLaMA4、Qwen3）
+
+**注意力模块** 通过 ``enable_attention_dp`` 支持TP（小批量）或DP（大批量）。 **MoE FFN** 支持 TP、EP 或混合 ETP，其中 ``moe_tensor_parallel_size × moe_expert_parallel_size = tensor_parallel_size`` 。
 
 .. list-table::
    :widths: 25 55 20
    :header-rows: 1
 
-   * - Strategy
-     - Use case
-     - Key config
-   * - TP only
-     - Dense models, small batch, memory-constrained
+   * - 战略
+     - 使用案例
+     - Key配置
+   * - 仅限 TP
+     - 密集模型、小批量、内存受限
      - ``tensor_parallel_size: 8``
    * - PP
-     - Very large models that don't fit in single-node GPU memory
+     - 不适合单节点 GPU 内存的超大型型号
      - ``pipeline_parallel_size: 2``
    * - DP (attention)
-     - Large batch, high throughput
+     - 大批量、高 throughput
      - ``enable_attention_dp: true``
-   * - EP only (MoE)
-     - MoE models with high expert count
+   * - 仅 EP (MoE)
+     - MoE 型号专家数量多
      - ``moe_expert_parallel_size: 8``
-   * - Hybrid ETP (MoE)
-     - Balance workload and kernel efficiency
+   * - 混合动力 ETP (MoE)
+     - 平衡工作负载和内核效率
      - ``moe_tensor_parallel_size: 4, moe_expert_parallel_size: 2``
-   * - Wide-EP (MoE)
-     - Large-scale MoE with load balancing (hot expert replication)
-     - See ``examples/wide_ep/``
+   * - 宽幅-EP (MoE)
+     - 带负载均衡的大规模MoE（热专家复制）
+     - 参见 ``examples/wide_ep/``
 
-**Configuration via YAML** (recommended):
+** 通过 YAML** 配置（推荐）：
 
 .. code-block:: yaml
 
@@ -252,23 +247,23 @@ TensorRT-LLM supports multiple parallelism strategies, configured via a YAML fil
     tensor_parallel_size: 8
 
     # Dense model: TP=8 with attention DP
-    # tensor_parallel_size: 8
+    # tensor_parallel_size：8
     # enable_attention_dp: true
 
-    # MoE: EP only
-    # tensor_parallel_size: 8
-    # moe_expert_parallel_size: 8
+    # MoE：仅 EP
+    # tensor_parallel_size：8
+    # moe_expert_parallel_size：8
 
-    # MoE: Hybrid TP-4 × EP-2
-    # tensor_parallel_size: 8
-    # moe_tensor_parallel_size: 4
-    # moe_expert_parallel_size: 2
+    # MoE：混合动力 TP-4 × EP-2
+    # tensor_parallel_size：8
+    # moe_tensor_parallel_size：4
+    # moe_expert_parallel_size：2
 
 .. code-block:: bash
 
     trtllm-serve Qwen/Qwen2.5-14B-Instruct --config parallel_config.yaml
 
-**Quick examples via CLI flags**:
+** 通过 CLI 标志 ** 的快速示例：
 
 .. code-block:: bash
 
@@ -278,41 +273,43 @@ TensorRT-LLM supports multiple parallelism strategies, configured via a YAML fil
     # TP=8, PP=2
     trtllm-serve Qwen/Qwen2.5-72B-Instruct --tp_size 8 --pp_size 2
 
-    # MoE with EP
+    # MoE 与 EP
     trtllm-serve Qwen/Qwen1.5-MoE-A2.7B --tp_size 8 --ep_size 4
 
-Key Differences from SGLang / vLLM
------------------------------------
+.. _key-differences-from-sglang-vllm:
+
+与 SGLang / vLLM 的主要区别（Key Differences from SGLang / vLLM）
+------------------------------------------------------------------------------------------------------------------
 
 .. list-table::
    :widths: 25 25 25 25
    :header-rows: 1
 
-   * - Feature
+   * - 特征
      - TensorRT-LLM
      - SGLang
      - vLLM
-   * - Serve command
+   * - 发球指令
      - ``trtllm-serve <model>``
      - ``python -m sglang.launch_server``
      - ``vllm serve <model>``
-   * - Default port
+   * - 默认端口
      - 8000
      - 30000
      - 8000
-   * - TP flag
+   * - TP 标志
      - ``--tp_size N``
      - ``--tp N``
      - ``--tensor-parallel-size N``
-   * - Bench tool
+   * - 台式工具
      - ``trtllm-bench``
      - ``sglang.bench_serving``
      - ``vllm bench``
-   * - Container
+   * - 容器
      - ``nvcr.io/nvidia/tensorrt-llm/release``
-     - Custom build
-     - Custom build
-   * - Quantization
-     - FP8, FP4, INT4 AWQ, INT8 SQ
-     - FP8, AWQ, GPTQ
-     - FP8, AWQ, GPTQ, BitsAndBytes
+     - 定制构建
+     - 定制构建
+   * - 量化
+     - FP8、FP4、INT4 AWQ、INT8 SQ
+     - FP8、AWQ、GPTQ
+     - FP8、AWQ、GPTQ、位和字节

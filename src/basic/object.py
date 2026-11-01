@@ -9,7 +9,7 @@ from functools import total_ordering
 import pytest
 
 
-# Basic Class
+# 基本型 Class
 class Person:
     """Basic class with __init__."""
 
@@ -21,7 +21,7 @@ class Person:
         return f"Hello, I'm {self.name}"
 
 
-# Class and Instance Attributes
+# Class 和 Instance Attributes
 class Counter:
     """Class with class and instance attributes."""
 
@@ -53,7 +53,7 @@ class Cat(Animal):
         return f"{self.name} says Meow!"
 
 
-# Magic Methods - repr and str
+# Magic Methods - 再现和 str
 class Vector:
     """Class with magic methods."""
 
@@ -76,7 +76,7 @@ class Vector:
         return self.x == other.x and self.y == other.y
 
 
-# Comparison with total_ordering
+# 与total_ordering的比较
 @total_ordering
 class Number:
     """Class with comparison methods."""
@@ -91,7 +91,7 @@ class Number:
         return self.val < other.val
 
 
-# Callable
+# 可调用
 class Multiplier:
     """Callable class."""
 
@@ -124,7 +124,7 @@ class Circle:
         return 3.14159 * self._radius**2
 
 
-# Descriptor
+# 描述符
 class Positive:
     """Descriptor that enforces positive values."""
 
@@ -166,7 +166,7 @@ class ManagedResource:
         return False
 
 
-# Singleton
+# 辛格尔顿
 class Singleton:
     """Singleton pattern."""
 
@@ -178,7 +178,7 @@ class Singleton:
         return cls._instance
 
 
-# Class Methods and Static Methods
+# Class Methods 和 Static Methods
 class Date:
     """Class with classmethod and staticmethod."""
 
@@ -216,7 +216,7 @@ class Rectangle(Shape):
         return self.width * self.height
 
 
-# MRO - Diamond Problem
+# MRO - 钻石问题
 class A:
     def method(self):
         return "A"
@@ -236,7 +236,7 @@ class D(B, C):
     pass
 
 
-# Slots
+# 老虎机
 class PointWithSlots:
     """Class with __slots__ for memory efficiency."""
 
@@ -246,7 +246,7 @@ class PointWithSlots:
         self.x, self.y = x, y
 
 
-# Tests
+# 测试
 class TestBasicClass:
     def test_person(self):
         p = Person("Alice", 30)
@@ -339,7 +339,7 @@ class TestContextManager:
 
 class TestSingleton:
     def test_singleton(self):
-        Singleton._instance = None  # reset
+        Singleton._instance = None  # 重置
         a = Singleton()
         b = Singleton()
         assert a is b

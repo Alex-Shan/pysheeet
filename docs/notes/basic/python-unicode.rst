@@ -1,34 +1,22 @@
 .. meta::
-    :description lang=en: Python Unicode tutorial covering string encoding, decoding, UTF-8, ASCII, bytes conversion, and character handling in Python 3
+    :description lang=zh_CN: Python Unicode 教程涵盖 string encoding、decoding、UTF-8、ASCII、bytes 转换以及 Python 3 中的字符处理
     :keywords: Python, Python3, Unicode, UTF-8, encoding, decoding, bytes, string, ASCII, character, codec
 
-=======
-Unicode
-=======
+======================================
+Unicode 字符（Unicode）
+======================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-The main goal of this cheat sheet is to collect some common snippets which are
-related to Unicode. In Python 3, strings are represented by Unicode instead of
-bytes. Further information can be found on PEP `3100 <https://www.python.org/dev/peps/pep-3100>`_
+本速查表的主要目标是收集一些与 Unicode 相关的常见片段。在Python 3中，strings用Unicode代替bytes表示。更多信息请参见 PEP `3100 <https://www.python.org/dev/peps/pep-3100>`_
 
-**ASCII** code is the most well-known standard which defines numeric codes
-for characters. The numeric values only define 128 characters originally,
-so ASCII only contains control codes, digits, lowercase letters, uppercase
-letters, etc. However, it is not enough for us to represent characters such as
-accented characters, Chinese characters, or emoji existed around the world.
-Therefore, **Unicode** was developed to solve this issue. It defines the
-*code point* to represent various characters like ASCII but the number of
-characters is up to 1,111,998.
+**ASCII**代码是定义字符数字代码的最著名的标准。数字values原本只定义了128个字符，所以ASCII只包含控制码、数字、小写字母、大写字母等。但是，这不足以我们表示世界各地存在的重音字符、汉字或表情符号等字符。因此，开发了**Unicode** 来解决这个问题。它定义了*代码点*来表示各种字符，例如ASCII，但字符数最多为1,111,998。
 
-String
-------
+字符串（String）
+----------------------
 
-In Python 2, strings are represented in *bytes*, not *Unicode*. Python provides
-different types of string such as Unicode string, raw string, and so on.
-In this case, if we want to declare a Unicode string, we add ``u`` prefix for
-string literals.
+在 Python 2 中，strings 表示为 *bytes*，而不是 *Unicode*。 Python提供string的不同types，例如Unicode、string、原始string等。在这种情况下，如果我们想声明一个 Unicode string，我们为 string literals 添加 ``u`` 前缀。
 
 .. code-block:: python
 
@@ -43,12 +31,7 @@ string literals.
     >>> type(u)
     <type 'unicode'>
 
-In Python 3, strings are represented in *Unicode*. If we want to represent a
-byte string, we add the ``b`` prefix for string literals. Note that the early
-Python versions (3.0-3.2) do not support the ``u`` prefix. In order to ease
-the pain to migrate Unicode aware applications from Python 2, Python 3.3 once
-again supports the ``u`` prefix for string literals. Further information can
-be found on PEP `414 <https://www.python.org/dev/peps/pep-0414>`_
+在 Python 3 中，strings 以*Unicode* 表示。如果我们想表示 byte string，我们为 string literals 添加 ``b`` 前缀。请注意，早期的 Python 版本 (3.0-3.2) 不支持 ``u`` 前缀。为了减轻从 Python 2 迁移 Unicode 感知应用程序的痛苦，Python 3.3 再次支持 string literals 的 ``u`` 前缀。更多信息请参见 PEP `414 <https://www.python.org/dev/peps/pep-0414>`_
 
 .. code-block:: python
 
@@ -62,13 +45,10 @@ be found on PEP `414 <https://www.python.org/dev/peps/pep-0414>`_
     >>> s.encode('utf-8').decode('utf-8')
     'Café'
 
-Characters
-----------
+字符（Characters）
+----------------------------
 
-Python 2 takes all string characters as bytes. In this case, the length of
-strings may be not equivalent to the number of characters. For example,
-the length of ``Café`` is 5, not 4 because ``é`` is encoded as a 2 bytes
-character.
+Python 2 将所有 string 字符视为 bytes。在这种情况下，strings 的长度可能不等于字符数。例如， ``Café`` 的长度是 5，而不是 4，因为 ``é`` 被编码为 2 bytes 字符。
 
 .. code-block:: python
 
@@ -83,8 +63,7 @@ character.
     >>> len(s)
     4
 
-Python 3 takes all string characters as Unicode code point. The lenght of
-a string is always equivalent to the number of characters.
+Python 3 将所有 string 字符作为 Unicode 代码点。 string 的长度始终等于字符数。
 
 .. code-block:: python
 
@@ -99,14 +78,12 @@ a string is always equivalent to the number of characters.
     >>> len(bs)
     5
 
-Porting unicode(s, 'utf-8')
----------------------------
+移植unicode(s, 'utf-8')（Porting unicode(s, 'utf-8')）
+----------------------------------------------------------------------------------------------------
 
-The `unicode() <https://docs.python.org/2.7/library/functions.html#unicode>`_
-built-in function was removed in Python 3 so what is the best way to convert
-the expression ``unicode(s, 'utf-8')`` so it works in both Python 2 and 3?
+`unicode() <https://docs.python.org/2.7/library/functions.html#unicode>`_ 内置 function 在 Python 3 中被删除，那么转换 expression ``unicode(s, 'utf-8')`` 以便它在 Python 2 和 3 中工作的最佳方法是什么？
 
-In Python 2:
+在 Python 2 中：
 
 .. code-block:: python
 
@@ -118,7 +95,7 @@ In Python 2:
     >>> unicode(s, 'utf-8') == s.decode('utf-8')
     True
 
-In Python 3:
+在 Python 3 中：
 
 .. code-block:: python
 
@@ -126,15 +103,12 @@ In Python 3:
     >>> s.decode('utf-8')
     AttributeError: 'str' object has no attribute 'decode'
 
-So, the real answer is...
+所以，真正的答案是……
 
-Unicode Code Point
-------------------
+Unicode 代码点（Unicode Code Point）
+--------------------------------------------------------------
 
-`ord <https://docs.python.org/3/library/functions.html#ord>`_ is a powerful
-built-in function to get a Unicode code point from a given character.
-Consequently, If we want to check a Unicode code point of a character, we can
-use ``ord``.
+`ord <https://docs.python.org/3/library/functions.html#ord>`_ 是一个强大的内置 function，用于从给定字符获取 Unicode 代码点。因此，如果我们想检查字符的 Unicode 代码点，我们可以使用 ``ord`` 。
 
 .. code-block:: python
 
@@ -152,10 +126,10 @@ use ``ord``.
     U+6587
 
 
-Encoding
---------
+编码（Encoding）
+------------------------
 
-A *Unicode code point* transfers to a *byte string* is called encoding.
+*Unicode 代码点* 传输到 *byte string* 称为 encoding。
 
 .. code-block:: python
 
@@ -163,10 +137,10 @@ A *Unicode code point* transfers to a *byte string* is called encoding.
     >>> type(s.encode('utf-8'))
     <class 'bytes'>
 
-Decoding
----------
+解码（Decoding）
+------------------------
 
-A *byte string* transfers to a *Unicode code point* is called decoding.
+*byte string* 传输到 *Unicode 代码点* 称为 decoding。
 
 .. code-block:: python
 
@@ -174,14 +148,10 @@ A *byte string* transfers to a *Unicode code point* is called decoding.
     >>> s.decode('utf-8')
     'Café'
 
-Unicode Normalization
----------------------
+Unicode 规范化（Unicode Normalization）
+--------------------------------------------------------------------
 
-Some characters can be represented in two similar form. For example, the
-character, ``é`` can be written as ``e ́`` (Canonical Decomposition) or ``é``
-(Canonical Composition). In this case, we may acquire unexpected results when we
-are comparing two strings even though they look alike. Therefore, we can
-normalize a Unicode form to solve the issue.
+有些字符可以用两种相似的形式来表示。例如，字符 ``é`` 可以写为 ``e ́`` （规范分解）或 ``é`` （规范组合）。在这种情况下，当我们比较两个 strings 时，即使它们看起来很相似，我们也可能会得到意想不到的结果。因此，我们可以规范化一个Unicode表单来解决这个问题。
 
 .. code-block:: python
 
@@ -194,19 +164,19 @@ normalize a Unicode form to solve the issue.
     (4, 5)
     >>> u1 == u2
     False
-    >>> u1.encode('utf-8') # get u1 byte string
+    >>> u1.encode('utf-8') # 得到 u1 byte string
     b'Caf\xc3\xa9'
-    >>> u2.encode('utf-8') # get u2 byte string
+    >>> u2.encode('utf-8') # 得到 u2 byte string
     b'Cafe\xcc\x81'
     >>> from unicodedata import normalize
-    >>> s1 = normalize('NFC', u1)  # get u1 NFC format
-    >>> s2 = normalize('NFC', u2)  # get u2 NFC format
+    >>> s1 = normalize('NFC', u1)  # 获取 u1 NFC 格式
+    >>> s2 = normalize('NFC', u2)  # 获取 u2 NFC 格式
     >>> s1 == s2
     True
     >>> s1.encode('utf-8'), s2.encode('utf-8')
     (b'Caf\xc3\xa9', b'Caf\xc3\xa9')
-    >>> s1 = normalize('NFD', u1)  # get u1 NFD format
-    >>> s2 = normalize('NFD', u2)  # get u2 NFD format
+    >>> s1 = normalize('NFD', u1)  # 获取 u1 NFD 格式
+    >>> s2 = normalize('NFD', u2)  # 获取 u2 NFD 格式
     >>> s1, s2
     ('Café', 'Café')
     >>> s1 == s2
@@ -215,12 +185,10 @@ normalize a Unicode form to solve the issue.
     (b'Cafe\xcc\x81', b'Cafe\xcc\x81')
 
 
-Avoid ``UnicodeDecodeError``
-----------------------------
+避免 ``UnicodeDecodeError`` （Avoid ``UnicodeDecodeError`` ）
+------------------------------------------------------------------------------------------------------------------
 
-Python raises `UnicodeDecodeError` when byte strings cannot decode to Unicode
-code points. If we want to avoid this exception, we can pass *replace*,
-*backslashreplace*, or *ignore* to errors argument in `decode <https://docs.python.org/3/library/stdtypes.html#bytes.decode>`_.
+当 byte strings 无法从 decode 转换为 Unicode 代码点时，Python 会升高 `UnicodeDecodeError` 。如果我们想避免这个 exception，我们可以将 *replace*、*backslashreplace* 或 *ignore* 传递给 `decode <https://docs.python.org/3/library/stdtypes.html#bytes.decode>`_ 中的错误 argument。
 
 .. code-block:: python
 
@@ -229,43 +197,42 @@ code points. If we want to avoid this exception, we can pass *replace*,
         Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
     UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
-    >>> # use U+FFFD, REPLACEMENT CHARACTER
+    >>> # 使用 U+FFFD、REPLACEMENT CHARACTER
     >>> u.decode('utf-8', "replace")
     '\ufffd'
-    >>> # inserts a \xNN escape sequence
+    >>> # 插入 \xNN escape 序列
     >>> u.decode('utf-8', "backslashreplace")
     '\\xff'
-    >>> # leave the character out of the Unicode result
+    >>> # 将该字符保留在 Unicode 结果之外
     >>> u.decode('utf-8', "ignore")
     ''
 
-Long String
------------
+长字符串（Long String）
+----------------------------------
 
-The following snippet shows common ways to declare a multi-line string in
-Python.
+以下代码片段显示了在 Python 中声明多行 string 的常见方法。
 
 .. code-block:: python
 
-    # original long string
+    # 原厂长string
     s = 'This is a very very very long python string'
 
-    # Single quote with an escaping backslash
+    # 带有转义反斜杠的单引号
     s = "This is a very very very " \
         "long python string"
 
-    # Using brackets
+    # 使用括号
     s = (
         "This is a very very very "
         "long python string"
     )
 
-    # Using ``+``
+    # 使用 ``+``
     s = (
         "This is a very very very " +
         "long python string"
     )
 
-    # Using triple-quote with an escaping backslash
+    # 使用带有转义反斜杠的三引号
     s = '''This is a very very very \
     long python string'''

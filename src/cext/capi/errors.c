@@ -1,21 +1,21 @@
-/* Demonstrate exception handling in Python C API. */
+/* 演示 Python C API 中的 exception 处理。 */
 #include <Python.h>
 
 static PyObject* FooError;
 
-/* Raise built-in exception */
+/* 升内置exception */
 static PyObject* raise_value_error(PyObject* self) {
   PyErr_SetString(PyExc_ValueError, "This is a ValueError");
   return NULL;
 }
 
-/* Raise custom exception */
+/* 加高定制exception */
 static PyObject* raise_foo_error(PyObject* self) {
   PyErr_SetString(FooError, "This is a custom FooError");
   return NULL;
 }
 
-/* Raise with format string */
+/* 使用 string 格式进行提升 */
 static PyObject* raise_with_format(PyObject* self, PyObject* args) {
   int code;
   if (!PyArg_ParseTuple(args, "i", &code)) {
@@ -25,7 +25,7 @@ static PyObject* raise_with_format(PyObject* self, PyObject* args) {
   return NULL;
 }
 
-/* Check and propagate exception */
+/* 检查并传播exception */
 static PyObject* divide(PyObject* self, PyObject* args) {
   double a, b;
   if (!PyArg_ParseTuple(args, "dd", &a, &b)) {

@@ -1,34 +1,24 @@
 .. meta::
-    :description lang=en: Modern Python cryptography guide covering symmetric encryption (AES-GCM), asymmetric encryption (RSA-OAEP), digital signatures, key derivation, and secure random generation using the cryptography library
+    :description lang=zh_CN: 现代 Python 密码学指南，涵盖对称加密 (AES-GCM)、非对称加密 (RSA-OAEP)、数字签名、key 推导以及使用密码学 library 的安全随机生成
     :keywords: Python, Python3, Cryptography, AES-GCM, RSA, OAEP, Digital Signature, PBKDF2, Argon2, Key Derivation, Encryption, Decryption, HMAC, Hashing
 
-===================
-Modern Cryptography
-===================
+====================================================
+现代密码学（Modern Cryptography）
+====================================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-This guide covers modern cryptographic practices in Python using the ``cryptography``
-library, which is the recommended choice for new projects. The library provides both
-high-level recipes (Fernet) for common use cases and low-level primitives for advanced
-needs. We focus on secure defaults: AES-GCM for symmetric encryption (provides both
-confidentiality and integrity), RSA-OAEP for asymmetric encryption, Ed25519 for
-signatures, and proper key derivation functions. Avoid deprecated libraries like
-PyCrypto—use ``cryptography`` or ``PyCryptodome`` instead.
+本指南涵盖了使用 ``cryptography`` library 的 Python 中的现代加密实践，这是新项目的推荐选择。 library 提供用于常见用例的高级配方 (Fernet) 和用于高级需求的低级原语。我们专注于安全默认值：用于对称加密的 AES-GCM（提供机密性和完整性）、用于非对称加密的 RSA-OAEP、用于签名的 Ed25519 以及正确的 key 派生 functions。避免使用像 PyCrypto 这样已弃用的 libraries，而是使用 ``cryptography`` 或 ``PyCryptodome`` 。
 
 .. warning::
 
-    Cryptography is difficult to implement correctly. Prefer high-level APIs like
-    Fernet when possible. Never invent your own cryptographic schemes. Always use
-    authenticated encryption (AES-GCM, ChaCha20-Poly1305) instead of unauthenticated
-    modes (AES-CBC, AES-CTR alone).
+    密码学很难正确实施。尽可能选择像 Fernet 这样的高级 APIs。永远不要发明自己的加密方案。始终使用经过身份验证的加密（AES-GCM、ChaCha20-Poly1305）而不是未经身份验证的模式（单独使用 AES-CBC、AES-CTR）。
 
-Algorithm Recommendations
--------------------------
+算法推荐（Algorithm Recommendations）
+--------------------------------------------------------------
 
-Quick reference for choosing secure algorithms. When in doubt, use the recommended
-options—they represent current best practices as of 2024.
+选择安全算法的快速参考。如有疑问，请使用推荐的选项——它们代表了截至 2024 年的当前最佳实践。
 
 ::
 
@@ -67,11 +57,10 @@ options—they represent current best practices as of 2024.
     │                        │ os.urandom()         │ time-based seeds        │
     └────────────────────────┴──────────────────────┴─────────────────────────┘
 
-Key Size Recommendations
-------------------------
+密钥大小建议（Key Size Recommendations）
+----------------------------------------------------------------
 
-Minimum key sizes for security through 2030+. Larger keys provide more security
-margin but slower performance.
+2030 年以后的安全最小尺寸为 key。较大的 keys 提供更多的安全裕度，但性能较慢。
 
 ::
 
@@ -93,82 +82,81 @@ margin but slower performance.
     │  IV (AES-CBC)          │ 128-bit    │ 128-bit      │ 16 bytes, random   │
     └────────────────────────┴────────────┴──────────────┴────────────────────┘
 
-Common Mistakes (Don't Do This)
--------------------------------
+常见错误（不要这样做）（Common Mistakes (Don't Do This)）
+----------------------------------------------------------------------------------------
 
-Examples of insecure patterns to avoid. Each "BAD" example shows a common mistake;
-the "GOOD" example shows the secure alternative.
+要避免的不安全模式的示例。每个 "BAD" 示例都显示一个常见错误； "GOOD" 示例显示了安全的替代方案。
 
-**❌ Using random module for security:**
+**❌ 使用随机 module 进行安全保护：**
 
 .. code-block:: python
 
-    # BAD: Predictable random - can be reverse-engineered!
+    # BAD：可预测的随机 - 可以进行逆向工程！
     import random
     token = ''.join(random.choices('abcdef0123456789', k=32))
     key = bytes([random.randint(0, 255) for _ in range(32)])
 
-    # GOOD: Cryptographically secure random
+    # GOOD：加密安全随机
     import secrets
     token = secrets.token_hex(16)
     key = secrets.token_bytes(32)
 
-**❌ Using ECB mode:**
+**❌使用ECB模式：**
 
 .. code-block:: python
 
-    # BAD: ECB mode reveals patterns in data!
+    # BAD：ECB 模式揭示了数据模式！
     from Crypto.Cipher import AES
-    cipher = AES.new(key, AES.MODE_ECB)  # NEVER use ECB
+    cipher = AES.new(key, AES.MODE_ECB)  # NEVER 使用 ECB
 
-    # GOOD: Use authenticated encryption
+    # GOOD：使用经过身份验证的加密
     from cryptography.hazmat.primitives.ciphers.aead import AESGCM
     aesgcm = AESGCM(key)
     ciphertext = aesgcm.encrypt(nonce, plaintext, None)
 
-**❌ AES-CBC without authentication:**
+**❌ AES-CBC 无认证：**
 
 .. code-block:: python
 
-    # BAD: No integrity check - vulnerable to padding oracle attacks!
+    # BAD：没有完整性检查 - 容易受到 padding 预言机攻击！
     from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
     cipher = Cipher(algorithms.AES(key), modes.CBC(iv))
     encryptor = cipher.encryptor()
     ciphertext = encryptor.update(padded_data) + encryptor.finalize()
-    # Attacker can modify ciphertext without detection!
+    # 攻击者可以在不被发现的情况下修改密文！
 
-    # GOOD: AES-GCM provides authentication
+    # GOOD：AES-GCM提供认证
     from cryptography.hazmat.primitives.ciphers.aead import AESGCM
     aesgcm = AESGCM(key)
     ciphertext = aesgcm.encrypt(nonce, plaintext, None)
-    # Any modification will be detected during decryption
+    # 解密过程中将检测到任何修改
 
-**❌ Reusing nonces:**
+**❌ 重用随机数：**
 
 .. code-block:: python
 
-    # BAD: Reusing nonce completely breaks AES-GCM security!
-    nonce = b'fixed_nonce!'  # NEVER do this
+    # BAD：重用随机数完全破坏了AES-GCM的安全性！
+    nonce = b'fixed_nonce!'  # NEVER 这样做
     ct1 = aesgcm.encrypt(nonce, msg1, None)
-    ct2 = aesgcm.encrypt(nonce, msg2, None)  # Catastrophic!
+    ct2 = aesgcm.encrypt(nonce, msg2, None)  # 灾难性的！
 
-    # GOOD: Generate unique nonce for each encryption
+    # GOOD：为每次加密生成唯一的随机数
     import os
     nonce1 = os.urandom(12)
     ct1 = aesgcm.encrypt(nonce1, msg1, None)
     nonce2 = os.urandom(12)
     ct2 = aesgcm.encrypt(nonce2, msg2, None)
 
-**❌ RSA with PKCS#1 v1.5 padding:**
+**❌ RSA 与 PKCS#1 v1.5 padding:**
 
 .. code-block:: python
 
-    # BAD: Vulnerable to Bleichenbacher's attack!
+    # BAD：容易受到Bleichenbacher的攻击！
     from Crypto.Cipher import PKCS1_v1_5
     cipher = PKCS1_v1_5.new(key)
     ciphertext = cipher.encrypt(message)
 
-    # GOOD: Use OAEP padding
+    # GOOD：使用OAEP padding
     from cryptography.hazmat.primitives.asymmetric import padding
     ciphertext = public_key.encrypt(
         message,
@@ -179,51 +167,51 @@ the "GOOD" example shows the secure alternative.
         ),
     )
 
-**❌ Hashing passwords with SHA-256:**
+**❌ 使用 SHA-256:** 对密码进行哈希处理
 
 .. code-block:: python
 
-    # BAD: Too fast - billions of guesses per second!
+    # BAD：太快了——每秒数十亿次猜测！
     import hashlib
     password_hash = hashlib.sha256(password.encode()).hexdigest()
 
-    # GOOD: Use slow password hashing function
+    # GOOD：使用慢速密码散列 function
     from argon2 import PasswordHasher
     ph = PasswordHasher()
     password_hash = ph.hash(password)
 
-**❌ Comparing MACs with ==:**
+**❌ 将 MAC 与 ==:** 进行比较
 
 .. code-block:: python
 
-    # BAD: Timing attack reveals information about correct MAC!
+    # BAD：定时攻击揭示了正确的 MAC 的信息！
     if received_mac == computed_mac:  # VULNERABLE
         process_message()
 
-    # GOOD: Constant-time comparison
+    # GOOD：Constant-时间比较
     import hmac
     if hmac.compare_digest(received_mac, computed_mac):
         process_message()
 
-**❌ Hardcoding keys/secrets:**
+**❌ 硬编码 keys/秘密：**
 
 .. code-block:: python
 
-    # BAD: Keys in source code end up in version control!
+    # BAD：源代码中的Keys最终进入版本控制！
     SECRET_KEY = "super_secret_key_12345"
     API_KEY = "ak_live_xxxxxxxxxxxxx"
 
-    # GOOD: Use environment variables or secret management
+    # GOOD：使用环境variables或秘密管理
     import os
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    # Or use: AWS Secrets Manager, HashiCorp Vault, etc.
+    # 或者使用：AWS Secrets Manager、HashiCorp Vault 等。
 
-Security Checklist
-------------------
+安全检查表（Security Checklist）
+--------------------------------------------------
 
-Use this checklist when implementing cryptography in your application.
+在应用程序中实现加密时请使用此清单。
 
-**Before You Start:**
+**开始之前：**
 
 .. code-block:: text
 
@@ -231,7 +219,7 @@ Use this checklist when implementing cryptography in your application.
     □ Am I using a well-maintained library? (cryptography, not PyCrypto)
     □ Have I read the library's security documentation?
 
-**Key Management:**
+**密钥管理：**
 
 .. code-block:: text
 
@@ -242,7 +230,7 @@ Use this checklist when implementing cryptography in your application.
     □ Different keys for different purposes (encryption vs signing)
     □ Keys protected at rest (encrypted with master key or HSM)
 
-**Encryption:**
+**加密：**
 
 .. code-block:: text
 
@@ -253,7 +241,7 @@ Use this checklist when implementing cryptography in your application.
     □ Ciphertext includes nonce for decryption
     □ Using RSA-OAEP (not PKCS#1 v1.5) for asymmetric encryption
 
-**Signatures:**
+**签名：**
 
 .. code-block:: text
 
@@ -262,7 +250,7 @@ Use this checklist when implementing cryptography in your application.
     □ Verifying signatures before trusting data
     □ Handling verification failures securely
 
-**Password Storage:**
+**密码存储：**
 
 .. code-block:: text
 
@@ -272,7 +260,7 @@ Use this checklist when implementing cryptography in your application.
     □ Rehashing when parameters change
     □ Not logging passwords or hashes
 
-**TLS/Network:**
+**TLS/网络：**
 
 .. code-block:: text
 
@@ -282,7 +270,7 @@ Use this checklist when implementing cryptography in your application.
     □ Hostname verification enabled
     □ Certificate pinning for high-security apps
 
-**General:**
+**通用：**
 
 .. code-block:: text
 
@@ -292,47 +280,39 @@ Use this checklist when implementing cryptography in your application.
     □ Timing-safe comparisons for secrets
     □ Dependencies up to date (check for CVEs)
 
-Secure Random Generation
-------------------------
+安全随机生成（Secure Random Generation）
+----------------------------------------------------------------
 
-Cryptographic operations require unpredictable random numbers. Python's ``secrets``
-module (Python 3.6+) provides cryptographically secure random generation, suitable
-for tokens, passwords, and keys. Never use the ``random`` module for security-sensitive
-applications—it uses a predictable PRNG (Mersenne Twister) that can be reverse-engineered
-from observed outputs.
+密码操作需要不可预测的随机数。 Python 的 ``secrets`` module (Python 3.6+) 提供加密安全随机生成，适用于令牌、密码和 keys。切勿将 ``random`` module 用于安全敏感应用 - 它使用可预测的 PRNG (Mersenne Twister)，可以根据观察到的输出进行逆向工程。
 
 .. code-block:: python
 
     import secrets
     import os
 
-    # Generate random bytes (for keys, IVs, salts)
+    # 生成随机 bytes（对于 keys、IV、盐）
     key = secrets.token_bytes(32)      # 256-bit key
     iv = secrets.token_bytes(16)       # 128-bit IV
 
-    # Generate URL-safe token (for session IDs, API keys)
-    token = secrets.token_urlsafe(32)  # ~43 characters
+    # 生成 URL 安全令牌（对于会话 ID，API keys）
+    token = secrets.token_urlsafe(32)  # ~43 个字符
 
-    # Generate hex token
-    hex_token = secrets.token_hex(16)  # 32 hex characters
+    # 生成十六进制令牌
+    hex_token = secrets.token_hex(16)  # 32 个十六进制字符
 
-    # Secure random integer
+    # 安全随机 integer
     n = secrets.randbelow(100)         # 0 <= n < 100
 
-    # Secure choice from sequence
+    # 从序列中安全选择
     password_char = secrets.choice('abcdefghijklmnopqrstuvwxyz0123456789')
 
-    # Alternative: os.urandom (works on all Python versions)
+    # 替代方案：os.urandom（适用于所有 Python 版本）
     key = os.urandom(32)
 
-Cryptographic Hashing
----------------------
+加密散列（Cryptographic Hashing）
+------------------------------------------------------
 
-Hash functions produce fixed-size digests from arbitrary data. Use SHA-256 or SHA-3
-for general hashing. For password storage, use dedicated password hashing functions
-(see Key Derivation section). Hash functions are one-way: you cannot recover the
-original data from a hash. They're used for data integrity verification, digital
-signatures, and as building blocks for other cryptographic operations.
+Hash functions 从任意数据生成固定大小的摘要。使用 SHA-256 或 SHA-3 进行一般散列。对于密码存储，请使用专用密码散列 functions（请参阅 Key 推导部分）。 Hash functions 是单向的：您无法从 hash 恢复原始数据。它们用于数据完整性验证、数字签名以及作为其他加密操作的构建块。
 
 .. code-block:: python
 
@@ -340,37 +320,33 @@ signatures, and as building blocks for other cryptographic operations.
 
     data = b"Hello, World!"
 
-    # SHA-256 (recommended for general use)
+    # SHA-256（推荐一般用途）
     digest = hashlib.sha256(data).hexdigest()
     print(f"SHA-256: {digest}")
 
-    # SHA-3 (newer, different internal structure)
+    # SHA-3（较新，内部结构不同）
     digest = hashlib.sha3_256(data).hexdigest()
     print(f"SHA3-256: {digest}")
 
-    # BLAKE2 (fast, secure, supports keying)
+    # BLAKE2（快速、安全、支持密钥）
     digest = hashlib.blake2b(data, digest_size=32).hexdigest()
     print(f"BLAKE2b: {digest}")
 
-    # Keyed BLAKE2 (MAC without separate HMAC construction)
+    # 带键 BLAKE2（MAC 无单独的 HMAC 结构）
     key = b"secret-key-here!"
     mac = hashlib.blake2b(data, key=key, digest_size=32).hexdigest()
 
-    # Incremental hashing (for large files)
+    # 增量哈希（针对大文件）
     h = hashlib.sha256()
     with open("largefile.bin", "rb") as f:
         for chunk in iter(lambda: f.read(8192), b""):
             h.update(chunk)
     print(f"File hash: {h.hexdigest()}")
 
-HMAC (Hash-based Message Authentication Code)
----------------------------------------------
+HMAC（基于哈希的消息验证码）（HMAC (Hash-based Message Authentication Code)）
+------------------------------------------------------------------------------------------------------------------------------
 
-HMAC provides message authentication—verifying both integrity and authenticity.
-Unlike plain hashes, HMAC requires a secret key, so only parties with the key can
-create or verify the MAC. Use HMAC when you need to ensure data hasn't been tampered
-with and came from someone who knows the secret. Always use constant-time comparison
-to prevent timing attacks when verifying MACs.
+HMAC 提供消息认证——验证完整性和真实性。与普通的 hashes 不同，HMAC 需要秘密 key，因此只有拥有 key 的各方才能创建或验证 MAC。当您需要确保数据未被篡改并且来自知道秘密的人时，请使用 HMAC。验证 MAC 时，始终使用 constant 时间比较来防止定时攻击。
 
 .. code-block:: python
 
@@ -381,27 +357,23 @@ to prevent timing attacks when verifying MACs.
     key = secrets.token_bytes(32)
     message = b"Important message"
 
-    # Create HMAC
+    # 创建HMAC
     mac = hmac.new(key, message, hashlib.sha256).digest()
 
-    # Verify HMAC (constant-time comparison)
-    received_mac = mac  # In practice, received from sender
+    # 验证HMAC（constant-时间比较）
+    received_mac = mac  # 实际上，从发件人处收到
     if hmac.compare_digest(mac, received_mac):
         print("Message is authentic")
     else:
         print("Message was tampered with!")
 
-    # HMAC with hexdigest
+    # HMAC 带十六进制摘要
     mac_hex = hmac.new(key, message, hashlib.sha256).hexdigest()
 
-Key Derivation Functions
-------------------------
+密钥派生函数（Key Derivation Functions）
+----------------------------------------------------------------
 
-Key derivation functions (KDFs) derive cryptographic keys from passwords or other
-key material. For passwords, use slow KDFs (PBKDF2, Argon2, scrypt) that resist
-brute-force attacks. For deriving multiple keys from a master key, use HKDF. Never
-use plain hashes (SHA-256) for password storage—they're too fast, allowing billions
-of guesses per second.
+Key 推导 functions (KDF) 从密码或其他 key 材料中推导加密 keys。对于密码，请使用可抵抗暴力攻击的慢速 KDF（PBKDF2、Argon2、scrypt）。要从主 key 派生多个 keys，请使用 HKDF。切勿使用普通 hashes (SHA-256) 进行密码存储 - 它们速度太快，每秒允许数十亿次猜测。
 
 .. code-block:: python
 
@@ -411,7 +383,7 @@ of guesses per second.
     from cryptography.hazmat.primitives.kdf.hkdf import HKDF
     from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 
-    # PBKDF2 - widely supported, use >= 600,000 iterations (OWASP 2023)
+    # PBKDF2 - 广泛支持，使用 >= 600,000 次迭代 (OWASP 2023)
     password = b"user-password"
     salt = os.urandom(16)
 
@@ -423,11 +395,11 @@ of guesses per second.
     )
     key = kdf.derive(password)
 
-    # To verify a password, derive again and compare
+    # 要验证密码，请再次推导并比较
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=32,
-        salt=salt,  # Must use same salt
+        salt=salt,  # 必须使用相同的盐
         iterations=600_000,
     )
     try:
@@ -436,11 +408,11 @@ of guesses per second.
     except Exception:
         print("Password incorrect")
 
-    # Scrypt - memory-hard, better resistance to GPU/ASIC attacks
+    # Scrypt - 内存困难，更好地抵抗 GPU/ASIC 攻击
     kdf = Scrypt(salt=salt, length=32, n=2**17, r=8, p=1)
     key = kdf.derive(password)
 
-    # HKDF - for deriving multiple keys from master key (not for passwords)
+    # HKDF - 用于从主 key 派生多个 keys （不适用于密码）
     master_key = os.urandom(32)
     hkdf = HKDF(
         algorithm=hashes.SHA256(),
@@ -450,14 +422,10 @@ of guesses per second.
     )
     derived_key = hkdf.derive(master_key)
 
-Symmetric Encryption: AES-GCM
------------------------------
+对称加密：AES-GCM（Symmetric Encryption: AES-GCM）
+--------------------------------------------------------------------------------------
 
-AES-GCM (Galois/Counter Mode) is the recommended symmetric encryption mode. It
-provides authenticated encryption: both confidentiality (data is encrypted) and
-integrity (tampering is detected). The authentication tag ensures ciphertext hasn't
-been modified. Always use a unique nonce (number used once) for each encryption
-with the same key—reusing nonces completely breaks security.
+AES-GCM（Galois/Counter Mode）是推荐的对称加密模式。它提供经过身份验证的加密：机密性（数据被加密）和完整性（检测到篡改）。身份验证标签确保密文未被修改。对于具有相同 key 的每个加密，始终使用唯一的随机数（使用一次的数字）——重复使用随机数会完全破坏安全性。
 
 ::
 
@@ -482,164 +450,153 @@ with the same key—reusing nonces completely breaks security.
     import os
     from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-    # Generate a random 256-bit key
+    # 生成随机256-bit key
     key = AESGCM.generate_key(bit_length=256)
 
-    # Create cipher
+    # 创建密码
     aesgcm = AESGCM(key)
 
-    # Encrypt
-    nonce = os.urandom(12)  # 96-bit nonce, MUST be unique per encryption
+    # 加密
+    nonce = os.urandom(12)  # 96-bit 随机数，MUST 每次加密都是唯一的
     plaintext = b"Secret message"
-    associated_data = b"header"  # Authenticated but not encrypted (optional)
+    associated_data = b"header"  # 经过身份验证但未加密（可选）
 
     ciphertext = aesgcm.encrypt(nonce, plaintext, associated_data)
-    # ciphertext includes the 16-byte authentication tag
+    # 密文包含 16-byte 身份验证标签
 
-    # Decrypt
+    # 解密
     decrypted = aesgcm.decrypt(nonce, ciphertext, associated_data)
     assert decrypted == plaintext
 
-    # Tampering detection - modifying ciphertext raises exception
+    # 篡改检测 - 修改密文引发 exception
     try:
         tampered = bytearray(ciphertext)
-        tampered[0] ^= 1  # Flip one bit
+        tampered[0] ^= 1  # 翻盖一bit
         aesgcm.decrypt(nonce, bytes(tampered), associated_data)
     except Exception as e:
         print(f"Tampering detected: {e}")
 
-Symmetric Encryption: ChaCha20-Poly1305
----------------------------------------
+对称加密：ChaCha20-Poly1305（Symmetric Encryption: ChaCha20-Poly1305）
+------------------------------------------------------------------------------------------------------------------------------
 
-ChaCha20-Poly1305 is an alternative to AES-GCM, offering similar security with
-better performance on systems without AES hardware acceleration (common on mobile
-devices and older CPUs). It's used by TLS 1.3, WireGuard, and many modern protocols.
-Like AES-GCM, it provides authenticated encryption with associated data (AEAD).
+ChaCha20-Poly1305 是 AES-GCM 的替代品，在没有 AES 硬件加速（移动设备和较旧的 CPU 上常见）的系统上提供类似的安全性和更好的性能。它被 TLS 1.3、WireGuard 和许多现代协议使用。与 AES-GCM 一样，它提供关联数据的经过身份验证的加密 (AEAD)。
 
 .. code-block:: python
 
     import os
     from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 
-    # Generate key (256-bit)
+    # 生成 key (256-bit)
     key = ChaCha20Poly1305.generate_key()
 
-    # Create cipher
+    # 创建密码
     chacha = ChaCha20Poly1305(key)
 
-    # Encrypt
-    nonce = os.urandom(12)  # 96-bit nonce
+    # 加密
+    nonce = os.urandom(12)  # 96-bit 随机数
     plaintext = b"Secret message"
     aad = b"additional authenticated data"
 
     ciphertext = chacha.encrypt(nonce, plaintext, aad)
 
-    # Decrypt
+    # 解密
     decrypted = chacha.decrypt(nonce, ciphertext, aad)
     assert decrypted == plaintext
 
-High-Level Encryption: Fernet
------------------------------
+高级加密：Fernet（High-Level Encryption: Fernet）
+------------------------------------------------------------------------------------
 
-Fernet provides a high-level, easy-to-use symmetric encryption API. It uses AES-128-CBC
-with HMAC for authentication, handles IV generation, and includes timestamp for
-optional TTL-based expiration. Use Fernet when you need simple, secure encryption
-without worrying about low-level details. The downside is slightly larger ciphertext
-and no associated data support.
+Fernet提供了高级、易于使用的对称加密API。它使用 AES-128-CBC 和 HMAC 进行身份验证，处理 IV 生成，并包括可选的基于 TTL 的过期的时间戳。当您需要简单、安全的加密而不用担心底层细节时，请使用 Fernet。缺点是密文稍大，并且没有相关数据支持。
 
 .. code-block:: python
 
     from cryptography.fernet import Fernet, InvalidToken
     import time
 
-    # Generate key (store this securely!)
+    # 生成 key（安全存储！）
     key = Fernet.generate_key()
-    print(f"Key: {key.decode()}")  # Base64-encoded
+    print(f"Key: {key.decode()}")  # Base64 编码
 
-    # Create Fernet instance
+    # 创建 Fernet instance
     f = Fernet(key)
 
-    # Encrypt
+    # 加密
     plaintext = b"Secret message"
     token = f.encrypt(plaintext)
     print(f"Token: {token.decode()}")
 
-    # Decrypt
+    # 解密
     decrypted = f.decrypt(token)
     assert decrypted == plaintext
 
-    # Decrypt with TTL (time-to-live in seconds)
+    # 使用 TTL 解密（生存时间以秒为单位）
     try:
-        # Token must have been created within last 60 seconds
+        # 令牌必须是在过去 60 秒内创建的
         decrypted = f.decrypt(token, ttl=60)
     except InvalidToken:
         print("Token expired or invalid")
 
-    # Key rotation with MultiFernet
+    # Key 通过 MultiFernet 进行旋转
     from cryptography.fernet import MultiFernet
 
     old_key = Fernet.generate_key()
     new_key = Fernet.generate_key()
 
-    # MultiFernet tries keys in order for decryption
-    # Always encrypts with first key
+    # MultiFernet 尝试 keys 进行解密
+    # 始终使用第一个 key 进行加密
     multi = MultiFernet([Fernet(new_key), Fernet(old_key)])
 
-    # Can decrypt tokens from either key
+    # 可以解密来自 key 的令牌
     old_token = Fernet(old_key).encrypt(b"old data")
-    decrypted = multi.decrypt(old_token)  # Works!
+    decrypted = multi.decrypt(old_token)  # 作品！
 
-    # Re-encrypt with new key
+    # 使用新的 key 重新加密
     new_token = multi.rotate(old_token)
 
-RSA Key Generation
-------------------
+RSA 密钥生成（RSA Key Generation）
+--------------------------------------------------------
 
-RSA is an asymmetric algorithm using public/private key pairs. The public key
-encrypts data or verifies signatures; the private key decrypts or signs. Modern
-recommendations: use at least 2048-bit keys (3072 or 4096 for long-term security),
-public exponent 65537, and OAEP padding for encryption or PSS for signatures.
-For new systems, consider Ed25519 (signatures) or X25519 (key exchange) instead.
+RSA 是一种使用公共/私有 key 对的非对称算法。公开key加密数据或验证签名；私人key解密或签名。现代建议：至少使用 2048-bit keys（为了长期安全而使用 3072 或 4096）、公共指数 65537 和 OAEP padding 进行加密，或使用 PSS 进行签名。对于新系统，请考虑使用 Ed25519（签名）或 X25519（key 交换）。
 
 .. code-block:: python
 
     from cryptography.hazmat.primitives.asymmetric import rsa
     from cryptography.hazmat.primitives import serialization
 
-    # Generate RSA key pair
+    # 生成 RSA key 对
     private_key = rsa.generate_private_key(
         public_exponent=65537,
-        key_size=4096,  # 2048 minimum, 4096 for long-term
+        key_size=4096,  # 最低 2048，长期 4096
     )
     public_key = private_key.public_key()
 
-    # Serialize private key (PEM format)
+    # 序列化私有key（PEM格式）
     private_pem = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.PKCS8,
         encryption_algorithm=serialization.BestAvailableEncryption(b"passphrase"),
     )
 
-    # Serialize private key without encryption
+    # 序列化私有key，不加密
     private_pem_unencrypted = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.PKCS8,
         encryption_algorithm=serialization.NoEncryption(),
     )
 
-    # Serialize public key
+    # 序列化公共key
     public_pem = public_key.public_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PublicFormat.SubjectPublicKeyInfo,
     )
 
-    # Save to files
+    # 保存到文件
     with open("private_key.pem", "wb") as f:
         f.write(private_pem)
     with open("public_key.pem", "wb") as f:
         f.write(public_pem)
 
-    # Load keys from files
+    # 从文件加载 keys
     with open("private_key.pem", "rb") as f:
         loaded_private = serialization.load_pem_private_key(
             f.read(),
@@ -649,14 +606,10 @@ For new systems, consider Ed25519 (signatures) or X25519 (key exchange) instead.
     with open("public_key.pem", "rb") as f:
         loaded_public = serialization.load_pem_public_key(f.read())
 
-RSA Encryption (OAEP)
----------------------
+RSA 加密 (OAEP)（RSA Encryption (OAEP)）
+------------------------------------------------------------------------
 
-RSA encryption should always use OAEP (Optimal Asymmetric Encryption Padding).
-Never use PKCS#1 v1.5 padding for new applications—it's vulnerable to padding
-oracle attacks. RSA can only encrypt small amounts of data (key_size/8 - padding
-overhead), so it's typically used to encrypt a symmetric key, which then encrypts
-the actual data (hybrid encryption).
+RSA 加密应始终使用 OAEP（最佳非对称加密 Padding）。切勿将 PKCS#1 v1.5 padding 用于新应用程序 - 它容易受到 padding 预言机攻击。 RSA 只能加密少量数据（key_size/8 - padding 开销），因此它通常用于加密对称 key，然后加密实际数据（混合加密）。
 
 ::
 
@@ -683,11 +636,11 @@ the actual data (hybrid encryption).
     from cryptography.hazmat.primitives.asymmetric import rsa, padding
     from cryptography.hazmat.primitives import hashes
 
-    # Generate keys
+    # 生成keys
     private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096)
     public_key = private_key.public_key()
 
-    # Encrypt with public key (OAEP padding)
+    # 使用公共 key 进行加密 (OAEP padding)
     plaintext = b"Secret message for RSA"
     ciphertext = public_key.encrypt(
         plaintext,
@@ -698,7 +651,7 @@ the actual data (hybrid encryption).
         ),
     )
 
-    # Decrypt with private key
+    # 使用私有key解密
     decrypted = private_key.decrypt(
         ciphertext,
         padding.OAEP(
@@ -709,13 +662,10 @@ the actual data (hybrid encryption).
     )
     assert decrypted == plaintext
 
-Hybrid Encryption
------------------
+混合加密（Hybrid Encryption）
+----------------------------------------------
 
-RSA has size limits and is slow. Hybrid encryption combines RSA's key distribution
-benefits with symmetric encryption's speed: generate a random symmetric key, encrypt
-the data with AES-GCM, then encrypt the symmetric key with RSA. The recipient
-decrypts the symmetric key with their RSA private key, then decrypts the data.
+RSA 有大小限制并且速度慢。混合加密将 RSA 的 key 分布优势与对称加密的速度相结合：生成随机对称 key，使用 AES-GCM 加密数据，然后使用 RSA 加密对称 key。接收者用其 RSA 私有 key 解密对称 key，然后解密数据。
 
 .. code-block:: python
 
@@ -726,15 +676,15 @@ decrypts the symmetric key with their RSA private key, then decrypts the data.
 
     def hybrid_encrypt(public_key, plaintext):
         """Encrypt data using hybrid RSA + AES-GCM."""
-        # Generate random AES key and nonce
+        # 生成随机数 AES key 和随机数
         aes_key = AESGCM.generate_key(bit_length=256)
         nonce = os.urandom(12)
 
-        # Encrypt data with AES-GCM
+        # 使用AES-GCM加密数据
         aesgcm = AESGCM(aes_key)
         ciphertext = aesgcm.encrypt(nonce, plaintext, None)
 
-        # Encrypt AES key with RSA-OAEP
+        # 使用 RSA-OAEP 加密 AES key
         encrypted_key = public_key.encrypt(
             aes_key,
             padding.OAEP(
@@ -748,7 +698,7 @@ decrypts the symmetric key with their RSA private key, then decrypts the data.
 
     def hybrid_decrypt(private_key, encrypted_key, nonce, ciphertext):
         """Decrypt data using hybrid RSA + AES-GCM."""
-        # Decrypt AES key with RSA
+        # 用RSA解密AES key
         aes_key = private_key.decrypt(
             encrypted_key,
             padding.OAEP(
@@ -758,11 +708,11 @@ decrypts the symmetric key with their RSA private key, then decrypts the data.
             ),
         )
 
-        # Decrypt data with AES-GCM
+        # 使用AES-GCM解密数据
         aesgcm = AESGCM(aes_key)
         return aesgcm.decrypt(nonce, ciphertext, None)
 
-    # Usage
+    # 用法
     private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096)
     public_key = private_key.public_key()
 
@@ -771,26 +721,23 @@ decrypts the symmetric key with their RSA private key, then decrypts the data.
     decrypted = hybrid_decrypt(private_key, encrypted_key, nonce, ciphertext)
     assert decrypted == message
 
-Digital Signatures: RSA-PSS
----------------------------
+数字签名：RSA-PSS（Digital Signatures: RSA-PSS）
+----------------------------------------------------------------------------------
 
-Digital signatures prove authenticity and integrity. The signer uses their private
-key to create a signature; anyone with the public key can verify it. Use PSS
-(Probabilistic Signature Scheme) padding for RSA signatures—it's provably secure
-unlike PKCS#1 v1.5. For new applications, consider Ed25519 instead of RSA.
+数字签名证明真实性和完整性。签名者使用他们的私人key来创建签名；任何拥有公共key的人都可以验证它。使用 PSS（概率签名方案）padding 进行 RSA 签名 - 与 PKCS#1 v1.5 不同，它是可证明安全的。对于新应用，请考虑 Ed25519 而不是 RSA。
 
 .. code-block:: python
 
     from cryptography.hazmat.primitives.asymmetric import rsa, padding
     from cryptography.hazmat.primitives import hashes
 
-    # Generate keys
+    # 生成keys
     private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096)
     public_key = private_key.public_key()
 
     message = b"Message to sign"
 
-    # Sign with private key (PSS padding)
+    # 使用私人key（PSS padding）签名
     signature = private_key.sign(
         message,
         padding.PSS(
@@ -800,7 +747,7 @@ unlike PKCS#1 v1.5. For new applications, consider Ed25519 instead of RSA.
         hashes.SHA256(),
     )
 
-    # Verify with public key
+    # 与公众验证key
     try:
         public_key.verify(
             signature,
@@ -815,35 +762,32 @@ unlike PKCS#1 v1.5. For new applications, consider Ed25519 instead of RSA.
     except Exception:
         print("Signature invalid!")
 
-Digital Signatures: Ed25519
----------------------------
+数字签名：Ed25519（Digital Signatures: Ed25519）
+----------------------------------------------------------------------------------
 
-Ed25519 is a modern signature algorithm based on elliptic curves. It offers
-excellent security with small keys (32 bytes) and signatures (64 bytes), fast
-operations, and resistance to many implementation pitfalls. Prefer Ed25519 over
-RSA for new applications unless you need compatibility with legacy systems.
+Ed25519是一种基于椭圆曲线的现代签名算法。它通过小型 keys (32 bytes) 和签名 (64 bytes) 提供出色的安全性、快速操作并抵御许多实施陷阱。对于新应用程序，除非需要与旧系统兼容，否则优先选择 Ed25519 而不是 RSA。
 
 .. code-block:: python
 
     from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
     from cryptography.hazmat.primitives import serialization
 
-    # Generate key pair
+    # 生成 key 对
     private_key = Ed25519PrivateKey.generate()
     public_key = private_key.public_key()
 
-    # Sign message
+    # 签名留言
     message = b"Message to sign"
     signature = private_key.sign(message)
 
-    # Verify signature
+    # 验证签名
     try:
         public_key.verify(signature, message)
         print("Signature valid")
     except Exception:
         print("Signature invalid!")
 
-    # Serialize keys
+    # 序列号 keys
     private_bytes = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.PKCS8,
@@ -855,21 +799,17 @@ RSA for new applications unless you need compatibility with legacy systems.
         format=serialization.PublicFormat.SubjectPublicKeyInfo,
     )
 
-    # OpenSSH format for public key
+    # 公共 key 的 OpenSSH 格式
     public_ssh = public_key.public_bytes(
         encoding=serialization.Encoding.OpenSSH,
         format=serialization.PublicFormat.OpenSSH,
     )
     print(public_ssh.decode())  # ssh-ed25519 AAAA...
 
-Elliptic Curve Diffie-Hellman (ECDH)
-------------------------------------
+椭圆曲线 Diffie-Hellman (ECDH)（Elliptic Curve Diffie-Hellman (ECDH)）
+--------------------------------------------------------------------------------------------------------------------------------
 
-ECDH allows two parties to establish a shared secret over an insecure channel.
-Each party generates a key pair, exchanges public keys, and derives the same
-shared secret. Use X25519 (Curve25519) for modern applications—it's fast, secure,
-and resistant to timing attacks. The shared secret should be passed through a KDF
-before use as an encryption key.
+ECDH 允许两方通过不安全的通道建立共享秘密。每一方生成一个 key 对，交换公共 keys，并派生相同的共享秘密。将 X25519 (Curve25519) 用于现代应用程序 — 它快速、安全且能够抵抗定时攻击。共享秘密在用作加密 key 之前应通过 KDF 传递。
 
 .. code-block:: python
 
@@ -877,25 +817,25 @@ before use as an encryption key.
     from cryptography.hazmat.primitives.kdf.hkdf import HKDF
     from cryptography.hazmat.primitives import hashes
 
-    # Alice generates her key pair
+    # Alice 生成她的 key 对
     alice_private = X25519PrivateKey.generate()
     alice_public = alice_private.public_key()
 
-    # Bob generates his key pair
+    # Bob 生成他的 key 对
     bob_private = X25519PrivateKey.generate()
     bob_public = bob_private.public_key()
 
-    # Exchange public keys (over insecure channel)
-    # Alice computes shared secret
+    # 交换公共keys（通过不安全通道）
+    # Alice 计算共享秘密
     alice_shared = alice_private.exchange(bob_public)
 
-    # Bob computes shared secret
+    # Bob 计算共享秘密
     bob_shared = bob_private.exchange(alice_public)
 
-    # Both arrive at the same shared secret
+    # 两者都得出相同的共享秘密
     assert alice_shared == bob_shared
 
-    # Derive encryption key from shared secret using HKDF
+    # 使用 HKDF 从共享密钥导出加密 key
     def derive_key(shared_secret, info):
         hkdf = HKDF(
             algorithm=hashes.SHA256(),
@@ -908,13 +848,10 @@ before use as an encryption key.
     encryption_key = derive_key(alice_shared, b"encryption")
     mac_key = derive_key(alice_shared, b"authentication")
 
-Password Hashing with Argon2
-----------------------------
+使用 Argon2 进行密码哈希处理（Password Hashing with Argon2）
+------------------------------------------------------------------------------------------------
 
-Argon2 is the winner of the Password Hashing Competition (2015) and the recommended
-algorithm for password storage. It's memory-hard, making GPU/ASIC attacks expensive.
-Use the ``argon2-cffi`` library for Python. Store the full hash string (includes
-salt and parameters) in your database.
+Argon2 是密码哈希竞赛（2015 年）的获胜者，也是密码存储的推荐算法。它是内存困难的，使得 GPU/ASIC 攻击成本高昂。将 ``argon2-cffi`` library 用于 Python。将完整的 hash string（包括盐和 parameters）存储在数据库中。
 
 .. code-block:: python
 
@@ -923,25 +860,25 @@ salt and parameters) in your database.
     from argon2.exceptions import VerifyMismatchError
 
     ph = PasswordHasher(
-        time_cost=3,        # Number of iterations
-        memory_cost=65536,  # Memory usage in KiB (64 MB)
-        parallelism=4,      # Number of parallel threads
+        time_cost=3,        # 迭代次数
+        memory_cost=65536,  # 内存使用情况（以 KiB 为单位）(64 MB)
+        parallelism=4,      # 并联数量 threads
     )
 
-    # Hash a password (for storage)
+    # Hash 密码（用于存储）
     password = "user-password"
     hash_str = ph.hash(password)
     print(f"Hash: {hash_str}")
     # $argon2id$v=19$m=65536,t=3,p=4$...
 
-    # Verify a password (during login)
+    # 验证密码（登录期间）
     try:
         ph.verify(hash_str, password)
         print("Password correct")
 
-        # Check if rehash needed (parameters changed)
+        # 检查是否需要重新哈希（parameters 已更改）
         if ph.check_needs_rehash(hash_str):
             new_hash = ph.hash(password)
-            # Update stored hash
+            # 更新存储的hash
     except VerifyMismatchError:
         print("Password incorrect")

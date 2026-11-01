@@ -38,7 +38,7 @@ def mixed_args(a, b=None, *args, **kwargs):
     return {"a": a, "b": b, "args": args, "kwargs": kwargs}
 
 
-# Keyword-Only Arguments
+# 仅关键字 Arguments
 def keyword_only(a, b, *, kw):
     """Function with keyword-only argument."""
     return a + b + kw
@@ -49,7 +49,7 @@ def keyword_only_default(a, *, kw=10):
     return a + kw
 
 
-# Positional-Only Arguments (Python 3.8+)
+# 仅位置 Arguments (Python 3.8+)
 def positional_only(a, b, /, c):
     """Function with positional-only arguments."""
     return a + b + c
@@ -110,7 +110,7 @@ def log_calls(func):
     return wrapper
 
 
-# Decorator with Arguments
+# Decorator 与 Arguments
 def repeat(times: int):
     """Decorator that repeats function calls."""
 
@@ -150,7 +150,7 @@ def fib_cached(n: int) -> int:
     return fib_cached(n - 1) + fib_cached(n - 2)
 
 
-# Partial
+# 部分的
 def power(base: int, exponent: int) -> int:
     """Raise base to exponent."""
     return base**exponent
@@ -160,7 +160,7 @@ square_partial = partial(power, exponent=2)
 cube_partial = partial(power, exponent=3)
 
 
-# Singledispatch
+# 单次调度
 @singledispatch
 def process(arg):
     """Generic function with type dispatch."""
@@ -177,7 +177,7 @@ def _(arg):
     return f"List with {len(arg)} items"
 
 
-# Callable Class
+# 可调用 Class
 class Adder:
     """Callable class that adds a fixed value."""
 
@@ -188,13 +188,13 @@ class Adder:
         return self.n + x
 
 
-# Higher-order functions
+# 高阶 functions
 def apply_twice(func, x):
     """Apply function twice."""
     return func(func(x))
 
 
-# Tests
+# 测试
 class TestDefaultArguments:
     def test_default(self):
         assert greet("Alice") == "Hello, Alice!"
@@ -204,7 +204,7 @@ class TestDefaultArguments:
 
     def test_mutable_default(self):
         assert good_default() == [1]
-        assert good_default() == [1]  # not [1, 1]
+        assert good_default() == [1]  # 不是 [1, 1]
 
 
 class TestVariableArguments:

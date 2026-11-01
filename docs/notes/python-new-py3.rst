@@ -1,58 +1,52 @@
 .. meta::
-    :description lang=en: Python 3 new features guide covering f-strings, walrus operator, dataclasses, async/await, type hints, and major improvements from Python 2
+    :description lang=zh_CN: Python 3 新功能指南，涵盖 f-strings、海象 operator、数据类、异步/等待、type hints 以及 Python 2 的主要改进
     :keywords: Python, Python3, new features, f-strings, walrus operator, dataclasses, async await, type hints, pathlib, migration
 
-==============
-New in Python3
-==============
+==========================================================
+Python3 中的新功能（New in Python3）
+==========================================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-The source code can be found on `py3.py <https://github.com/crazyguitar/pysheeet/blob/master/src/new_py3/py3.py>`_.
+源代码可以在 `py3.py <https://github.com/crazyguitar/pysheeet/blob/master/src/new_py3/py3.py>`_ 上找到。
 
-Type Parameter Syntax
-----------------------
+类型参数语法（Type Parameter Syntax）
+----------------------------------------------------------
 
-**New in Python 3.12**
+**Python新品 3.12**
 
-- PEP 695_ - Type Parameter Syntax
+- PEP 695_ - Type Parameter 语法
 
-Python 3.12 introduces a cleaner, more intuitive syntax for defining generic classes
-and functions. Instead of importing ``TypeVar`` and ``Generic`` from the typing module,
-you can now use the ``[]`` bracket notation directly in class and function definitions.
-This makes generic code more readable and reduces boilerplate significantly.
+Python 3.12 引入了一种更清晰、更直观的语法来定义通用 classes 和 functions。您现在可以直接在 class 和 function 定义中使用 ``[]`` 括号表示法，而不是从键入的 module 导入 ``TypeVar`` 和 ``Generic`` 。这使得通用代码更具可读性并显着减少了样板代码。
 
 .. code-block:: python
 
-    # Old way (before Python 3.12)
+    # 旧方式（Python 3.12 之前）
     from typing import TypeVar, Generic
     T = TypeVar('T')
     class Box(Generic[T]):
         def __init__(self, item: T) -> None:
             self.item = item
 
-    # New way (Python 3.12+)
+    # 新方式（Python 3.12+）
     class Box[T]:
         def __init__(self, item: T) -> None:
             self.item = item
 
-    # Generic functions
+    # 通用 functions
     def first[T](items: list[T]) -> T:
         return items[0]
 
 
-f-string Improvements
-----------------------
+f 字符串改进（f-string Improvements）
+------------------------------------------------------------
 
-**New in Python 3.12**
+**Python新品 3.12**
 
-- PEP 701_ - Syntactic formalization of f-strings
+- PEP 701_ - f-strings 的语法形式化
 
-F-strings have been significantly improved in Python 3.12. They now support nested
-quotes of the same type, backslash escapes, and multi-line expressions without any
-limitations. This makes f-strings much more flexible and eliminates many edge cases
-that previously required workarounds.
+F-strings在Python 3.12上有了显着的改进。它们现在支持相同 type 的嵌套引号、反斜杠转义和多行 expressions，没有任何限制。这使得 f-strings 更加灵活，并消除了许多以前需要解决方法的边缘情况。
 
 .. code-block:: python
 
@@ -60,22 +54,19 @@ that previously required workarounds.
     >>> f"This is the playlist: {", ".join(songs)}"
     'This is the playlist: Take me back to Eden, &, Satellite'
 
-    # Nested quotes now work
+    # 嵌套引号现在可以使用
     >>> f"He said {"hello"}"
     'He said hello'
 
 
-Exception Groups
------------------
+异常组（Exception Groups）
+------------------------------------------
 
-**New in Python 3.11**
+**Python新品 3.11**
 
-- PEP 654_ - Exception Groups and except*
+- PEP 654_ - Exception 组及除外*
 
-Exception groups allow you to raise and handle multiple unrelated exceptions
-simultaneously. This is particularly useful for concurrent operations where
-multiple tasks might fail independently. The new ``except*`` syntax lets you
-handle specific exception types from a group while letting others propagate.
+Exception 组允许您同时发起和处理多个不相关的 exceptions。这对于多个任务可能独立失败的并发操作特别有用。新的 ``except*`` 语法允许您处理组中的特定 exception types，同时让其他组传播。
 
 .. code-block:: python
 
@@ -96,18 +87,15 @@ handle specific exception types from a group while letting others propagate.
     TypeError: (TypeError('wrong type'),)
 
 
-Structural Pattern Matching
-----------------------------
+结构模式匹配（Structural Pattern Matching）
+----------------------------------------------------------------------
 
-**New in Python 3.10**
+**Python新品 3.10**
 
-- PEP 634_ - Structural Pattern Matching: Specification
-- PEP 635_ - Structural Pattern Matching: Motivation and Rationale
+- PEP 634_ - 结构模式匹配：规范
+- PEP 635_ - 结构模式匹配：动机和基本原理
 
-Pattern matching provides a powerful way to destructure and match complex data
-structures. It's similar to switch statements in other languages but far more
-expressive, supporting sequence patterns, mapping patterns, class patterns,
-and guards. The wildcard ``_`` matches anything and serves as a default case.
+模式匹配提供了一种强大的方法来解构和匹配 complex 数据结构。它与其他语言中的 switch statements 类似，但更具表现力，支持序列模式、映射模式、class 模式和防护。通配符 ``_`` 匹配任何内容并用作默认情况。
 
 .. code-block:: python
 
@@ -127,7 +115,7 @@ and guards. The wildcard ``_`` matches anything and serves as a default case.
     >>> http_status(404)
     'Not Found'
 
-    # Pattern matching with destructuring
+    # 模式匹配与解构
     >>> def describe_point(point):
     ...     match point:
     ...         case (0, 0):
@@ -145,30 +133,28 @@ and guards. The wildcard ``_`` matches anything and serves as a default case.
     'On x-axis at 5'
 
 
-Dictionary Merge
-----------------
+字典合并（Dictionary Merge）
+--------------------------------------------
 
-**New in Python 3.9**
+**Python新品 3.9**
 
-- PEP 584_  - Add Union Operators To dict
+- PEP 584_ - 将联合 Operators 添加到 dict
 
-The ``|`` operator provides a cleaner, more intuitive way to merge dictionaries.
-The ``|=`` operator updates a dictionary in place. This is more readable than
-using ``{**a, **b}`` or ``dict.update()`` and follows the pattern of set operations.
+``|`` operator 提供了一种更清晰、更直观的方式来合并 dictionaries。 ``|=`` operator 就地更新了 dictionary。这比使用 ``{**a, **b}`` 或 ``dict.update()`` 更具可读性，并且遵循 set 操作的模式。
 
 .. code-block:: python
 
     >>> a = {"foo": "Foo"}
     >>> b = {"bar": "Bar"}
 
-    # old way
+    # 老方法
     >>> {**a, **b}
     {'foo': 'Foo', 'bar': 'Bar'}
     >>> a.update(b)
     >>> a
     {'foo': 'Foo', 'bar': 'Bar'}
 
-    # new way
+    # 新方式
     >>> a = {"foo": "Foo"}
     >>> a | b
     {'foo': 'Foo', 'bar': 'Bar'}
@@ -177,16 +163,14 @@ using ``{**a, **b}`` or ``dict.update()`` and follows the pattern of set operati
     {'foo': 'Foo', 'bar': 'Bar'}
 
 
-Positional-only parameters
----------------------------
+仅位置参数（Positional-only parameters）
+------------------------------------------------------------------
 
-**New in Python 3.8**
+**Python新品 3.8**
 
-- PEP 570_ - Python Positional-Only Parameters
+- PEP 570_ - Python 仅位置 Parameters
 
-Parameters before the ``/`` marker must be passed positionally and cannot be used
-as keyword arguments. This gives library authors more flexibility in API design
-and allows parameter names to be changed without breaking backward compatibility.
+``/`` 标记之前的 Parameters 必须按位置传递，不能用作 keyword arguments。这为 library 作者在 API 设计中提供了更大的灵活性，并允许在不破坏向后兼容性的情况下更改 parameter 名称。
 
 .. code-block:: python
 
@@ -203,17 +187,14 @@ and allows parameter names to be changed without breaking backward compatibility
     TypeError: f() got some positional-only arguments passed as keyword arguments: 'b'
 
 
-The walrus operator
---------------------
+海象运算符（The walrus operator）
+----------------------------------------------------
 
-**New in Python 3.8**
+**Python新品 3.8**
 
-- PEP 572_ - Assignment Expressions
+- PEP 572_ - 分配 Expressions
 
-The walrus operator ``:=`` allows you to assign values to variables as part of an
-expression. This reduces code duplication when you need to both compute a value
-and use it in a condition. After completing PEP 572, Guido van Rossum, commonly
-known as BDFL, decided to resign as Python's dictator.
+海象 operator ``:=`` 允许您将 values 分配给 variables 作为 expression 的一部分。当您需要计算 value 并在条件中使用它时，这可以减少代码重复。在完成PEP 572后，Guido van Rossum（俗称BDFL）决定辞去Python的独裁者职务。
 
 .. code-block:: python
 
@@ -221,27 +202,25 @@ known as BDFL, decided to resign as Python's dictator.
     >>> [(f := (f[1], sum(f)))[0] for i in range(10)]
     [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
 
-    # Useful in while loops
+    # 在 loops 中有用
     >>> while (line := input("Enter: ")) != "quit":
     ...     print(f"You entered: {line}")
 
-    # Useful in if statements
+    # 在 if statements 中有用
     >>> if (n := len("hello")) > 3:
     ...     print(f"Length {n} is greater than 3")
 
 
-Data Classes
--------------
+数据类（Data Classes）
+----------------------------------
 
-**New in Python 3.7**
+**Python新品 3.7**
 
-- PEP 557_ - Data Classes
+- PEP 557_ - 数据 Classes
 
-Dataclasses automatically generate boilerplate code like ``__init__``, ``__repr__``,
-``__eq__``, and optionally ``__hash__`` for classes that primarily store data.
-This reduces repetitive code and makes data-holding classes more concise and readable.
+数据类自动生成主要存储数据的样板代码，例如 ``__init__`` 、 ``__repr__`` 、 ``__eq__`` 以及可选的 ``__hash__`` （对于 classes）。这减少了重复代码，并使数据保存 classes 更加简洁和可读。
 
-Mutable Data Class
+Mutable 数据 Class
 
 .. code-block:: python
 
@@ -259,7 +238,7 @@ Mutable Data Class
     DCls(x='foo', y='baz')
     >>> d.z = "bar"
 
-Immutable Data Class
+Immutable 数据 Class
 
 .. code-block:: python
 
@@ -284,16 +263,14 @@ Immutable Data Class
     cannot assign to field 'z'
 
 
-Built-in ``breakpoint()``
---------------------------
+内置 ``breakpoint()`` （Built-in ``breakpoint()`` ）
+------------------------------------------------------------------------------------------------
 
-**New in Python 3.7**
+**Python新品 3.7**
 
-- PEP 553_ - Built-in breakpoint()
+- PEP 553_ - 内置breakpoint()
 
-The ``breakpoint()`` function provides a convenient way to drop into the debugger.
-It respects the ``PYTHONBREAKPOINT`` environment variable, allowing you to customize
-or disable debugging behavior without modifying code.
+``breakpoint()`` function 提供了一种便捷的方式进入 debugger。它尊重 ``PYTHONBREAKPOINT`` 环境 variable，允许您自定义或禁用 debugging 行为，而无需修改代码。
 
 .. code-block:: python
 
@@ -312,17 +289,16 @@ or disable debugging behavior without modifying code.
     (Pdb) c
 
 
-Core support for typing module and generic types
--------------------------------------------------
+typing 模块与泛型类型的核心支持（Core support for typing module and generic types）
+------------------------------------------------------------------------------------------------------------------------------------------
 
-**New in Python 3.7**
+**Python新品 3.7**
 
-- PEP 560_ - Core support for typing module and generic types
+- PEP 560_ - 对键入 module 和通用 types 的核心支持
 
-Python 3.7 added core support for the typing module, making generic types faster
-and enabling classes to customize how they're subscripted via ``__class_getitem__``.
+Python 3.7 添加了对 module 类型的核心支持，使通用 types 更快，并使 classes 能够自定义通过 ``__class_getitem__`` 下标的方式。
 
-Before Python 3.7
+之前 Python 3.7
 
 .. code-block:: python
 
@@ -340,7 +316,7 @@ Before Python 3.7
     2
     3
 
-Python 3.7 or above
+Python 3.7 或以上
 
 .. code-block:: python
 
@@ -359,15 +335,14 @@ Python 3.7 or above
     3
 
 
-Variable annotations
---------------------
+变量标注（Variable annotations）
+----------------------------------------------------
 
-**New in Python 3.6**
+**Python新品 3.6**
 
-- PEP 526_ - Syntax for Variable Annotations
+- PEP 526_ - Variable 注释的语法
 
-Variables can now be annotated with types using the ``:`` syntax, even without
-immediate assignment. This enables better static analysis and IDE support.
+现在可以使用 ``:`` 语法用 types 注释 Variables，即使没有立即赋值。这可以实现更好的静态分析和 IDE 支持。
 
 .. code-block:: python
 
@@ -388,16 +363,14 @@ immediate assignment. This enables better static analysis and IDE support.
     {'foo': 'bar'}
 
 
-f-string
----------
+f 字符串（f-string）
+------------------------------
 
-**New in Python 3.6**
+**Python新品 3.6**
 
-- PEP 498_ - Literal String Interpolation
+- PEP 498_ - Literal String 插补
 
-F-strings (formatted string literals) provide a concise and readable way to embed
-expressions inside string literals. They are faster than ``%`` formatting and
-``str.format()`` because they are evaluated at runtime.
+F-strings（格式为 string literals）提供了一种简洁易读的方式将 expressions 嵌入到 string literals 中。它们比 ``%`` 格式化和 ``str.format()`` 更快，因为它们是在运行时评估的。
 
 .. code-block:: python
 
@@ -416,16 +389,14 @@ expressions inside string literals. They are faster than ``%`` formatting and
     '1.24e+02'
 
 
-Asynchronous generators
-------------------------
+异步生成器（Asynchronous generators）
+------------------------------------------------------------
 
-**New in Python 3.6**
+**Python新品 3.6**
 
 - PEP 525_ - Asynchronous Generators
 
-Asynchronous generators combine the power of generators with async/await syntax,
-allowing you to yield values asynchronously. This is useful for streaming data
-from async sources.
+Asynchronous generators 将 generators 的强大功能与异步/等待语法相结合，允许您异步生成 values。这对于来自异步源的流数据很有用。
 
 .. code-block:: python
 
@@ -450,15 +421,14 @@ from async sources.
     1
 
 
-Asynchronous comprehensions
-----------------------------
+异步推导式（Asynchronous comprehensions）
+--------------------------------------------------------------------
 
-**New in Python 3.6**
+**Python新品 3.6**
 
 - PEP 530_ - Asynchronous Comprehensions
 
-Async comprehensions allow using ``async for`` in list, set, dict comprehensions
-and generator expressions. You can also use ``await`` expressions within comprehensions.
+异步 comprehensions 允许在 list、set、dict、comprehensions 和 generator expressions 中使用 ``async for`` 。您还可以在 comprehensions 中使用 ``await`` expressions。
 
 .. code-block:: python
 
@@ -471,7 +441,7 @@ and generator expressions. You can also use ``await`` expressions within compreh
     ...         b, a = a + b , b
     ...
 
-    # async for ... else
+    # 异步...其他
 
     >>> async def coro(n: int):
     ...     async for f in fib(n):
@@ -483,7 +453,7 @@ and generator expressions. You can also use ``await`` expressions within compreh
     >>> loop.run_until_complete(coro(5))
     0 1 1 2 3
 
-    # async for in list
+    # list 中的异步
 
     >>> async def coro(n: int):
     ...     return [f async for f in fib(n)]
@@ -491,7 +461,7 @@ and generator expressions. You can also use ``await`` expressions within compreh
     >>> loop.run_until_complete(coro(5))
     [0, 1, 1, 2, 3]
 
-    # await in list
+    # 等待list
 
     >>> async def slowfmt(n: int) -> str:
     ...     await asyncio.sleep(0.5)
@@ -504,20 +474,18 @@ and generator expressions. You can also use ``await`` expressions within compreh
     ['0', '1', '1', '2', '3']
 
 
-New dict implementation
-------------------------
+新的 dict 实现（New dict implementation）
+----------------------------------------------------------------------
 
-**New in Python 3.6**
+**Python新品 3.6**
 
-- PEP 468_ - Preserving the order of \*\*kwargs in a function
-- PEP 520_ - Preserving Class Attribute Definition Order
-- bpo 27350_ - More compact dictionaries with faster iteration
+- PEP 468_ - 保留 function 中 \*\*kwargs 的顺序
+- PEP 520_ - 保留 Class Attribute 定义顺序
+- bpo 27350_ - 更紧凑的 dictionaries 和更快的 iteration
 
-Python 3.6 introduced a new dictionary implementation that uses 20-25% less memory
-and preserves insertion order. This was an implementation detail in 3.6 but became
-a language guarantee in Python 3.7.
+Python 3.6 引入了新的 dictionary 实现，该实现减少了 20-25% 的内存使用并保留插入顺序。这是 3.6 中的实现细节，但在 Python 3.7 中成为语言保证。
 
-Before Python 3.5
+之前 Python 3.5
 
 .. code-block:: python
 
@@ -526,13 +494,13 @@ Before Python 3.5
     49248
 
     >>> d = {'timmy': 'red', 'barry': 'green', 'guido': 'blue'}
-    >>> d   # without order-preserving
+    >>> d   # 不保序
     {'barry': 'green', 'timmy': 'red', 'guido': 'blue'}
 
 Python 3.6
 
-- Memory usage is smaller than Python 3.5
-- Preserve insertion ordered
+- 内存占用小于Python 3.5
+- 保留插入顺序
 
 .. code-block:: python
 
@@ -541,22 +509,20 @@ Python 3.6
     36968
 
     >>> d = {'timmy': 'red', 'barry': 'green', 'guido': 'blue'}
-    >>> d   # preserve insertion ordered
+    >>> d   # 保留插入顺序
     {'timmy': 'red', 'barry': 'green', 'guido': 'blue'}
 
 
-``async`` and ``await`` syntax
--------------------------------
+``async`` 和 ``await`` 语法（ ``async`` and ``await`` syntax）
+------------------------------------------------------------------------------------------------------------------
 
-**New in Python 3.5**
+**Python新品 3.5**
 
-- PEP 492_ - Coroutines with async and await syntax
+- PEP 492_ - Coroutines 具有异步和等待语法
 
-The ``async`` and ``await`` keywords provide native syntax for writing coroutines,
-making asynchronous code much more readable than the previous generator-based approach.
-This is the foundation of modern Python async programming.
+``async`` 和 ``await`` 关键字提供了用于编写 coroutines 的本机语法，使 asynchronous 代码比之前基于 generator 的方法更具可读性。这是现代 Python 异步编程的基础。
 
-Before Python 3.5
+之前 Python 3.5
 
 .. code-block:: python
 
@@ -581,7 +547,7 @@ Before Python 3.5
     1
     1
 
-Python 3.5 or above
+Python 3.5 或以上
 
 .. code-block:: python
 
@@ -605,15 +571,14 @@ Python 3.5 or above
     1
 
 
-General unpacking
-------------------
+通用解包（General unpacking）
+----------------------------------------------
 
-**New in Python 3.5**
+**Python新品 3.5**
 
-- PEP 448_ - Additional Unpacking Generalizations
+- PEP 448_ - 附加拆包概括
 
-Python 3.5 extended the ``*`` and ``**`` unpacking operators to work in more contexts,
-including function calls with multiple unpacking operations and in list/dict literals.
+Python 3.5 扩展了 ``*`` 和 ``**`` 解包 operators 以在更多上下文中工作，包括具有多个解包操作的 function 调用以及 list/dict literals 中的调用。
 
 Python 2
 
@@ -646,20 +611,18 @@ Python 3
     {'foo': 'FOO', 'bar': 'BAR'}
 
 
-Matrix multiplication
-----------------------
+矩阵乘法（Matrix multiplication）
+------------------------------------------------------
 
-**New in Python 3.5**
+**Python新品 3.5**
 
-- PEP 465_ - A dedicated infix operator for matrix multiplication
+- PEP 465_ - 用于矩阵乘法的专用中缀 operator
 
-The ``@`` operator was added for matrix multiplication, primarily benefiting
-scientific computing libraries like NumPy. Classes can implement ``__matmul__``
-and ``__imatmul__`` to support this operator.
+添加 ``@`` operator用于矩阵乘法，主要有利于像NumPy一样的科学计算libraries。 Classes 可以实现 ``__matmul__`` 和 ``__imatmul__`` 来支持此 operator。
 
 .. code-block:: python
 
-    >>> # "@" represent matrix multiplication
+    >>> # "@" 表示矩阵乘法
     >>> class Arr:
     ...     def __init__(self, *arg):
     ...         self._arr = arg
@@ -693,15 +656,14 @@ and ``__imatmul__`` to support this operator.
     Arr([124])
 
 
-Format byte string
--------------------
+格式化字节字符串（Format byte string）
+--------------------------------------------------------
 
-**New in Python 3.5**
+**Python新品 3.5**
 
-- PEP 461_ - Adding ``%`` formatting to bytes and bytearray
+- PEP 461_ - 将 ``%`` 格式添加到 bytes 和 bytearray
 
-The ``%`` formatting operator now works with bytes and bytearray objects,
-making it easier to work with binary protocols and formats.
+``%`` 格式 operator 现在可与 bytes 和 bytearray objects 配合使用，从而更轻松地使用二进制协议和格式。
 
 .. code-block:: python
 
@@ -720,17 +682,16 @@ making it easier to work with binary protocols and formats.
     b'repr'
 
 
-Suppressing exception
-----------------------
+抑制异常（Suppressing exception）
+------------------------------------------------------
 
-**New in Python 3.3**
+**Python新品 3.3**
 
-- PEP 409_ - Suppressing exception context
+- PEP 409_ - 抑制 exception 上下文
 
-When re-raising exceptions, Python shows the chain of exceptions by default.
-Using ``raise ... from None`` suppresses the context, showing only the new exception.
+当重新加注 exceptions 时，Python 默认显示 exceptions 的链。使用 ``raise ... from None`` 会抑制上下文，仅显示新的 exception。
 
-Without ``raise Exception from None``
+不带 ``raise Exception from None``
 
 .. code-block:: python
 
@@ -752,7 +713,7 @@ Without ``raise Exception from None``
       File "<stdin>", line 5, in func
     ArithmeticError
 
-With ``raise Exception from None``
+配 ``raise Exception from None``
 
 .. code-block:: python
 
@@ -768,7 +729,7 @@ With ``raise Exception from None``
       File "<stdin>", line 5, in func
     ArithmeticError
 
-    # debug
+    # 调试
 
     >>> try:
     ...     func()
@@ -778,15 +739,14 @@ With ``raise Exception from None``
     division by zero
 
 
-Generator delegation
-----------------------
+生成器委托（Generator delegation）
+------------------------------------------------------
 
-**New in Python 3.3**
+**Python新品 3.3**
 
-- PEP 380_ - Syntax for Delegating to a Subgenerator
+- PEP 380_ - 委托给子生成器的语法
 
-The ``yield from`` expression allows a generator to delegate part of its operations
-to another generator. This simplifies writing generators that consume other generators.
+``yield from`` expression 允许 generator 将其部分操作委托给另一个 generator。这简化了消耗其他 generators 的 generators 的编写。
 
 .. code-block:: python
 
@@ -803,15 +763,14 @@ to another generator. This simplifies writing generators that consume other gene
     [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
 
 
-BDFL retirement
----------------
+BDFL 退休（BDFL retirement）
+------------------------------------------------
 
-**New in Python 3.1**
+**Python新品 3.1**
 
-- PEP 401_ - BDFL Retirement
+- PEP 401_ - BDFL 退休
 
-An April Fools' joke PEP that added a humorous easter egg. When you import
-``barry_as_FLUFL`` from ``__future__``, the ``!=`` operator is replaced with ``<>``.
+愚人节笑话 PEP，添加了幽默的复活节彩蛋。当您从 ``__future__`` 导入 ``barry_as_FLUFL`` 时， ``!=`` operator 将替换为 ``<>`` 。
 
 .. code-block:: python
 
@@ -825,18 +784,16 @@ An April Fools' joke PEP that added a humorous easter egg. When you import
     True
 
 
-Function annotations
---------------------
+函数标注（Function annotations）
+----------------------------------------------------
 
-**New in Python 3.0**
+**Python新品 3.0**
 
-- PEP 3107_ - Function Annotations
+- PEP 3107_ - Function 注释
 - PEP 484_ - Type Hints
-- PEP 483_ - The Theory of Type Hints
+- PEP 483_ - Type Hints 的理论
 
-Function annotations allow attaching metadata to function parameters and return
-values. While Python doesn't enforce these at runtime, they enable static type
-checking tools and better IDE support.
+Function 注释允许将元数据附加到 function、parameters 和 return values。虽然 Python 不会在运行时强制执行这些操作，但它们启用静态 type 检查工具和更好的 IDE 支持。
 
 .. code-block:: python
 
@@ -852,15 +809,14 @@ checking tools and better IDE support.
     [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
 
 
-Extended iterable unpacking
-----------------------------
+扩展的可迭代拆包（Extended iterable unpacking）
+--------------------------------------------------------------------------
 
-**New in Python 3.0**
+**Python新品 3.0**
 
-- PEP 3132_ - Extended Iterable Unpacking
+- PEP 3132_ - 扩展Iterable开箱
 
-The ``*`` operator in unpacking captures remaining items into a list. This works
-in assignments and for loops, making it easy to split sequences.
+解包中的 ``*`` operator 将剩余的 items 捕获到 list 中。这适用于作业和 loops，可以轻松分割序列。
 
 .. code-block:: python
 
@@ -874,15 +830,14 @@ in assignments and for loops, making it easy to split sequences.
     4 [5, 6, 7]
 
 
-Keyword-Only Arguments
------------------------
+仅关键字参数（Keyword-Only Arguments）
+------------------------------------------------------------
 
-**New in Python 3.0**
+**Python新品 3.0**
 
-- PEP 3102_ - Keyword-Only Arguments
+- PEP 3102_ - 仅限关键字 Arguments
 
-Parameters defined after ``*`` in a function signature must be passed as keyword
-arguments. This improves API clarity and prevents accidental positional usage.
+function 签名中 ``*`` 之后定义的 Parameters 必须作为 keyword arguments 传递。这提高了 API 的清晰度并防止意外的位置使用。
 
 .. code-block:: python
 
@@ -901,15 +856,14 @@ arguments. This improves API clarity and prevents accidental positional usage.
     1 2 3
 
 
-New Super
-----------
+新的 super 用法（New Super）
+--------------------------------------------
 
-**New in Python 3.0**
+**Python新品 3.0**
 
-- PEP 3135_ - New Super
+- PEP 3135_-新超级
 
-Python 3 simplified the ``super()`` call by making it work without arguments in
-most cases. The interpreter automatically determines the class and instance.
+Python 3 简化了 ``super()`` 调用，使其在大多数情况下无需 arguments 即可工作。 interpreter 自动确定 class 和 instance。
 
 Python 2
 
@@ -954,15 +908,14 @@ Python 3
     call child
 
 
-Add ``nonlocal`` keyword
--------------------------
+添加 ``nonlocal`` 关键字（Add ``nonlocal`` keyword）
+------------------------------------------------------------------------------------------
 
-**New in Python 3.0**
+**Python新品 3.0**
 
-- PEP 3104_ - Access to Names in Outer Scopes
+- PEP 3104_ - 访问外部 Scopes 中的名称
 
-The ``nonlocal`` keyword allows assigning to variables in an enclosing (but non-global)
-scope. This is useful for closures that need to modify outer variables.
+``nonlocal`` 关键字允许在封闭（但非全局）scope 中分配给 variables。这对于需要修改外部 variables 的 closures 很有用。
 
 .. code-block:: python
 
@@ -978,13 +931,12 @@ scope. This is useful for closures that need to modify outer variables.
     change out
 
 
-Not allow ``from module import *`` inside function
----------------------------------------------------
+禁止在函数内部使用 ``from module import *`` （Not allow ``from module import *`` inside function）
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-**New in Python 3.0**
+**Python新品 3.0**
 
-Star imports are now only allowed at module level. This prevents namespace pollution
-and makes code more predictable.
+现在仅允许在 module 级别导入星星。这可以防止 namespace 污染并使代码更具可预测性。
 
 .. code-block:: python
 
@@ -995,13 +947,12 @@ and makes code more predictable.
     SyntaxError: import * only allowed at module level
 
 
-Remove ``<>``
---------------
+删除 ``<>`` （Remove ``<>`` ）
+----------------------------------------------------
 
-**New in Python 3.0**
+**Python新品 3.0**
 
-The ``<>`` operator (alternative to ``!=``) was removed in Python 3 to simplify
-the language. Use ``!=`` for inequality comparisons.
+``<>`` operator（ ``!=`` 的替代）在 Python 3 中被删除以简化语言。使用 ``!=`` 进行不等式比较。
 
 Python 2
 
@@ -1011,7 +962,7 @@ Python 2
     >>> a <> "Python3"
     True
 
-    # equal to !=
+    # 等于！=
     >>> a != "Python3"
     True
 
@@ -1024,15 +975,14 @@ Python 3
     True
 
 
-``print`` is a function
--------------------------
+``print`` 是一个函数（ ``print`` is a function）
+----------------------------------------------------------------------------------
 
-**New in Python 3.0**
+**Python新品 3.0**
 
-- PEP 3105_ - Make print a function
+- PEP 3105_ - 打印 function
 
-In Python 3, ``print`` became a function instead of a statement. This allows
-more flexibility with keyword arguments like ``end``, ``sep``, and ``file``.
+在Python 3中， ``print`` 变成了function而不是statement。这使得 keyword arguments（如 ``end`` 、 ``sep`` 和 ``file`` ）具有更大的灵活性。
 
 Python 2
 
@@ -1060,18 +1010,16 @@ Python 3
     0 1 2
 
 
-String is unicode
--------------------
+字符串是unicode（String is unicode）
+------------------------------------------------------------
 
-**New in Python 3.0**
+**Python新品 3.0**
 
-- PEP 3138_ - String representation in Python 3000
-- PEP 3120_ - Using UTF-8 as the default source encoding
-- PEP 3131_ - Supporting Non-ASCII Identifiers
+- PEP 3138_ - Python 3000 中的 String 表示
+- PEP 3120_ - 使用 UTF-8 作为默认源 encoding
+- PEP 3131_ - 支持非 ASCII 标识符
 
-In Python 3, all strings are Unicode by default. The ``str`` type represents
-Unicode text, while ``bytes`` represents binary data. This eliminates many
-encoding-related bugs common in Python 2.
+在Python 3中，所有strings默认都是Unicode。 ``str`` type 表示 Unicode 文本，而 ``bytes`` 表示二进制数据。这消除了 Python 2 中常见的许多与 encoding 相关的错误。
 
 Python 2
 
@@ -1107,15 +1055,14 @@ Python 3
     4
 
 
-Division Operator
-------------------
+除法运算符（Division Operator）
+------------------------------------------------
 
-**New in Python 3.0**
+**Python新品 3.0**
 
-- PEP 238_ - Changing the Division Operator
+- PEP 238_ - 更改分区 Operator
 
-In Python 3, the ``/`` operator always performs true division (returning a float),
-while ``//`` performs floor division. This eliminates a common source of bugs.
+在Python 3中， ``/`` operator始终执行true除法（返回float），而 ``//`` 执行楼层除法。这消除了错误的常见来源。
 
 Python 2
 
@@ -1128,7 +1075,7 @@ Python 2
     >>> 1. / 2
     0.5
 
-    # back port "true division" to python2
+    # 将 "true division" 向后移植到 python2
 
     >>> from __future__ import division
     >>> 1 / 2

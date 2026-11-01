@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# vLLM sweep benchmark suite
+# vLLM扫benchmark套件
 #
-# Runs predefined sweep configurations via sweep.sbatch. Each suite writes
-# a different bench_params.json and invokes sweep.sbatch with the appropriate
-# --bench-cmd for that workload.
+# 通过 sweep.sbatch 运行预定义的扫描配置。每个套房都写着
+# 不同的 bench_params.json 并使用适当的调用 sweep.sbatch
+# --bench-cmd 用于该工作负载。
 #
-# Usage:
+# 用法：
 #   bash sweep.sh -m Qwen/Qwen3-0.6B
-#   bash sweep.sh -m Qwen/Qwen3-30B-A3B-FP8 -i $PWD/vllm-serve-latest.tar.gz \
+#   bash sweep.sh -m Qwen/Qwen3-30B-A3B-FP8 -i $PWD/vllm-服务-latest.tar.gz \
 #       --serve-cmd "vllm serve Qwen/Qwen3-30B-A3B-FP8 -tp 8 --enable-expert-parallel" \
-#       --type rate,concurrency
+#       --type 速率、并发数
 set -euo pipefail
 
 info() { echo "[$(date +'%H:%M:%S')] $*"; }
@@ -20,7 +20,7 @@ RESULT_DIR="results"
 NUM_PROMPTS=100
 SEED=42
 TYPES="rate,concurrency,input,output"
-SBATCH_ARGS=()          # passthrough to sweep.sbatch
+SBATCH_ARGS=()          # 直通至 sweep.sbatch
 
 usage() {
     cat <<EOF
@@ -71,28 +71,28 @@ run_sweep() {
 }
 
 
-# Request rate: find saturation point with fixed workload
+# 请求率：找到固定工作负载的饱和点
 sweep_rate() {
     run_sweep "rate" \
         "--dataset-name random --random-input-len 512 --random-output-len 256 --num-prompts ${NUM_PROMPTS}" \
         '[{"request-rate":1},{"request-rate":2},{"request-rate":4},{"request-rate":8},{"request-rate":16},{"request-rate":32},{"request-rate":"inf"}]'
 }
 
-# Concurrency: find optimal batch size
+# 并发：找到最佳批量大小
 sweep_concurrency() {
     run_sweep "concurrency" \
         "--dataset-name random --random-input-len 512 --random-output-len 256 --num-prompts ${NUM_PROMPTS}" \
         '[{"max-concurrency":1},{"max-concurrency":2},{"max-concurrency":4},{"max-concurrency":8},{"max-concurrency":16},{"max-concurrency":32},{"max-concurrency":64},{"max-concurrency":128}]'
 }
 
-# Input length: measure TTFT scaling with context size
+# 输入长度：测量 TTFT 与上下文大小的缩放
 sweep_input() {
     run_sweep "input" \
         "--dataset-name random --random-output-len 128 --num-prompts ${NUM_PROMPTS} --request-rate inf" \
         '[{"random-input-len":128},{"random-input-len":256},{"random-input-len":512},{"random-input-len":1024},{"random-input-len":2048},{"random-input-len":4096},{"random-input-len":8192},{"random-input-len":16384}]'
 }
 
-# Output length: measure ITL as KV cache grows
+# 输出长度：随着 KV cache 的增长测量 ITL
 sweep_output() {
     run_sweep "output" \
         "--dataset-name random --random-input-len 512 --num-prompts ${NUM_PROMPTS} --request-rate inf" \

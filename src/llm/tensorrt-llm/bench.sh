@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# TensorRT-LLM serving benchmark suite
-# Uses the official benchmark_serving.py for proper TTFT/TPOT/ITL/E2EL metrics
-# Usage:
+# TensorRT-LLM 服务 benchmark 套件
+# 使用官方 benchmark_serving.py 获得正确的 TTFT/TPOT/ITL/E2EL 指标
+# 用法：
 #   salloc -N1 bash bench.sh -H 10.0.128.193 -i /fsx/tensorrt-llm-serve-latest.tar.gz
-#   bash bench.sh -H 10.0.128.193 -i tensorrt-llm-serve:latest
+#   bash bench.sh -H 10.0.128.193 -i tensorrt-llm-服务：最新
 set -euo pipefail
 
 info() { echo "[$(date +'%H:%M:%S')] $*"; }
@@ -56,7 +56,7 @@ launch_container() {
     "
 }
 
-# If tensorrt_llm package is not installed, load image and re-exec inside container
+# 如果未安装 tensorrt_llm package，则加载映像并在容器内重新执行
 if ! python3 -c "import importlib.metadata; importlib.metadata.version('tensorrt-llm')" &>/dev/null 2>&1; then
     info "tensorrt_llm not found, bootstrapping into container..."
     info "SLURM_JOB_ID=${SLURM_JOB_ID:-<unset>} SLURM_NODELIST=${SLURM_NODELIST:-<unset>}"
@@ -125,7 +125,7 @@ if [[ -z "$MODEL" ]]; then
 fi
 mkdir -p "$RESULT_DIR"
 
-# Official TensorRT-LLM benchmark client with TTFT/TPOT/ITL/E2EL metrics
+# 具有 TTFT/TPOT/ITL/E2EL 指标的官方 TensorRT-LLM benchmark 客户端
 bench() {
     local label="$1"; shift
     local outfile="${RESULT_DIR}/$(echo "$label" | tr ' /' '_').json"

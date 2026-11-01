@@ -1,8 +1,8 @@
 :orphan:
 
-404 Page Not Found
-==================
+找不到页面（404 Page Not Found）
+==================================================
 
-What you were looking for is just not there.
+您正在寻找的东西并不存在。
 
-`Click here to go back to homepage. <https://www.pythonsheets.com/>`_
+:doc:`返回首页 </index>`

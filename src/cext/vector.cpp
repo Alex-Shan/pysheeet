@@ -1,14 +1,14 @@
 /**
- * vector.cpp - pybind11 class binding example
+ * vector.cpp - pybind11 class 绑定示例
  *
- * Demonstrates:
- *   - Class binding with constructor
- *   - Read/write properties
+ * 演示：
+ *   - Class 与构造函数绑定
+ *   - 读/写properties
  *   - Methods
- *   - Operator overloading
- *   - __repr__ for nice printing
+ *   - Operator 过载
+ *   - __repr__ 打印精美
  *
- * Usage:
+ * 用法：
  *   >>> from vector import Vector2D
  *   >>> v1 = Vector2D(3, 4)
  *   >>> v1.length()

@@ -1,10 +1,10 @@
-/* Demonstrate argument parsing in Python C API. */
+/* 在 Python C API 中演示 argument 解析。 */
 #include <Python.h>
 
-/* METH_NOARGS - no arguments */
+/* METH_NOARGS - 无 arguments */
 static PyObject* no_args(PyObject* self) { Py_RETURN_NONE; }
 
-/* METH_O - single object argument */
+/* METH_O - 单 object argument */
 static PyObject* single_arg(PyObject* self, PyObject* arg) { return Py_BuildValue("O", arg); }
 
 /* METH_VARARGS - positional arguments */
@@ -27,7 +27,7 @@ static PyObject* kw_args(PyObject* self, PyObject* args, PyObject* kwargs) {
   return Py_BuildValue("OOO", x, y, z);
 }
 
-/* Parse specific types */
+/* 解析具体types */
 static PyObject* typed_args(PyObject* self, PyObject* args) {
   int i;
   double d;

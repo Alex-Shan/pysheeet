@@ -39,11 +39,11 @@ def test_write_modes(tmp_path):
     """Test different write modes."""
     p = tmp_path / "modes.txt"
 
-    # Write mode
+    # 写入模式
     with open(p, "w", encoding="utf-8") as f:
         f.write("first")
 
-    # Append mode
+    # 追加模式
     with open(p, "a", encoding="utf-8") as f:
         f.write(" second")
 
@@ -183,7 +183,7 @@ def test_temporary_directory():
         assert p.exists()
         (p / "file.txt").write_text("content")
         assert (p / "file.txt").exists()
-    # Directory should be deleted after context
+    # 目录应在上下文之后删除
     assert not p.exists()
 
 
@@ -191,14 +191,14 @@ def test_csv_read_write(tmp_path):
     """Read and write CSV files."""
     csv_path = tmp_path / "data.csv"
 
-    # Write
+    # 写
     with open(csv_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["name", "age"])
         writer.writerow(["Alice", 30])
         writer.writerow(["Bob", 25])
 
-    # Read
+    # 读
     rows = []
     with open(csv_path, newline="", encoding="utf-8") as f:
         reader = csv.reader(f)
@@ -256,18 +256,18 @@ def test_zipfile_create_extract(tmp_path):
     file1 = tmp_path / "file1.txt"
     file1.write_text("content 1")
 
-    # Create zip
+    # 创建邮编
     with zipfile.ZipFile(zip_path, "w") as zf:
         zf.write(file1, "file1.txt")
         zf.writestr("file2.txt", "content 2")
 
-    # List contents
+    # List 内容
     with zipfile.ZipFile(zip_path, "r") as zf:
         names = zf.namelist()
         assert "file1.txt" in names
         assert "file2.txt" in names
 
-    # Extract
+    # 提炼
     extract_dir = tmp_path / "extracted"
     extract_dir.mkdir()
     with zipfile.ZipFile(zip_path, "r") as zf:
@@ -307,17 +307,17 @@ def test_shutil_copy(tmp_path):
     src = tmp_path / "source.txt"
     src.write_text("content")
 
-    # copy - content only
+    # 复制 - 仅内容
     dst1 = tmp_path / "dest1.txt"
     shutil.copy(src, dst1)
     assert dst1.read_text() == "content"
 
-    # copy2 - preserves metadata
+    # copy2 - 保留元数据
     dst2 = tmp_path / "dest2.txt"
     shutil.copy2(src, dst2)
     assert dst2.read_text() == "content"
 
-    # copy to directory
+    # 复制到目录
     subdir = tmp_path / "subdir"
     subdir.mkdir()
     shutil.copy(src, subdir)
@@ -328,14 +328,14 @@ def test_shutil_copytree(tmp_path):
     """Copy directory tree with shutil."""
     import shutil
 
-    # Create source structure
+    # 创建源结构
     src = tmp_path / "source"
     src.mkdir()
     (src / "file1.txt").write_text("content1")
     (src / "sub").mkdir()
     (src / "sub" / "file2.txt").write_text("content2")
 
-    # Copy tree
+    # 复制树
     dst = tmp_path / "dest"
     shutil.copytree(src, dst)
 
@@ -381,7 +381,7 @@ def test_shutil_move(tmp_path):
     """Move files and directories with shutil."""
     import shutil
 
-    # Move file
+    # 移动文件
     src = tmp_path / "source.txt"
     src.write_text("content")
     dst = tmp_path / "dest.txt"
@@ -390,7 +390,7 @@ def test_shutil_move(tmp_path):
     assert not src.exists()
     assert dst.read_text() == "content"
 
-    # Move to directory
+    # 移至目录
     subdir = tmp_path / "subdir"
     subdir.mkdir()
     shutil.move(dst, subdir)
@@ -436,12 +436,12 @@ def test_shutil_make_archive(tmp_path):
     """Create archives with shutil."""
     import shutil
 
-    # Create source
+    # 创建源
     src = tmp_path / "source"
     src.mkdir()
     (src / "file.txt").write_text("content")
 
-    # Create zip archive
+    # 创建 zip 存档
     archive = shutil.make_archive(str(tmp_path / "backup"), "zip", src)
     assert Path(archive).exists()
     assert archive.endswith(".zip")
@@ -451,13 +451,13 @@ def test_shutil_unpack_archive(tmp_path):
     """Extract archives with shutil."""
     import shutil
 
-    # Create and pack
+    # 创建并打包
     src = tmp_path / "source"
     src.mkdir()
     (src / "file.txt").write_text("content")
     archive = shutil.make_archive(str(tmp_path / "backup"), "zip", src)
 
-    # Unpack
+    # 打开包装
     extract = tmp_path / "extracted"
     shutil.unpack_archive(archive, extract)
     assert (extract / "file.txt").read_text() == "content"

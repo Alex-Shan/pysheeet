@@ -1,34 +1,24 @@
 .. meta::
-    :description lang=en: Python TLS/SSL and X.509 certificate guide covering secure HTTPS servers, certificate generation, CSR creation, and certificate verification using the cryptography library
+    :description lang=zh_CN: Python TLS/SSL 和 X.509 证书指南，涵盖安全 HTTPS 服务器、证书生成、CSR 创建以及使用密码学 library 的证书验证
     :keywords: Python, Python3, TLS, SSL, HTTPS, X.509, Certificate, CSR, Certificate Authority, Self-Signed, SSLContext, cryptography
 
-========================
-TLS/SSL and Certificates
-========================
+========================================================================
+TLS/SSL及证书（TLS/SSL and Certificates）
+========================================================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-Transport Layer Security (TLS) provides encrypted, authenticated communication
-over networks. This guide covers creating secure HTTPS servers, generating
-certificates, and proper TLS configuration in Python. We use the ``ssl`` module's
-``SSLContext`` API (not the deprecated ``wrap_socket``) and the ``cryptography``
-library for certificate operations. Always use TLS 1.2 or 1.3—older versions have
-known vulnerabilities.
+传输层安全 (TLS) 通过网络提供加密、经过身份验证的通信。本指南涵盖在 Python 中创建安全的 HTTPS 服务器、生成证书以及正确的 TLS 配置。我们使用 ``ssl`` module的 ``SSLContext`` API（不是已弃用的 ``wrap_socket`` ）和 ``cryptography`` library进行证书操作。始终使用 TLS、1.2 或 1.3 — 旧版本存在已知漏洞。
 
 .. warning::
 
-    For production, always use certificates from a trusted Certificate Authority
-    (CA) like Let's Encrypt. Self-signed certificates are only for development
-    and testing. Never disable certificate verification in production code.
+    对于生产，请始终使用来自受信任的证书颁发机构 (CA) 的证书，例如 Let's Encrypt。自签名证书仅用于开发和测试。切勿在生产代码中禁用证书验证。
 
-Secure HTTPS Server
--------------------
+安全 HTTPS 服务器（Secure HTTPS Server）
+------------------------------------------------------------------
 
-Create an HTTPS server using ``SSLContext`` with secure defaults. The context
-configures TLS version, cipher suites, and certificate verification. Always
-load both the certificate chain and private key. For production, use certificates
-from a real CA.
+使用具有安全默认值的 ``SSLContext`` 创建 HTTPS 服务器。上下文配置TLS版本、密码套件和证书验证。始终加载证书链和私有 key。对于生产，请使用真实 CA 的证书。
 
 .. code-block:: python
 
@@ -37,14 +27,14 @@ from a real CA.
 
     def create_secure_context(certfile, keyfile):
         """Create SSLContext with secure defaults."""
-        # TLS 1.2+ only, secure ciphers
+        # 仅 TLS 1.2+，安全密码
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         context.minimum_version = ssl.TLSVersion.TLSv1_2
 
-        # Load certificate and private key
+        # 加载证书和私有key
         context.load_cert_chain(certfile=certfile, keyfile=keyfile)
 
-        # Disable insecure options
+        # 禁用不安全的选项
         context.options |= ssl.OP_NO_SSLv2
         context.options |= ssl.OP_NO_SSLv3
         context.options |= ssl.OP_NO_TLSv1
@@ -52,7 +42,7 @@ from a real CA.
 
         return context
 
-    # Create server
+    # 创建服务器
     host, port = "localhost", 8443
     context = create_secure_context("cert.pem", "key.pem")
 
@@ -62,56 +52,51 @@ from a real CA.
     print(f"Serving HTTPS on https://{host}:{port}")
     httpd.serve_forever()
 
-Secure HTTPS Client
--------------------
+保护 HTTPS 客户端（Secure HTTPS Client）
+------------------------------------------------------------------
 
-When making HTTPS requests, Python verifies certificates by default. For custom
-CA certificates or client authentication, configure an ``SSLContext``. Never
-set ``verify=False`` or disable hostname checking in production.
+当发出 HTTPS 请求时，Python 默认验证证书。对于自定义 CA 证书或客户端身份验证，请配置 ``SSLContext`` 。切勿在生产中使用 set ``verify=False`` 或禁用主机名检查。
 
 .. code-block:: python
 
     import ssl
     import urllib.request
 
-    # Default secure context (verifies certificates)
+    # 默认安全上下文（验证证书）
     context = ssl.create_default_context()
 
-    # Make HTTPS request
+    # 发出 HTTPS 请求
     url = "https://example.com"
     with urllib.request.urlopen(url, context=context) as response:
         print(response.read().decode())
 
-    # Custom CA certificate (e.g., internal CA)
+    # 定制CA证书（e.g.，内部CA）
     context = ssl.create_default_context()
     context.load_verify_locations("internal-ca.pem")
 
-    # Client certificate authentication (mTLS)
+    # 客户端证书身份验证 (mTLS)
     context = ssl.create_default_context()
     context.load_cert_chain(certfile="client.pem", keyfile="client-key.pem")
 
-    # Using requests library (recommended for HTTP)
+    # 使用请求library（推荐用于HTTP）
     import requests
 
-    # Default (secure)
+    # 默认（安全）
     response = requests.get("https://example.com")
 
-    # Custom CA
+    # 定制CA
     response = requests.get("https://internal.example.com", verify="internal-ca.pem")
 
-    # Client certificate
+    # 客户证书
     response = requests.get(
         "https://secure.example.com",
         cert=("client.pem", "client-key.pem"),
     )
 
-Generate Self-Signed Certificate
---------------------------------
+生成自签名证书（Generate Self-Signed Certificate）
+----------------------------------------------------------------------------------
 
-Self-signed certificates are useful for development and testing. The certificate
-is signed by its own private key rather than a CA. Browsers will show warnings
-for self-signed certificates. Use the ``cryptography`` library for certificate
-generation—it's more Pythonic than calling OpenSSL.
+自签名证书对于开发和测试很有用。该证书由其自己的私有 key 而不是 CA 签名。浏览器将显示有关自签名证书的警告。使用 ``cryptography`` library 进行证书生成 — 它比调用 OpenSSL 更适合 Pythonic。
 
 .. code-block:: python
 
@@ -123,13 +108,13 @@ generation—it's more Pythonic than calling OpenSSL.
     from cryptography.hazmat.primitives.asymmetric import rsa
     from cryptography.hazmat.primitives import serialization
 
-    # Generate private key
+    # 生成私有key
     private_key = rsa.generate_private_key(
         public_exponent=65537,
         key_size=4096,
     )
 
-    # Certificate subject and issuer (same for self-signed)
+    # 证书主题和颁发者（自签名相同）
     subject = issuer = x509.Name([
         x509.NameAttribute(NameOID.COUNTRY_NAME, "US"),
         x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, "California"),
@@ -138,7 +123,7 @@ generation—it's more Pythonic than calling OpenSSL.
         x509.NameAttribute(NameOID.COMMON_NAME, "localhost"),
     ])
 
-    # Build certificate
+    # 构建证书
     cert = (
         x509.CertificateBuilder()
         .subject_name(subject)
@@ -162,7 +147,7 @@ generation—it's more Pythonic than calling OpenSSL.
         .sign(private_key, hashes.SHA256())
     )
 
-    # Save private key
+    # 保存私人key
     with open("key.pem", "wb") as f:
         f.write(private_key.private_bytes(
             encoding=serialization.Encoding.PEM,
@@ -170,19 +155,16 @@ generation—it's more Pythonic than calling OpenSSL.
             encryption_algorithm=serialization.NoEncryption(),
         ))
 
-    # Save certificate
+    # 保存证书
     with open("cert.pem", "wb") as f:
         f.write(cert.public_bytes(serialization.Encoding.PEM))
 
     print("Generated key.pem and cert.pem")
 
-Generate Certificate Signing Request (CSR)
-------------------------------------------
+生成证书签名请求 (CSR)（Generate Certificate Signing Request (CSR)）
+--------------------------------------------------------------------------------------------------------------------
 
-A CSR is sent to a Certificate Authority to obtain a signed certificate. It
-contains your public key and identity information. The CA verifies your identity
-and returns a signed certificate. Keep your private key secret—never send it
-to the CA.
+CSR 被发送到证书颁发机构以获得签名证书。它包含您的公开key和身份信息。 CA 验证您的身份并返回签名证书。确保您的私人 key 保密——切勿将其发送至 CA。
 
 .. code-block:: python
 
@@ -192,13 +174,13 @@ to the CA.
     from cryptography.hazmat.primitives.asymmetric import rsa
     from cryptography.hazmat.primitives import serialization
 
-    # Generate private key (keep this secret!)
+    # 生成私有key（保守秘密！）
     private_key = rsa.generate_private_key(
         public_exponent=65537,
         key_size=4096,
     )
 
-    # Build CSR
+    # 构建 CSR
     csr = (
         x509.CertificateSigningRequestBuilder()
         .subject_name(x509.Name([
@@ -219,7 +201,7 @@ to the CA.
         .sign(private_key, hashes.SHA256())
     )
 
-    # Save private key
+    # 保存私人key
     with open("private.key", "wb") as f:
         f.write(private_key.private_bytes(
             encoding=serialization.Encoding.PEM,
@@ -227,41 +209,40 @@ to the CA.
             encryption_algorithm=serialization.NoEncryption(),
         ))
 
-    # Save CSR (send this to CA)
+    # 保存CSR（发送至CA）
     with open("request.csr", "wb") as f:
         f.write(csr.public_bytes(serialization.Encoding.PEM))
 
     print("Generated private.key and request.csr")
     print("Send request.csr to your CA, keep private.key secret!")
 
-Read Certificate Information
-----------------------------
+读取证书信息（Read Certificate Information）
+------------------------------------------------------------------------
 
-Parse and inspect X.509 certificates to view subject, issuer, validity period,
-extensions, and other attributes. Useful for debugging certificate issues.
+解析和检查 X.509 证书以查看主题、颁发者、有效期、扩展名和其他 attributes。对于 debugging 证书问题很有用。
 
 .. code-block:: python
 
     from cryptography import x509
     from cryptography.hazmat.primitives import serialization
 
-    # Load certificate from file
+    # 从文件加载证书
     with open("cert.pem", "rb") as f:
         cert = x509.load_pem_x509_certificate(f.read())
 
-    # Basic information
+    # 基本信息
     print(f"Subject: {cert.subject}")
     print(f"Issuer: {cert.issuer}")
     print(f"Serial: {cert.serial_number}")
     print(f"Not Before: {cert.not_valid_before}")
     print(f"Not After: {cert.not_valid_after}")
 
-    # Get specific subject attributes
+    # 获取特定主题 attributes
     cn = cert.subject.get_attributes_for_oid(x509.oid.NameOID.COMMON_NAME)
     if cn:
         print(f"Common Name: {cn[0].value}")
 
-    # Check extensions
+    # 检查扩展
     try:
         san = cert.extensions.get_extension_for_oid(
             x509.oid.ExtensionOID.SUBJECT_ALTERNATIVE_NAME
@@ -270,15 +251,15 @@ extensions, and other attributes. Useful for debugging certificate issues.
     except x509.ExtensionNotFound:
         print("No SAN extension")
 
-    # Check if self-signed
+    # 检查是否自签名
     is_self_signed = cert.subject == cert.issuer
     print(f"Self-signed: {is_self_signed}")
 
-    # Verify certificate signature (self-signed only)
+    # 验证证书签名（仅限自签名）
     if is_self_signed:
         public_key = cert.public_key()
         try:
-            # This verifies the certificate was signed by its own key
+            # 这验证了证书是由自己的 key 签名的
             public_key.verify(
                 cert.signature,
                 cert.tbs_certificate_bytes,
@@ -288,12 +269,10 @@ extensions, and other attributes. Useful for debugging certificate issues.
         except Exception as e:
             print(f"Signature invalid: {e}")
 
-Create a Certificate Authority
-------------------------------
+创建证书颁发机构（Create a Certificate Authority）
+--------------------------------------------------------------------------------
 
-For internal use, you can create your own CA to sign certificates. The CA
-certificate is distributed to clients, which then trust any certificate signed
-by the CA. This is useful for development environments or internal services.
+对于内部使用，您可以创建自己的 CA 来签署证书。 CA 证书分发给客户端，然后客户端信任由 CA 签名的任何证书。这对于开发环境或内部服务很有用。
 
 .. code-block:: python
 
@@ -307,13 +286,13 @@ by the CA. This is useful for development environments or internal services.
 
     def create_ca():
         """Create a Certificate Authority."""
-        # Generate CA private key
+        # 生成CA私有key
         ca_key = rsa.generate_private_key(
             public_exponent=65537,
             key_size=4096,
         )
 
-        # CA certificate (self-signed)
+        # CA 证书（自签名）
         ca_name = x509.Name([
             x509.NameAttribute(NameOID.COUNTRY_NAME, "US"),
             x509.NameAttribute(NameOID.ORGANIZATION_NAME, "My Internal CA"),
@@ -327,7 +306,7 @@ by the CA. This is useful for development environments or internal services.
             .public_key(ca_key.public_key())
             .serial_number(x509.random_serial_number())
             .not_valid_before(datetime.utcnow())
-            .not_valid_after(datetime.utcnow() + timedelta(days=3650))  # 10 years
+            .not_valid_after(datetime.utcnow() + timedelta(days=3650))  # 10年
             .add_extension(
                 x509.BasicConstraints(ca=True, path_length=0),
                 critical=True,
@@ -370,16 +349,16 @@ by the CA. This is useful for development environments or internal services.
             )
         )
 
-        # Copy extensions from CSR
+        # 从 CSR 复制扩展名
         for ext in csr.extensions:
             cert = cert.add_extension(ext.value, ext.critical)
 
         return cert.sign(ca_key, hashes.SHA256())
 
-    # Create CA
+    # 创建CA
     ca_key, ca_cert = create_ca()
 
-    # Save CA files
+    # 保存 CA 文件
     with open("ca-key.pem", "wb") as f:
         f.write(ca_key.private_bytes(
             encoding=serialization.Encoding.PEM,
@@ -392,11 +371,10 @@ by the CA. This is useful for development environments or internal services.
 
     print("Created ca-key.pem (keep secret!) and ca-cert.pem (distribute to clients)")
 
-TLS Version and Cipher Information
-----------------------------------
+TLS 版本与加密套件信息（TLS Version and Cipher Information）
+--------------------------------------------------------------------------------------------------
 
-Inspect TLS connection details including protocol version, cipher suite, and
-peer certificate. Useful for debugging and security auditing.
+检查 TLS 连接详细信息，包括协议版本、密码套件和对等证书。对于 debugging 和安全审核很有用。
 
 .. code-block:: python
 
@@ -412,27 +390,24 @@ peer certificate. Useful for debugging and security auditing.
                 print(f"TLS Version: {ssock.version()}")
                 print(f"Cipher: {ssock.cipher()}")
 
-                # Peer certificate
+                # 同行证书
                 cert = ssock.getpeercert()
                 print(f"Subject: {dict(x[0] for x in cert['subject'])}")
                 print(f"Issuer: {dict(x[0] for x in cert['issuer'])}")
                 print(f"Not Before: {cert['notBefore']}")
                 print(f"Not After: {cert['notAfter']}")
 
-                # Subject Alternative Names
+                # 主题替代名称
                 if 'subjectAltName' in cert:
                     sans = [x[1] for x in cert['subjectAltName']]
                     print(f"SANs: {sans}")
 
     get_tls_info("www.google.com")
 
-Certificate Pinning
--------------------
+证书固定（Certificate Pinning）
+--------------------------------------------------
 
-Certificate pinning adds an extra layer of security by verifying the server's
-certificate matches an expected value. This prevents attacks using fraudulently
-issued certificates. Pin the public key (SPKI) rather than the certificate to
-survive certificate renewals.
+证书固定通过验证服务器的证书与预期的 value 匹配来增加额外的安全层。这可以防止使用欺诈性颁发的证书进行攻击。固定公共 key (SPKI) 而不是证书，以便在证书续订后继续有效。
 
 .. code-block:: python
 
@@ -448,19 +423,19 @@ survive certificate renewals.
 
         with socket.create_connection((hostname, port)) as sock:
             with context.wrap_socket(sock, server_hostname=hostname) as ssock:
-                # Get certificate in DER format
+                # 获取DER格式的证书
                 der_cert = ssock.getpeercert(binary_form=True)
 
-        # Parse certificate
+        # 解析证书
         cert = x509.load_der_x509_certificate(der_cert)
 
-        # Get public key in DER format (SPKI)
+        # 获取 DER 格式的公共 key (SPKI)
         spki = cert.public_key().public_bytes(
             encoding=serialization.Encoding.DER,
             format=serialization.PublicFormat.SubjectPublicKeyInfo,
         )
 
-        # SHA-256 hash of SPKI
+        # SHA-256 hash SPKI
         pin = hashlib.sha256(spki).digest()
         return pin
 
@@ -471,9 +446,9 @@ survive certificate renewals.
             raise ssl.SSLError(f"Certificate pin mismatch for {hostname}")
         print(f"Pin verified for {hostname}")
 
-    # Get pin (do this once, store the result)
+    # 获取 pin（执行一次，存储结果）
     pin = get_certificate_pin("www.google.com")
     print(f"Pin (base64): {__import__('base64').b64encode(pin).decode()}")
 
-    # Verify pin on subsequent connections
+    # 验证后续连接的引脚
     verify_pin("www.google.com", pin)

@@ -1,5 +1,5 @@
 #!/bin/bash
-# vLLM server launcher with multiple modes
+# vLLM 多种模式的服务器启动器
 
 set -uo pipefail
 
@@ -13,17 +13,17 @@ DP="1"
 HEAD_IP="127.0.0.1"
 NODE_RANK="0"
 
-# Log info message with timestamp
+# 带有时间戳的日志信息消息
 info() {
   echo -e "[$(date +'%Y-%m-%dT%H:%M:%S%z')][info] $*"
 }
 
-# Log error message with timestamp to stderr
+# 将带有时间戳的错误消息记录到 stderr
 err() {
   echo -e "[$(date +'%Y-%m-%dT%H:%M:%S%z')][error] $*" >&2
 }
 
-# Display usage information
+# 显示使用信息
 usage() {
   cat <<EOF
 Usage:  $PROGRAM [OPTIONS] MODE
@@ -55,7 +55,7 @@ Examples:
 EOF
 }
 
-# Launch single mode
+# 启动单人模式
 launch_single() {
   info "Starting single mode..."
   vllm serve "${MODEL}" \
@@ -64,7 +64,7 @@ launch_single() {
     --gpu-memory-utilization 0.9
 }
 
-# Launch Ray backend
+# 启动Ray后端
 launch_ray() {
   info "Starting Ray backend (TP=${TP}, PP=${PP}, DP=${DP})..."
   local gpus
@@ -82,7 +82,7 @@ launch_ray() {
     --gpu-memory-utilization 0.9
 }
 
-# Launch multiprocessing mode
+# 启动multiprocessing模式
 launch_mp() {
   info "Starting multiprocessing (TP=${TP}, PP=${PP}, DP=${DP})..."
   local args=(
@@ -97,7 +97,7 @@ launch_mp() {
   vllm serve "${MODEL}" "${args[@]}"
 }
 
-# Launch RPC backend
+# 启动RPC后端
 launch_rpc() {
   if [ "${NODE_RANK}" -eq 0 ]; then
     info "Starting RPC head (TP=${TP}, PP=${PP}, DP=${DP})..."
@@ -129,7 +129,7 @@ launch_rpc() {
   fi
 }
 
-# Launch vLLM server based on mode
+# 根据模式启动vLLM服务器
 launch() {
   local mode="$1"
 

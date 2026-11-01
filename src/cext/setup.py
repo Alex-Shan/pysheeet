@@ -40,7 +40,7 @@ try:
         python_requires=">=3.8",
     )
 except ImportError:
-    # pybind11 not installed, create minimal setup
+    # pybind11 未安装，创建最小设置
     setup(
         name="pysheeet_cext",
         version="1.0.0",

@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# vLLM serving benchmark suite
-# Usage:
+# vLLM 服务 benchmark 套件
+# 用法：
 #   salloc -N1 bash bench.sh -H 10.0.128.193 -i /fsx/nixl-latest.tar.gz
-#   bash bench.sh -H 10.0.128.193 -i vllm-serve:latest
+#   bash bench.sh -H 10.0.128.193 -i vllm-服务：最新
 set -euo pipefail
 
 info() { echo "[$(date +'%H:%M:%S')] $*"; }
 
-# Docker image helpers (mirrors run.sbatch)
+# Docker 图像助手（镜子 run.sbatch）
 CONTAINER_MOUNT="${CONTAINER_MOUNT:-/fsx}"
 
-# Wrap a command with srun if inside a SLURM allocation, otherwise run directly
+# 如果在 SLURM 分配内，则用 srun 包装命令，否则直接运行
 _run() {
   if [[ -n "${SLURM_JOB_ID:-}" ]]; then
     srun -N1 --ntasks-per-node=1 bash -c "$*"
@@ -57,9 +57,9 @@ launch_container() {
     "
 }
 
-# If vllm CLI is not available, load image and re-exec inside container
+# 如果 vllm CLI 不可用，则加载映像并在容器内重新执行
 if ! command -v vllm &>/dev/null; then
-  # Pre-parse --image/-i before full arg parsing
+  # 在完整参数解析之前预解析 --image/-i
   IMAGE="" _args=("$@")
   for ((i = 0; i < ${#_args[@]}; i++)); do
     [[ "${_args[$i]}" == "--image" || "${_args[$i]}" == "-i" ]] &&
@@ -106,7 +106,7 @@ while [[ $# -gt 0 ]]; do
     PORT="$2"
     shift 2
     ;;
-  -i | --image) shift 2 ;; # consumed by preamble above
+  -i | --image) shift 2 ;; # 上面的序言消耗了
   -h | --help)
     usage
     exit 0

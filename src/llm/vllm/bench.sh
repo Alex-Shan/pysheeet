@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# vLLM serving benchmark suite
-# Usage:
+# vLLM 服务 benchmark 套件
+# 用法：
 #   salloc -N1 bash bench.sh -H 10.0.128.193 -i /fsx/vllm-serve-latest.tar.gz
-#   bash bench.sh -H 10.0.128.193 -i vllm-serve:latest
+#   bash bench.sh -H 10.0.128.193 -i vllm-服务：最新
 set -euo pipefail
 
 info() { echo "[$(date +'%H:%M:%S')] $*"; }
 
-# Docker image helpers (mirrors run.sbatch)
+# Docker 图像助手（镜子 run.sbatch）
 CONTAINER_MOUNT="${CONTAINER_MOUNT:-/fsx}"
 
-# Wrap a command with srun if inside a SLURM allocation, otherwise run directly
+# 如果在 SLURM 分配内，则用 srun 包装命令，否则直接运行
 _run() {
     if [[ -n "${SLURM_JOB_ID:-}" ]]; then
         srun -N1 --ntasks-per-node=1 bash -c "$*"
@@ -57,9 +57,9 @@ launch_container() {
     "
 }
 
-# If vllm CLI is not available, load image and re-exec inside container
+# 如果 vllm CLI 不可用，则加载映像并在容器内重新执行
 if ! command -v vllm &>/dev/null; then
-    # Pre-parse --image/-i before full arg parsing
+    # 在完整参数解析之前预解析 --image/-i
     IMAGE="" _args=("$@")
     for ((i=0; i<${#_args[@]}; i++)); do
         [[ "${_args[$i]}" == "--image" || "${_args[$i]}" == "-i" ]] \
@@ -111,7 +111,7 @@ while [[ $# -gt 0 ]]; do
         -m|--model) MODEL="$2"; shift 2 ;;
         -t|--type)  TYPES="$2"; shift 2 ;;
         -o|--output) RESULT_DIR="$2"; shift 2 ;;
-        -i|--image)  shift 2 ;;  # consumed by preamble above
+        -i|--image)  shift 2 ;;  # 上面的序言消耗了
         --profile)   PROFILE="--profile"; shift ;;
         -h|--help)   usage; exit 0 ;;
         *) echo "Unknown option: $1"; usage; exit 1 ;;
@@ -146,11 +146,11 @@ bench() {
 }
 
 
-# Throughput: measures peak output tokens/sec and request throughput.
+# Throughput：测量峰值输出令牌/秒并请求 throughput。
 # Uses request-rate=inf to saturate the server — all 1000 prompts are sent as fast as
-# possible, forcing the scheduler to batch aggressively. 512in/256out is a moderate
-# workload that exercises both prefill and decode phases. 1000 prompts follows the
-# GPUStack methodology for statistically stable throughput numbers.
+# 可能，迫使调度程序积极地进行批处理。 512in/256out 适中
+# 执行 prefill 和 decode 阶段的工作负载。 1000 条提示如下
+# 用于统计稳定 throughput 数字的 GPUStack 方法。
 bench_throughput() {
     bench "Throughput (random 512in/256out, max rate)" \
         --dataset-name random \
@@ -158,10 +158,10 @@ bench_throughput() {
         --num-prompts 100 --request-rate inf
 }
 
-# Prefill (TTFT): measures Time to First Token, which reflects prompt processing speed.
+# Prefill（TTFT）：测量Time to First Token，反映即时处理速度。
 # output-len=1 isolates prefill from decode — we only care how fast the model processes
-# the input. Sweeps 128→16K tokens to show how TTFT scales with context length (should
-# grow roughly linearly due to attention's O(n) compute per layer during prefill).
+# 输入。扫描 128→16K 标记以显示 TTFT 如何随上下文长度缩放（应该
+# 由于 attention 在 prefill 期间每层的 O(n) 计算，大致呈线性增长。
 # rate=4 keeps the server lightly loaded so TTFT reflects compute, not queueing.
 bench_prefill() {
     for len in 128 512 2048 4096 16384; do
@@ -172,10 +172,10 @@ bench_prefill() {
     done
 }
 
-# Decode (ITL): measures Inter-Token Latency and Time Per Output Token during generation.
+# Decode (ITL)：测量生成期间的令牌间 Latency 和每个输出令牌的时间。
 # input=128 keeps prefill minimal so the benchmark focuses on autoregressive decode.
-# Sweeps 128→1024 output tokens to reveal how ITL changes as KV cache grows — longer
-# sequences increase memory pressure and may trigger preemption/swapping.
+# 扫描 128→1024 个输出令牌，以揭示 ITL 如何随着 KV cache 的增长而变化 - 更长
+# 序列会增加内存压力并可能触发抢占/交换。
 # rate=4 avoids batching interference so ITL reflects per-request decode speed.
 bench_decode() {
     for len in 128 256 512 1024; do
@@ -186,11 +186,11 @@ bench_decode() {
     done
 }
 
-# Latency (E2E): measures end-to-end request latency under minimal load.
+# Latency (E2E)：测量最小负载下的端到端请求 latency。
 # rate=1 ensures requests are mostly processed alone (no batching), giving a baseline
-# for best-case latency. Tests short/medium/long to show how total latency scales.
-# These numbers represent the "single user" experience (similar to ChatGPT-style usage
-# where one user waits for a complete response).
+# 最佳情况 latency。测试短/中/长以显示 latency 总量的缩放情况。
+# 这些数字代表 "single user" 体验（类似于 ChatGPT 风格的使用
+# 其中一个用户等待完整的响应）。
 bench_latency() {
     bench "Latency (short 128/128, rate=1)" \
         --dataset-name random \
@@ -206,12 +206,12 @@ bench_latency() {
         --num-prompts 100 --request-rate 1
 }
 
-# Concurrency: finds the server's saturation point by sweeping concurrent requests.
+# 并发：通过扫描并发请求来找到服务器的饱和点。
 # request-rate=inf with max-concurrency=N caps how many requests run in parallel.
-# At low concurrency (1-4), latency is good but throughput is low (GPU underutilized).
-# At high concurrency (64-256), throughput plateaus and latency degrades (queueing).
-# The "knee" where throughput stops improving is the optimal operating point.
-# 500 prompts per level gives enough samples for stable percentile metrics.
+# 在低并发（1-4）时，latency 很好，但 throughput 较低（GPU 未充分利用）。
+# 在高并发 (64-256) 下，throughput 趋于稳定，latency 性能下降（排队）。
+# throughput 停止改进的 "knee" 是最佳工作点。
+# 每个级别 500 个提示为稳定的百分位数指标提供了足够的样本。
 bench_concurrency() {
     for c in 1 4 16 64 256; do
         bench "Concurrency=${c} (512in/256out)" \
@@ -221,11 +221,11 @@ bench_concurrency() {
     done
 }
 
-# Long context: tests behavior with very long inputs (4K→32K tokens).
-# Inspired by GPUStack's "very long prompt" config (32000in/100out). Long inputs stress
+# 长上下文：使用很长的输入（4K→32K 标记）测​​试行为。
+# 受到 GPUStack 的 "very long prompt" 配置（32000in/100out）的启发。长输入应力
 # KV cache memory, attention compute, and may trigger chunked prefill. output=100 keeps
 # decode short so we focus on prefill scaling. rate=1 and fewer prompts (50) because
-# each request is expensive and we want to avoid OOM under memory pressure.
+# 每个请求都很昂贵，我们希望避免在内存压力下出现 OOM。
 bench_longctx() {
     for len in 4096 16384 32000; do
         bench "Long context (input=${len})" \
@@ -235,15 +235,15 @@ bench_longctx() {
     done
 }
 
-# ShareGPT: realistic conversational workload from real user conversations. Variable
-# input/output lengths reflecting actual usage patterns. This is the standard dataset
-# used by vLLM CI, GPUStack perf lab, and most published benchmarks. Unlike random
-# datasets, ShareGPT captures the natural distribution of short/long prompts and
-# responses, making it the best proxy for production chat traffic.
-# Ref: github.com/vllm-project/vllm/blob/main/benchmarks/README.md
-# Ref: GPUStack perf lab uses ShareGPT with 1000 prompts as primary benchmark.
+# ShareGPT：来自真实用户对话的真实对话工作负载。 Variable
+# 输入/输出长度反映实际使用模式。这是标准数据集
+# 由 vLLM CI 使用， GPUStack 性能实验室， 以及大多数已发布的基准。 与随机不同
+# 数据集，ShareGPT 捕获短/长提示的自然分布，
+# 响应，使其成为生产聊天流量的最佳代理。
+# 参考：github.com/vllm-project/vllm/blob/main/benchmarks/README.md
+# 参考：GPUStack 性能实验室使用具有 1000 个提示的 ShareGPT 作为主要 benchmark。
 #
-# Requires: wget https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/ShareGPT_V3_unfiltered_cleaned_split.json
+# 需要：wget https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/ShareGPT_V3_unfiltered_cleaned_split.json
 SHAREGPT_PATH="${SHAREGPT_PATH:-ShareGPT_V3_unfiltered_cleaned_split.json}"
 bench_sharegpt() {
     if [[ ! -f "$SHAREGPT_PATH" ]]; then
@@ -261,13 +261,13 @@ bench_sharegpt() {
         --num-prompts 100 --request-rate 4
 }
 
-# Sonnet: uses Shakespeare's sonnets with a shared prefix to test prefix caching.
+# Sonnet：使用具有共享前缀的莎士比亚十四行诗来测试前缀caching。
 # All prompts share a common prefix (--sonnet-prefix-len=200 tokens of sonnet text),
-# then each request gets a unique suffix. This exercises vLLM's automatic prefix
-# caching — if enabled, the shared prefix KV cache is computed once and reused across
-# requests, dramatically reducing TTFT. Comparing sonnet results with prefix caching
-# on vs off shows the caching speedup.
-# Ref: vllm/benchmarks/datasets.py SonnetDataset
+# 那么每个请求都会有一个唯一的后缀。这个练习vLLM的自动前缀
+# caching — 如果启用，则共享前缀 KV cache 计算一次并在各个区域重复使用
+# 请求，大大减少了 TTFT。比较带有前缀 caching 的十四行诗结果
+# 打开与关闭显示 caching 加速比。
+# 参考：vllm/基准/datasets.py SonnetDataset
 # Ref: Default params: input=550, output=150, prefix=200
 bench_sonnet() {
     SONNET_PATH="${SONNET_PATH:-sonnet.txt}"
@@ -288,7 +288,7 @@ bench_sonnet() {
 
 IFS=',' read -ra TESTS <<< "$TYPES"
 for t in "${TESTS[@]}"; do
-    t=$(echo "$t" | xargs)  # trim whitespace
+    t=$(echo "$t" | xargs)  # 修剪空白
     echo "========================================"
     echo "Running: $t"
     echo "========================================"

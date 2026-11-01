@@ -31,23 +31,23 @@ class TestByteOrder:
     """Test network byte order conversion."""
 
     def test_htons(self):
-        # Host to network short
+        # 主机到网络短路
         result = socket.htons(1)
-        # On little-endian, 1 becomes 256
+        # 在 little-endian 上，1 变为 256
         assert result in (1, 256)
 
     def test_htonl(self):
-        # Host to network long
+        # 主机到网络长
         result = socket.htonl(1)
         assert result in (1, 16777216)
 
     def test_ntohs(self):
-        # Network to host short
+        # 网络到主机短
         val = socket.htons(1234)
         assert socket.ntohs(val) == 1234
 
     def test_ntohl(self):
-        # Network to host long
+        # 网络托管长
         val = socket.htonl(12345678)
         assert socket.ntohl(val) == 12345678
 
@@ -87,7 +87,7 @@ class TestSocketOptions:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         val = sock.getsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR)
-        assert val != 0  # Non-zero means enabled
+        assert val != 0  # 非零表示启用
         sock.close()
 
     def test_timeout(self):
@@ -111,7 +111,7 @@ class TestTCPEchoServer:
     def test_echo(self):
         host, port = "localhost", 15566
 
-        # Start server in thread
+        # 在thread中启动服务器
         server_ready = threading.Event()
 
         def server():
@@ -131,7 +131,7 @@ class TestTCPEchoServer:
         t.start()
         server_ready.wait()
 
-        # Client
+        # 客户
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.connect((host, port))
         client.send(b"Hello")
@@ -163,7 +163,7 @@ class TestUDPEchoServer:
         t.start()
         server_ready.wait()
 
-        # Client
+        # 客户
         client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         client.sendto(b"Hello UDP", (host, port))
         response, _ = client.recvfrom(1024)
@@ -179,11 +179,11 @@ class TestSocketPair:
     def test_socketpair(self):
         parent, child = socket.socketpair()
 
-        # Send from parent to child
+        # 从父母发送给孩子
         parent.send(b"Hello")
         assert child.recv(1024) == b"Hello"
 
-        # Send from child to parent
+        # 从孩子发送给父母
         child.send(b"World")
         assert parent.recv(1024) == b"World"
 
@@ -197,7 +197,7 @@ class TestPortCheck:
     def test_port_available(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            sock.bind(("", 0))  # Bind to any available port
+            sock.bind(("", 0))  # 绑定到任何可用端口
             port = sock.getsockname()[1]
             assert port > 0
         finally:
@@ -287,7 +287,7 @@ class TestSelectorsEcho:
         t.start()
         server_ready.wait()
 
-        # Client
+        # 客户
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.connect((host, port))
         client.send(b"Async Hello")

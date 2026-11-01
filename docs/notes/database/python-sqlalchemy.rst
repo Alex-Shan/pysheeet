@@ -1,59 +1,42 @@
 .. meta::
-    :description lang=en: SQLAlchemy Core tutorial covering database connections, engine creation, metadata, table definitions, and SQL expression language
+    :description lang=zh_CN: SQLAlchemy 核心教程，涵盖数据库连接、引擎创建、元数据、表定义和 SQL expression 语言
     :keywords: Python, SQLAlchemy, database, SQL, engine, metadata, table, connection, transaction, Core API
 
-=================
-SQLAlchemy Basics
-=================
+====================================================================
+SQLAlchemy 基础知识（SQLAlchemy Basics）
+====================================================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-SQLAlchemy is the most popular database toolkit and Object-Relational Mapping (ORM)
-library for Python. It provides a full suite of well-known enterprise-level persistence
-patterns, designed for efficient and high-performing database access. SQLAlchemy is
-divided into two main components: the Core (low-level SQL abstraction) and the ORM
-(high-level object mapping). This cheat sheet covers the Core API, which provides a
-SQL Expression Language that allows you to construct SQL statements in Python code
-while remaining database-agnostic. The Core is ideal when you need fine-grained control
-over SQL queries or when working with existing database schemas.
+SQLAlchemy 是最流行的数据库工具包，而 Object 关系映射 (ORM) library 则适用于 Python。它提供了一整套众所周知的企业级持久性模式，专为高效、高性能的数据库访问而设计。 SQLAlchemy 分为两个主要组件：Core（低级 SQL 抽象）和 ORM（高级 object 映射）。本速查表涵盖了核心 API，它提供了 SQL Expression 语言，允许您在 Python 代码中构造 SQL statements，同时保持与数据库无关。当您需要对 SQL 查询进行细粒度控制或使用现有数据库模式时，Core 是理想的选择。
 
-Create an Engine
-----------------
+创建引擎（Create an Engine）
+--------------------------------------------
 
-The ``Engine`` is the starting point for any SQLAlchemy application. It represents
-the connection pool and dialect for a particular database, managing connectivity
-and translating Python code into database-specific SQL. The ``create_engine()``
-function takes a database URL that specifies the database type, credentials, host,
-and database name. SQLAlchemy supports many databases including SQLite, PostgreSQL,
-MySQL, Oracle, and Microsoft SQL Server through different dialects.
+``Engine`` 是任何 SQLAlchemy 应用的起点。它代表特定数据库的连接池和方言，管理连接并将 Python 代码转换为数据库特定的 SQL。 ``create_engine()`` function 采用数据库 URL，该数据库指定数据库 type、凭据、主机和数据库名称。 SQLAlchemy通过不同的方言支持SQLite、PostgreSQL、MySQL、Oracle、Microsoft SQL Server等多种数据库。
 
 .. code-block:: python
 
     >>> from sqlalchemy import create_engine
-    >>> # SQLite in-memory database (great for testing)
+    >>> # SQLite 内存数据库（非常适合测试）
     >>> engine = create_engine("sqlite:///:memory:")
-    >>> # SQLite file-based database
+    >>> # SQLite 基于文件的数据库
     >>> engine = create_engine("sqlite:///mydb.sqlite")
     >>> # PostgreSQL
     >>> engine = create_engine("postgresql://user:pass@localhost/dbname")
     >>> # MySQL
     >>> engine = create_engine("mysql+pymysql://user:pass@localhost/dbname")
 
-Database URL Format
--------------------
+数据库 URL 格式（Database URL Format）
+--------------------------------------------------------------
 
-SQLAlchemy uses RFC-1738 style URLs to specify database connections. The URL format
-provides a standardized way to specify all connection parameters including the database
-driver, authentication credentials, host address, port number, and database name.
-Understanding this format is essential for configuring connections to different
-database systems. The ``make_url()`` function can parse and construct these URLs
-programmatically.
+SQLAlchemy 使用 RFC-1738 样式 URLs 来指定数据库连接。 URL 格式提供了一种标准化方法来指定所有连接 parameters，包括数据库驱动程序、身份验证凭据、主机地址、端口号和数据库名称。了解这种格式对于配置与不同数据库系统的连接至关重要。 ``make_url()`` function 可以通过编程方式解析和构造这些 URLs。
 
 .. code-block:: python
 
     >>> from sqlalchemy import make_url
-    >>> # Format: dialect+driver://username:password@host:port/database
+    >>> # 格式：方言+驱动://用户名:密码@主机:端口/数据库
     >>> url = make_url("postgresql://user:pass@localhost:5432/mydb")
     >>> url.drivername
     'postgresql'
@@ -64,14 +47,10 @@ programmatically.
     >>> url.database
     'mydb'
 
-Connect and Execute Raw SQL
----------------------------
+连接并执行原始 SQL（Connect and Execute Raw SQL）
+--------------------------------------------------------------------------------
 
-While SQLAlchemy encourages using its SQL Expression Language, you can also execute
-raw SQL strings directly. This is useful for complex queries that are difficult to
-express in SQLAlchemy's API, or when migrating existing SQL code. The ``text()``
-function wraps raw SQL strings and allows parameter binding for security. Always
-use parameter binding instead of string formatting to prevent SQL injection attacks.
+虽然 SQLAlchemy 鼓励使用其 SQL Expression 语言，但您也可以直接执行原始 SQL strings。这对于难以在 SQLAlchemy 的 API 中表达的 complex 查询或迁移现有 SQL 代码时非常有用。 ``text()`` function 包装原始 SQL strings 并允许 parameter 绑定以确保安全。始终使用 parameter 绑定而不是 string 格式化，以防止 SQL 注入攻击。
 
 .. code-block:: python
 
@@ -85,27 +64,22 @@ use parameter binding instead of string formatting to prevent SQL injection atta
     ...     print(result.fetchall())
     [(1, 'Alice')]
 
-Transaction Management
-----------------------
+事务管理（Transaction Management）
+--------------------------------------------------------
 
-Transactions ensure that a series of database operations either all succeed or all
-fail together, maintaining data integrity. SQLAlchemy provides several ways to manage
-transactions: implicit transactions with ``begin()``, context managers for automatic
-commit/rollback, and manual control with ``commit()`` and ``rollback()``. The ``begin()``
-method starts a transaction that will automatically rollback on exceptions and commit
-on successful completion when used as a context manager.
+事务可确保 series 的数据库操作全部成功或全部失败，从而保持数据完整性。 SQLAlchemy 提供了多种管理事务的方式：使用 ``begin()`` 隐式事务、用于自动提交/回滚的 context managers 以及使用 ``commit()`` 和 ``rollback()`` 进行手动控制。 ``begin()`` method 启动一个事务，该事务将在 exceptions 上自动回滚，并在用作 context manager 时在成功完成时提交。
 
 .. code-block:: python
 
     >>> from sqlalchemy import create_engine, text
     >>> engine = create_engine("sqlite:///:memory:")
-    >>> # Using begin() for automatic commit/rollback
+    >>> # 使用begin()进行自动提交/回滚
     >>> with engine.begin() as conn:
     ...     conn.execute(text("CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)"))
     ...     conn.execute(text("INSERT INTO users (name) VALUES ('Bob')"))
-    ...     # Commits automatically if no exception
+    ...     # 如果没有 exception，则自动提交
 
-    >>> # Manual transaction control
+    >>> # 手动交易控制
     >>> with engine.connect() as conn:
     ...     trans = conn.begin()
     ...     try:
@@ -115,15 +89,10 @@ on successful completion when used as a context manager.
     ...         trans.rollback()
     ...         raise
 
-Define Tables with Metadata
----------------------------
+使用元数据定义表（Define Tables with Metadata）
+--------------------------------------------------------------------------
 
-``MetaData`` is a container that holds information about database tables and other
-schema constructs. You can define tables programmatically using the ``Table`` class,
-specifying columns with their types and constraints. This approach is part of
-SQLAlchemy Core and gives you explicit control over the table structure. The metadata
-can then create all defined tables in the database with ``create_all()``, which
-generates the appropriate DDL statements for your database dialect.
+``MetaData`` 是一个容器，保存有关数据库表和其他架构构造的信息。您可以使用 ``Table`` class 以编程方式定义表，并指定列及其 types 和约束。这种方法是 SQLAlchemy Core 的一部分，使您可以显式控制表结构。然后，元数据可以使用 ``create_all()`` 在数据库中创建所有定义的表，这会为您的数据库方言生成适当的 DDL statements。
 
 .. code-block:: python
 
@@ -137,28 +106,24 @@ generates the appropriate DDL statements for your database dialect.
     ...     Column("email", String(100))
     ... )
     >>> metadata.create_all(engine)
-    >>> # Check table columns
+    >>> # 检查表列
     >>> [c.name for c in users.columns]
     ['id', 'name', 'email']
 
-Reflect Existing Tables
------------------------
+反射已有表（Reflect Existing Tables）
+------------------------------------------------------------
 
-Table reflection allows SQLAlchemy to load table definitions from an existing database
-schema automatically. This is useful when working with legacy databases or when you
-want to avoid duplicating schema definitions. The ``reflect()`` method on ``MetaData``
-reads the database schema and creates ``Table`` objects for all tables found. You can
-also reflect individual tables using ``autoload_with`` parameter.
+表反射允许 SQLAlchemy 自动从现有数据库模式加载表定义。当使用旧数据库或当您想要避免重复架构定义时，这非常有用。 ``MetaData`` 上的 ``reflect()`` method 读取数据库架构并为找到的所有表创建 ``Table`` objects。您还可以使用 ``autoload_with`` parameter 反映各个表。
 
 .. code-block:: python
 
     >>> from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
     >>> engine = create_engine("sqlite:///:memory:")
-    >>> # Create a table first
+    >>> # 先创建一个表
     >>> with engine.begin() as conn:
     ...     conn.execute(text("CREATE TABLE products (id INTEGER PRIMARY KEY, name TEXT, price REAL)"))
 
-    >>> # Reflect the table
+    >>> # 反映表
     >>> metadata = MetaData()
     >>> metadata.reflect(bind=engine)
     >>> list(metadata.tables.keys())
@@ -167,15 +132,10 @@ also reflect individual tables using ``autoload_with`` parameter.
     >>> [c.name for c in products.columns]
     ['id', 'name', 'price']
 
-Inspect Database Schema
------------------------
+检查数据库架构（Inspect Database Schema）
+----------------------------------------------------------------
 
-The ``inspect()`` function provides a powerful way to examine database schema details
-at runtime. The inspector can retrieve information about tables, columns, indexes,
-foreign keys, and other database objects. This is particularly useful for database
-administration tasks, schema migrations, and debugging. The inspector works with
-any database supported by SQLAlchemy and provides a consistent API across different
-database systems.
+``inspect()`` function 提供了一种在运行时检查数据库架构详细信息的强大方法。检查员可以检索有关表、列、indexes、国外keys和其他数据库objects的信息。这对于数据库管理任务、模式迁移和 debugging 特别有用。检查器可与 SQLAlchemy 支持的任何数据库配合使用，并在不同的数据库系统之间提供一致的 API。
 
 .. code-block:: python
 
@@ -193,14 +153,10 @@ database systems.
     >>> inspector.get_columns('users')  # doctest: +ELLIPSIS
     [{'name': 'id', ...}, {'name': 'name', ...}]
 
-Insert Data
------------
+插入数据（Insert Data）
+----------------------------------
 
-The ``insert()`` construct creates an INSERT statement for a table. You can specify
-values using the ``values()`` method or pass them as keyword arguments. For bulk
-inserts, pass a list of dictionaries to ``execute()``. SQLAlchemy will generate
-efficient multi-row INSERT statements when possible. The ``returning()`` method
-can retrieve auto-generated values like primary keys after insertion.
+``insert()`` 构造为表创建 INSERT statement。您可以使用 ``values()`` method 指定 values 或将它们作为 keyword arguments 传递。对于批量插入，请将 dictionaries 的 list 传递到 ``execute()`` 。如果可能，SQLAlchemy 将生成高效的多行 INSERT statements。 ``returning()`` method 可以在插入后像主 keys 一样检索自动生成的 values。
 
 .. code-block:: python
 
@@ -212,10 +168,10 @@ can retrieve auto-generated values like primary keys after insertion.
     ...     Column("name", String(50)))
     >>> metadata.create_all(engine)
 
-    >>> # Single insert
+    >>> # 单刀片
     >>> with engine.begin() as conn:
     ...     conn.execute(insert(users).values(name="Alice"))
-    ...     # Bulk insert
+    ...     # 批量插入
     ...     conn.execute(insert(users), [{"name": "Bob"}, {"name": "Carol"}])
 
     >>> with engine.connect() as conn:
@@ -223,15 +179,10 @@ can retrieve auto-generated values like primary keys after insertion.
     ...     print(result.fetchall())
     [(1, 'Alice'), (2, 'Bob'), (3, 'Carol')]
 
-Select Data
------------
+选择数据（Select Data）
+----------------------------------
 
-The ``select()`` construct creates SELECT statements with a Pythonic API. You can
-specify which columns to retrieve, add WHERE clauses with ``where()``, order results
-with ``order_by()``, and limit results with ``limit()`` and ``offset()``. The SQL
-Expression Language uses Python operators like ``==``, ``!=``, ``>``, ``<`` which
-are overloaded to generate SQL conditions. This provides type safety and prevents
-SQL injection.
+``select()`` 构造创建 SELECT statements 和 Pythonic API。您可以指定要检索的列、使用 ``where()`` 添加 WHERE 子句、使用 ``order_by()`` 对结果进行排序以及使用 ``limit()`` 和 ``offset()`` 限制结果。 SQL Expression 语言使用 Python operators，如 ``==`` 、 ``!=`` 、 ``>`` 、 ``<`` ，它们被重载以生成 SQL 条件。这提供了 type 的安全性并防止 SQL 注入。
 
 .. code-block:: python
 
@@ -251,23 +202,19 @@ SQL injection.
     ...         {"name": "Carol", "age": 35}])
 
     >>> with engine.connect() as conn:
-    ...     # Select all
+    ...     # 选择全部
     ...     result = conn.execute(select(users))
     ...     print(result.fetchall())
-    ...     # Select with condition
+    ...     # 有条件选择
     ...     result = conn.execute(select(users).where(users.c.age > 28))
     ...     print(result.fetchall())
     [(1, 'Alice', 30), (2, 'Bob', 25), (3, 'Carol', 35)]
     [(1, 'Alice', 30), (3, 'Carol', 35)]
 
-Update Data
------------
+更新数据（Update Data）
+----------------------------------
 
-The ``update()`` construct creates UPDATE statements. Use ``where()`` to specify
-which rows to update and ``values()`` to set new column values. Without a WHERE
-clause, all rows in the table will be updated. The ``returning()`` method can
-retrieve the updated values. For bulk updates with different values per row,
-use ``bindparam()`` to create parameterized statements.
+``update()`` 构造创建 UPDATE statements。使用 ``where()`` 指定要更新哪些行，使用 ``values()`` 指定更新 set 新列 values。如果没有 WHERE 子句，表中的所有行都将被更新。 ``returning()`` method 可以检索更新的 values。对于每行具有不同 values 的批量更新，请使用 ``bindparam()`` 创建参数化 statements。
 
 .. code-block:: python
 
@@ -289,13 +236,10 @@ use ``bindparam()`` to create parameterized statements.
     ...     print(result.fetchall())
     [(1, 'Alicia'), (2, 'Bob')]
 
-Delete Data
------------
+删除数据（Delete Data）
+----------------------------------
 
-The ``delete()`` construct creates DELETE statements. Always use ``where()`` to
-specify which rows to delete, unless you intend to delete all rows. Like other
-DML statements, ``delete()`` supports ``returning()`` to retrieve deleted rows.
-Be careful with DELETE statements as they permanently remove data from the database.
+``delete()`` 构造创建 DELETE statements。始终使用 ``where()`` 指定要删除的行，除非您打算删除所有行。与其他 DML statements 一样， ``delete()`` 支持 ``returning()`` 检索已删除的行。请小心 DELETE statements，因为它们会从数据库中永久删除数据。
 
 .. code-block:: python
 
@@ -317,14 +261,10 @@ Be careful with DELETE statements as they permanently remove data from the datab
     ...     print(result.fetchall())
     [(1, 'Alice'), (3, 'Carol')]
 
-SQL Expression Language
------------------------
+SQL 表达式语言（SQL Expression Language）
+--------------------------------------------------------------------
 
-SQLAlchemy's SQL Expression Language provides a Pythonic way to construct SQL
-statements. Column objects support comparison operators (``==``, ``!=``, ``>``, ``<``),
-logical operators (``&`` for AND, ``|`` for OR), and methods like ``in_()``,
-``like()``, ``between()``, and ``is_()``. These expressions are composable and
-can be combined to build complex queries while maintaining readability and type safety.
+SQLAlchemy的SQL Expression语言提供了Pythonic的方式来构造SQL statements。列objects支持比较operators（ ``==`` 、 ``!=`` 、 ``>`` 、 ``<`` ），逻辑operators（ ``&`` 为AND， ``|`` 为OR）和 methods，如 ``in_()`` 、 ``like()`` 、 ``between()`` 和 ``is_()`` 。这些 expressions 是可组合的，可以组合起来构建 complex 查询，同时保持可读性和 type 安全性。
 
 .. code-block:: python
 
@@ -345,27 +285,23 @@ can be combined to build complex queries while maintaining readability and type 
     ...         {"name": "Carol", "age": 35}])
 
     >>> with engine.connect() as conn:
-    ...     # AND condition
+    ...     # AND 状况
     ...     stmt = select(users).where(and_(users.c.age > 25, users.c.age < 35))
     ...     print(conn.execute(stmt).fetchall())
-    ...     # OR condition
+    ...     # OR 状况
     ...     stmt = select(users).where(or_(users.c.name == "Alice", users.c.name == "Bob"))
     ...     print(conn.execute(stmt).fetchall())
-    ...     # IN clause
+    ...     # IN条款
     ...     stmt = select(users).where(users.c.name.in_(["Alice", "Carol"]))
     ...     print(conn.execute(stmt).fetchall())
     [(1, 'Alice', 30)]
     [(1, 'Alice', 30), (2, 'Bob', 25)]
     [(1, 'Alice', 30), (3, 'Carol', 35)]
 
-Join Tables
------------
+连接表（Join Tables）
+--------------------------------
 
-The ``join()`` method creates JOIN clauses between tables. SQLAlchemy can automatically
-determine join conditions based on foreign key relationships, or you can specify
-them explicitly. Use ``select_from()`` to specify the joined tables in a SELECT
-statement. SQLAlchemy supports INNER JOIN (default), LEFT OUTER JOIN, RIGHT OUTER
-JOIN, and FULL OUTER JOIN through the ``isouter`` and ``full`` parameters.
+``join()`` method 在表之间创建 JOIN 子句。 SQLAlchemy 可以根据外部 key 关系自动确定联接条件，也可以显式指定它们。使用 ``select_from()`` 指定 SELECT statement 中的联接表。 SQLAlchemy 支持 INNER JOIN（默认）、LEFT OUTER JOIN、RIGHT OUTER JOIN 和 FULL OUTER、JOIN 至 ``isouter`` 和 ``full`` 、parameters。
 
 .. code-block:: python
 
@@ -395,14 +331,10 @@ JOIN, and FULL OUTER JOIN through the ``isouter`` and ``full`` parameters.
     ...     print(conn.execute(stmt).fetchall())
     [('Alice', 'Book'), ('Alice', 'Pen'), ('Bob', 'Laptop')]
 
-Aggregate Functions
--------------------
+聚合函数（Aggregate Functions）
+--------------------------------------------------
 
-SQLAlchemy provides functions for SQL aggregates like ``count()``, ``sum()``,
-``avg()``, ``min()``, and ``max()`` in the ``sqlalchemy.func`` namespace. These
-can be used in SELECT statements and combined with ``group_by()`` for grouped
-aggregations. The ``func`` object is a special namespace that generates SQL
-function calls for any function name you access on it.
+SQLAlchemy 为 SQL 聚合提供 functions，例如 ``sqlalchemy.func`` namespace 中的 ``count()`` 、 ``sum()`` 、 ``avg()`` 、 ``min()`` 和 ``max()`` 。这些可以在 SELECT statements 中使用，并与 ``group_by()`` 组合进行分组聚合。 ``func`` object 是一个特殊的 namespace，它为您在其上访问的任何 function 名称生成 SQL function 调用。
 
 .. code-block:: python
 
@@ -423,23 +355,19 @@ function calls for any function name you access on it.
     ...         {"product": "B", "amount": 200}])
 
     >>> with engine.connect() as conn:
-    ...     # Count all rows
+    ...     # 计算所有行数
     ...     result = conn.execute(select(func.count()).select_from(sales))
     ...     print(result.scalar())
-    ...     # Sum with group by
+    ...     # 与分组求和
     ...     stmt = select(sales.c.product, func.sum(sales.c.amount)).group_by(sales.c.product)
     ...     print(conn.execute(stmt).fetchall())
     3
     [('A', 250), ('B', 200)]
 
-Drop Tables
------------
+删除表（Drop Tables）
+--------------------------------
 
-Tables can be dropped using the ``drop()`` method on a ``Table`` object or
-``drop_all()`` on ``MetaData`` to drop all tables. The ``checkfirst`` parameter
-prevents errors if the table doesn't exist. Be careful with these operations in
-production as they permanently delete data and schema. Always backup your database
-before dropping tables.
+可以使用 ``Table`` object 上的 ``drop()`` method 或 ``MetaData`` 上的 ``drop_all()`` 来删除所有表。如果表不存在， ``checkfirst`` parameter 可防止出现错误。在生产中小心这些操作，因为它们会永久删除数据和架构。在删除表之前始终备份数据库。
 
 .. code-block:: python
 
@@ -454,12 +382,12 @@ before dropping tables.
     >>> sorted(inspector.get_table_names())
     ['products', 'users']
 
-    >>> # Drop single table
+    >>> # 删除单表
     >>> users.drop(engine)
     >>> sorted(inspect(engine).get_table_names())
     ['products']
 
-    >>> # Drop all tables
+    >>> # 删除所有表
     >>> metadata.drop_all(engine)
     >>> inspect(engine).get_table_names()
     []

@@ -1,71 +1,64 @@
 .. meta::
-    :description lang=en: Python regex cheat sheet covering re module, pattern matching, groups, lookahead, lookbehind, substitution, and common regex patterns with code examples
+    :description lang=zh_CN: Python regex 速查表涵盖 module、模式匹配、组、前向、后向、替换和常见的 regex 模式以及代码示例
     :keywords: Python, Python3, Python regex, Python regex cheat sheet, regular expression, re module, pattern matching, findall, search, match, sub, lookahead, lookbehind, named groups
 
-==================
-Regular Expression
-==================
+==================================================
+正则表达式（Regular Expression）
+==================================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-Regular expressions (regex) are powerful tools for pattern matching and text
-manipulation. Python's ``re`` module provides comprehensive support for regex
-operations. This cheat sheet covers basic matching, groups, lookaround assertions,
-substitution, and common patterns for validating emails, URLs, IP addresses, etc.
+Regular expressions (regex) 是用于模式匹配和文本操作的强大工具。 Python的 ``re`` module为regex操作提供全面支持。该速查表涵盖了基本匹配、组、环视 assertions、替换以及用于验证电子邮件、URLs、IP 地址等的常见模式。
 
-Basic Operations
-----------------
+基本操作（Basic Operations）
+--------------------------------------------
 
-The ``re`` module provides several functions for pattern matching. Use ``search()``
-to find the first match anywhere in the string, ``match()`` to match at the
-beginning, and ``fullmatch()`` to match the entire string.
+``re`` module 提供了多个 functions 用于模式匹配。使用 ``search()`` 查找 string 中任意位置的第一个匹配项，使用 ``match()`` 在开头匹配，使用 ``fullmatch()`` 匹配整个 string。
 
 .. code-block:: python
 
     >>> import re
-    >>> # search - find anywhere in string
+    >>> # 搜索 - 查找 string 中的任何位置
     >>> re.search(r'\d+', 'abc123def')
     <re.Match object; span=(3, 6), match='123'>
 
-    >>> # match - match at beginning only
+    >>> # match - 仅在开头匹配
     >>> re.match(r'\d+', '123abc')
     <re.Match object; span=(0, 3), match='123'>
     >>> re.match(r'\d+', 'abc123') is None
     True
 
-    >>> # fullmatch - match entire string
+    >>> # fullmatch - 匹配整个 string
     >>> re.fullmatch(r'\d+', '123')
     <re.Match object; span=(0, 3), match='123'>
     >>> re.fullmatch(r'\d+', '123abc') is None
     True
 
-``re.findall()`` - Find All Matches
------------------------------------
+``re.findall()`` - 查找所有匹配项（ ``re.findall()`` - Find All Matches）
+--------------------------------------------------------------------------------------------------------------------------------
 
-The ``findall()`` function returns all non-overlapping matches as a list of
-strings. If the pattern has groups, it returns a list of tuples.
+``findall()`` function 将所有非重叠匹配项返回为 strings 的 list。如果模式有组，则返回 tuples 的 list。
 
 .. code-block:: python
 
-    >>> # find all words
+    >>> # 找到所有单词
     >>> source = "Hello World Ker HAHA"
     >>> re.findall(r'[\w]+', source)
     ['Hello', 'World', 'Ker', 'HAHA']
 
-    >>> # find all digits
+    >>> # 找到所有数字
     >>> re.findall(r'\d+', 'a1b22c333')
     ['1', '22', '333']
 
-    >>> # with groups - returns tuples
+    >>> # 与组 - 返回 tuples
     >>> re.findall(r'(\w+)=(\d+)', 'a=1 b=2 c=3')
     [('a', '1'), ('b', '2'), ('c', '3')]
 
-``re.split()`` - Split by Pattern
----------------------------------
+``re.split()`` - 按模式分割（ ``re.split()`` - Split by Pattern）
+--------------------------------------------------------------------------------------------------------------------
 
-The ``split()`` function splits a string by pattern occurrences. Use ``maxsplit``
-to limit the number of splits.
+``split()`` function 按模式出现次数拆分 string。使用 ``maxsplit`` 限制分割数。
 
 .. code-block:: python
 
@@ -75,59 +68,56 @@ to limit the number of splits.
     >>> re.split(r'[,;]', 'a,b;c,d')
     ['a', 'b', 'c', 'd']
 
-    >>> re.split(r'(\s+)', 'a b c')  # keep delimiters
+    >>> re.split(r'(\s+)', 'a b c')  # 保留分隔符
     ['a', ' ', 'b', ' ', 'c']
 
     >>> re.split(r'\s+', 'a b c d', maxsplit=2)
     ['a', 'b', 'c d']
 
-Group Matching
---------------
+分组匹配（Group Matching）
+----------------------------------------
 
-Parentheses ``(...)`` create capturing groups. Use ``group()`` to access matched
-groups. Group 0 is the entire match, group 1 is the first parenthesized group, etc.
+括号 ``(...)`` 创建捕获组。使用 ``group()`` 访问匹配组。第 0 组是整场比赛，第 1 组是第一个括号内的组，依此类推。
 
 .. code-block:: python
 
     >>> m = re.search(r'(\d{4})-(\d{2})-(\d{2})', '2016-01-01')
     >>> m.groups()
     ('2016', '01', '01')
-    >>> m.group()      # entire match
+    >>> m.group()      # 整场比赛
     '2016-01-01'
-    >>> m.group(1)     # first group
+    >>> m.group(1)     # 第一组
     '2016'
-    >>> m.group(2, 3)  # multiple groups
+    >>> m.group(2, 3)  # 多个组
     ('01', '01')
 
-    # Nested groups - numbered left to right by opening parenthesis
+    # 嵌套组 - 通过左括号从左到右编号
     >>> m = re.search(r'(((\d{4})-\d{2})-\d{2})', '2016-01-01')
     >>> m.groups()
     ('2016-01-01', '2016-01', '2016')
 
-Non-Capturing Group ``(?:...)``
--------------------------------
+非捕获组 ``(?:...)`` （Non-Capturing Group ``(?:...)`` ）
+------------------------------------------------------------------------------------------------------
 
-Use ``(?:...)`` when you need grouping for alternation or quantifiers but don't
-need to capture the match. This improves performance and keeps group numbering clean.
+当您需要对交替或量词进行分组但不需要捕获匹配时，请使用 ``(?:...)`` 。这可以提高性能并保持组编号干净。
 
 .. code-block:: python
 
     >>> url = 'http://stackoverflow.com/'
-    >>> # non-capturing group for protocol
+    >>> # 协议的非捕获组
     >>> m = re.search(r'(?:http|ftp)://([^/\r\n]+)(/[^\r\n]*)?', url)
     >>> m.groups()
     ('stackoverflow.com', '/')
 
-    >>> # capturing group - protocol is captured
+    >>> # 捕获组 - 捕获协议
     >>> m = re.search(r'(http|ftp)://([^/\r\n]+)(/[^\r\n]*)?', url)
     >>> m.groups()
     ('http', 'stackoverflow.com', '/')
 
-Named Groups ``(?P<name>...)``
-------------------------------
+命名组 ``(?P<name>...)`` （Named Groups ``(?P<name>...)`` ）
+--------------------------------------------------------------------------------------------------------------
 
-Named groups make patterns more readable and allow access by name instead of
-number. Use ``(?P<name>...)`` to define and ``(?P=name)`` for back reference.
+命名组使模式更具可读性，并允许通过名称而不是数字进行访问。使用 ``(?P<name>...)`` 定义并使用 ``(?P=name)`` 进行反向引用。
 
 .. code-block:: python
 
@@ -140,54 +130,52 @@ number. Use ``(?P<name>...)`` to define and ``(?P=name)`` for back reference.
     >>> m.groupdict()
     {'year': '2016', 'month': '01', 'day': '01'}
 
-    # named back reference
+    # 命名反向引用
     >>> re.search(r'^(?P<char>[a-z])(?P=char)', 'aa')
     <re.Match object; span=(0, 2), match='aa'>
     >>> re.search(r'^(?P<char>[a-z])(?P=char)', 'ab') is None
     True
 
-Back Reference ``\1``, ``\2``
------------------------------
+反向引用 ``\1`` 、 ``\2`` （Back Reference ``\1`` , ``\2`` ）
+------------------------------------------------------------------------------------------------------------
 
-Back references match the same text as a previous capturing group. Use ``\1``
-for the first group, ``\2`` for the second, etc.
+向后引用与前一个捕获组匹配相同的文本。第一组使用 ``\1`` ，第二组使用 ``\2`` ，依此类推。
 
 .. code-block:: python
 
-    >>> # match repeated characters
+    >>> # 匹配重复的字符
     >>> re.search(r'([a-z])\1', 'aa') is not None
     True
     >>> re.search(r'([a-z])\1', 'ab') is not None
     False
 
-    >>> # match HTML tags with matching close tag
+    >>> # 将 HTML 标签与匹配的关闭标签相匹配
     >>> pattern = r'<([^>]+)>[\s\S]*?</\1>'
     >>> re.search(pattern, '<bold>test</bold>') is not None
     True
     >>> re.search(pattern, '<bold>test</h1>') is not None
     False
 
-Substitute with ``re.sub()``
-----------------------------
+替换为 ``re.sub()`` （Substitute with ``re.sub()`` ）
+------------------------------------------------------------------------------------------------
 
-The ``sub()`` function replaces pattern matches with a replacement string.
-Use ``\1``, ``\2`` in the replacement to reference captured groups.
+``sub()`` function 用替代品 string 替换模式匹配。在替换中使用 ``\1`` 、 ``\2`` 来引用捕获的组。
 
 .. code-block:: python
 
-    >>> # basic substitution
+    >>> # 基本替代
     >>> re.sub(r'[a-z]', ' ', '1a2b3c')
     '1 2 3 '
 
-    >>> # substitute with group reference
+    >>> # 用组参考替换
     >>> re.sub(r'(\d{4})-(\d{2})-(\d{2})', r'\2/\3/\1', '2016-01-01')
     '01/01/2016'
 
-    >>> # using function as replacement
+    >>> # 使用function作为替代品
     >>> re.sub(r'\d+', lambda m: str(int(m.group()) * 2), 'a1b2c3')
     'a2b4c6'
 
-    >>> # camelCase to snake_case
+    >>> # 驼峰式格式为 snake_case
     >>> def to_snake(s):
     ...     s = re.sub(r'(.)([A-Z][a-z]+)', r'\1_\2', s)
     ...     return re.sub(r'([a-z])([A-Z])', r'\1_\2', s).lower()
@@ -197,51 +185,57 @@ Use ``\1``, ``\2`` in the replacement to reference captured groups.
     >>> to_snake('SimpleHTTPServer')
     'simple_http_server'
 
-Lookahead and Lookbehind
-------------------------
+前瞻与后顾断言（Lookahead and Lookbehind）
+------------------------------------------------------------------
 
-Lookaround assertions match a position without consuming characters. They are
-useful for matching patterns based on context.
+Lookaround assertions 匹配位置而不消耗字符。它们对于根据上下文匹配模式很有用。
 
-+---------------+---------------------+---------------------------+
-| Notation      | Name                | Description               |
-+===============+=====================+===========================+
-| ``(?=...)``   | Positive lookahead  | Followed by ...           |
-+---------------+---------------------+---------------------------+
-| ``(?!...)``   | Negative lookahead  | Not followed by ...       |
-+---------------+---------------------+---------------------------+
-| ``(?<=...)``  | Positive lookbehind | Preceded by ...           |
-+---------------+---------------------+---------------------------+
-| ``(?<!...)``  | Negative lookbehind | Not preceded by ...       |
-+---------------+---------------------+---------------------------+
+.. list-table::
+   :header-rows: 1
+
+   * - 符号
+     - 名称
+     - 描述
+   * - ``(?=...)``
+     - 正向前瞻
+     - 后方匹配 ...
+   * - ``(?!...)``
+     - 负向前瞻
+     - 后方不匹配 ...
+   * - ``(?<=...)``
+     - 正向后顾
+     - 前方匹配 ...
+   * - ``(?<!...)``
+     - 负向后顾
+     - 前方不匹配 ...
+
 
 .. code-block:: python
 
-    >>> # positive lookahead - find word before @
+    >>> # 正向前视 - 查找 @ 之前的单词
     >>> re.findall(r'\w+(?=@)', 'user@example.com')
     ['user']
 
-    >>> # negative lookahead - find digits not followed by px
+    >>> # 负向先行 - 查找后面没有 px 的数字
     >>> re.findall(r'\d+(?!px)', '12px 34em 56')
     ['1', '34', '56']
 
-    >>> # positive lookbehind - find digits after $
+    >>> # 正向后查找 - 查找 $ 之后的数字
     >>> re.findall(r'(?<=\$)\d+', '$100 $200')
     ['100', '200']
 
-    >>> # negative lookbehind - find digits not after $
+    >>> # 负向后查找 - 查找不在 $ 之后的数字
     >>> re.findall(r'(?<!\$)\d+', '$100 200')
     ['00', '200']
 
-    >>> # insert space before groups of 3 digits from right
+    >>> # 在从右数 3 位数字组成的组之前插入空格
     >>> re.sub(r'(?=(\d{3})+$)', ' ', '12345678')
     ' 12 345 678'
 
-Compile Pattern for Reuse
--------------------------
+编译模式以供重用（Compile Pattern for Reuse）
+----------------------------------------------------------------------
 
-Use ``re.compile()`` to create a reusable pattern object. This improves
-performance when the same pattern is used multiple times.
+使用 ``re.compile()`` 创建可重复使用的图案 object。当多次使用相同模式时，这可以提高性能。
 
 .. code-block:: python
 
@@ -251,27 +245,26 @@ performance when the same pattern is used multiple times.
     >>> pattern.findall('2024-01-15 and 2024-02-20')
     ['2024-01-15', '2024-02-20']
 
-Regex Flags
------------
+正则表达式标志（Regex Flags）
+----------------------------------------
 
-Flags modify pattern behavior. Common flags include ``re.IGNORECASE`` (``re.I``),
-``re.MULTILINE`` (``re.M``), ``re.DOTALL`` (``re.S``), and ``re.VERBOSE`` (``re.X``).
+标志修改模式行为。常见标志包括 ``re.IGNORECASE`` ( ``re.I`` )、 ``re.MULTILINE`` ( ``re.M`` )、 ``re.DOTALL`` ( ``re.S`` ) 和 ``re.VERBOSE`` ( ``re.X`` )。
 
 .. code-block:: python
 
-    >>> # case insensitive
+    >>> # 不区分大小写
     >>> re.findall(r'[a-z]+', 'Hello World', re.I)
     ['Hello', 'World']
 
-    >>> # multiline - ^ and $ match line boundaries
+    >>> # 多行 - ^ 和 $ 匹配行边界
     >>> re.findall(r'^\w+', 'line1\nline2', re.M)
     ['line1', 'line2']
 
-    >>> # dotall - . matches newline
+    >>> # 多塔尔-.匹配换行符
     >>> re.search(r'a.b', 'a\nb', re.S)
     <re.Match object; span=(0, 3), match='a\nb'>
 
-    >>> # verbose - allow comments and whitespace
+    >>> # verbose - 允许注释和空格
     >>> pattern = re.compile(r'''
     ...     \d{4}  # year
     ...     -
@@ -282,44 +275,51 @@ Flags modify pattern behavior. Common flags include ``re.IGNORECASE`` (``re.I``)
     >>> pattern.match('2024-01-15')
     <re.Match object; span=(0, 10), match='2024-01-15'>
 
-Compare HTML Tags
------------------
+比较 HTML 标签（Compare HTML Tags）
+----------------------------------------------------------
 
-Common patterns for matching different types of HTML tags.
+用于匹配 HTML 标签的不同 types 的通用模式。
 
-+------------+--------------+--------------+
-| Tag Type   | Pattern      | Example      |
-+============+==============+==============+
-| All tags   | <[^>]+>      | <br />, <a>  |
-+------------+--------------+--------------+
-| Open tag   | <[^/>][^>]*> | <a>, <table> |
-+------------+--------------+--------------+
-| Close tag  | </[^>]+>     | </p>, </a>   |
-+------------+--------------+--------------+
-| Self-close | <[^/>]+/>    | <br />       |
-+------------+--------------+--------------+
+.. list-table::
+   :header-rows: 1
+
+   * - 标签 Type
+     - 图案
+     - 例子
+   * - 所有标签
+     - <[^>]+>
+     - <br/>，<a>
+   * - 打开标签
+     - <[^/>][^>]*>
+     - <a>，<表>
+   * - 关闭标签
+     - </[^>]+>
+     - </p>、</a>
+   * - 自关闭
+     - <[^/>]+/>
+     - <br/>
+
 
 .. code-block:: python
 
-    >>> # open tag
+    >>> # 开放标签
     >>> re.search(r'<[^/>][^>]*>', '<table>') is not None
     True
     >>> re.search(r'<[^/>][^>]*>', '</table>') is not None
     False
 
-    >>> # close tag
+    >>> # 关闭标签
     >>> re.search(r'</[^>]+>', '</table>') is not None
     True
 
-    >>> # self-closing tag
+    >>> # 自闭合标签
     >>> re.search(r'<[^/>]+/>', '<br />') is not None
     True
 
-Match Email Address
--------------------
+匹配电子邮件地址（Match Email Address）
+----------------------------------------------------------
 
-A pattern for validating email addresses. Note that fully RFC-compliant email
-validation is extremely complex; this covers common cases.
+验证电子邮件地址的模式。请注意，完全符合 RFC 的电子邮件验证极其 complex；这涵盖了常见情况。
 
 .. code-block:: python
 
@@ -331,10 +331,10 @@ validation is extremely complex; this covers common cases.
     >>> pattern.match('invalid@') is not None
     False
 
-Match URL
----------
+匹配URL（Match URL）
+--------------------------------
 
-A pattern for matching URLs with optional protocol, domain, and path.
+用于将 URLs 与可选协议、域和路径相匹配的模式。
 
 .. code-block:: python
 
@@ -349,10 +349,10 @@ A pattern for matching URLs with optional protocol, domain, and path.
     >>> pattern.match('example.com') is not None
     True
 
-Match IP Address
-----------------
+匹配 IP 地址（Match IP Address）
+----------------------------------------------------
 
-A pattern for validating IPv4 addresses (0.0.0.0 to 255.255.255.255).
+用于验证 IPv4 地址（0.0.0.0 到 255.255.255.255）的模式。
 
 .. code-block:: python
 
@@ -367,10 +367,10 @@ A pattern for validating IPv4 addresses (0.0.0.0 to 255.255.255.255).
     >>> pattern.match('256.0.0.0') is not None
     False
 
-Match MAC Address
------------------
+匹配 MAC 地址（Match MAC Address）
+--------------------------------------------------------
 
-A pattern for validating MAC addresses in colon-separated format.
+用于验证冒号分隔格式的 MAC 地址的模式。
 
 .. code-block:: python
 
@@ -380,14 +380,14 @@ A pattern for validating MAC addresses in colon-separated format.
     >>> pattern.match('AA:BB:CC:DD:EE:FF') is not None
     True
 
-Match Phone Number
-------------------
+匹配电话号码（Match Phone Number）
+----------------------------------------------------
 
-Patterns for common phone number formats.
+常见电话号码格式的模式。
 
 .. code-block:: python
 
-    >>> # US phone number
+    >>> # US 电话号码
     >>> pattern = re.compile(r'^(\+1)?[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$')
     >>> pattern.match('123-456-7890') is not None
     True
@@ -396,11 +396,10 @@ Patterns for common phone number formats.
     >>> pattern.match('+1 123 456 7890') is not None
     True
 
-Match Password Strength
------------------------
+匹配密码强度（Match Password Strength）
+--------------------------------------------------------------
 
-Pattern to validate password with minimum requirements: at least 8 characters,
-one uppercase, one lowercase, one digit, and one special character.
+验证密码的模式，最低要求：至少 8 个字符、1 个大写字母、1 个小写字母、1 个数字和 1 个特殊字符。
 
 .. code-block:: python
 
@@ -416,11 +415,10 @@ one uppercase, one lowercase, one digit, and one special character.
     >>> pattern.match('weakpass') is not None
     False
 
-Simple Lexer
-------------
+简单词法分析器（Simple Lexer）
+------------------------------------------
 
-Using regex to build a simple tokenizer for arithmetic expressions. This
-demonstrates using named groups and ``scanner()`` for lexical analysis.
+使用 regex 构建一个简单的算术标记器 expressions。这演示了如何使用命名组和 ``scanner()`` 进行词法分析。
 
 .. code-block:: python
 
@@ -443,40 +441,40 @@ demonstrates using named groups and ``scanner()`` for lexical analysis.
     >>> list(tokenize('9 + 5 * 2'))
     [Token(type='NUMBER', value='9'), Token(type='PLUS', value='+'), Token(type='NUMBER', value='5'), Token(type='TIMES', value='*'), Token(type='NUMBER', value='2')]
 
-Common Patterns Reference
--------------------------
+常见模式参考（Common Patterns Reference）
+------------------------------------------------------------------
 
 .. code-block:: python
 
-    # Digits only
+    # 仅数字
     r'^\d+$'
 
-    # Alphanumeric
+    # 字母数字
     r'^[a-zA-Z0-9]+$'
 
-    # Username (3-16 chars, alphanumeric, underscore, hyphen)
+    # 用户名（3-16 个字符、字母数字、下划线、连字符）
     r'^[a-zA-Z0-9_-]{3,16}$'
 
-    # Hex color
+    # 十六进制颜色
     r'^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$'
 
-    # Date (YYYY-MM-DD)
+    # 日期（YYYY-MM-DD）
     r'^\d{4}-\d{2}-\d{2}$'
 
-    # Time (HH:MM:SS)
+    # 时间（HH：MM：SS）
     r'^\d{2}:\d{2}:\d{2}$'
 
-    # Slug (URL-friendly string)
+    # Slug（URL-友好的string）
     r'^[a-z0-9]+(?:-[a-z0-9]+)*$'
 
-    # Remove HTML tags
+    # 删除 HTML 标签
     re.sub(r'<[^>]+>', '', html)
 
-    # Extract domain from URL
+    # 从 URL 中提取域
     re.search(r'https?://([^/]+)', url).group(1)
 
-    # Find all hashtags
+    # 查找所有主题标签
     re.findall(r'#\w+', text)
 
-    # Find all @mentions
+    # 查找所有@提及
     re.findall(r'@\w+', text)

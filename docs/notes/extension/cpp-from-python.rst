@@ -1,39 +1,26 @@
 .. meta::
-    :description lang=en: Learn modern C++ syntax from Python - side-by-side comparison of Python and C++ code snippets
+    :description lang=zh_CN: 从 Python 学习现代 C++ 语法 - Python 和 C++ 代码片段的并排比较
     :keywords: C++, Python, C++11, C++14, C++17, C++20, modern C++, syntax comparison, learn C++
 
-=======================
-Learn C++ from Python
-=======================
+============================================================================
+从 Python 学习 C++（Learn C++ from Python）
+============================================================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-Modern C++ (C++11, C++14, C++17, C++20) has evolved to include features that make it
-syntactically similar to Python, making the transition easier for Python developers.
-This comprehensive guide provides side-by-side comparisons and 1-1 mappings between
-Python and modern C++ code snippets, covering essential programming concepts like
-variables, data structures, functions, lambdas, classes, and algorithms.
+现代 C++（C++11、C++14、C++17、C++20）已发展到包含使其在语法上与 Python 相似的功能，从而使 Python 开发人员更容易进行过渡。本综合指南提供了 Python 和现代 C++ 代码片段之间的并排比较和 1-1 映射，涵盖 variables、数据结构、functions、lambdas、classes 和算法等基本编程概念。
 
-Whether you're a Python developer looking to learn C++ for performance optimization,
-system programming, or expanding your programming skills, this tutorial demonstrates
-how familiar Python patterns translate to modern C++ syntax. Many popular frameworks
-like PyTorch, TensorFlow, and NumPy use C++ extensions for performance-critical operations,
-especially in deep learning, LLM training, and CUDA GPU programming. Understanding C++
-enables you to write custom extensions, optimize bottlenecks, and contribute to these
-high-performance libraries.
+无论您是 Python 开发人员，希望学习 C++ 来优化性能、系统编程，还是扩展您的编程技能，本教程都会演示如何将熟悉的 Python 模式转换为现代 C++ 语法。许多流行的框架（例如 PyTorch、TensorFlow 和 NumPy）都使用 C++ 扩展来执行性能关键型操作，特别是在深度学习、LLM 训练和 CUDA GPU 编程中。了解 C++ 使您能够编写自定义扩展、优化瓶颈并为这些高性能 libraries 做出贡献。
 
-To learn more about C++ programming, refer to this `C++ cheatsheet <https://cppcheatsheet.com/>`_
-for additional reference and best practices.
+要了解有关 C++ 编程的更多信息，请参阅此 `C++ cheatsheet <https://cppcheatsheet.com/>`_ 以获取更多参考和最佳实践。
 
-**Complete working examples:** See `cpp_from_py.cpp <https://github.com/crazyguitar/pysheeet/blob/master/src/cpp_from_python/cpp_from_py.cpp>`_
-for runnable code with integrated Google Test suite. Each function includes Doxygen comments showing the equivalent Python code.
+**完整的工作示例：** 请参阅 `cpp_from_py.cpp <https://github.com/crazyguitar/pysheeet/blob/master/src/cpp_from_python/cpp_from_py.cpp>`_ 以获取带有集成 Google 测试套件的可运行代码。每个 function 都包含显示等效 Python 代码的 Doxygen 注释。
 
-Hello World
------------
+你好世界（Hello World）
+----------------------------------
 
-The traditional first program in any language. Both Python and C++ can print text to
-the console, though C++ requires including the iostream library and a main function.
+任何语言的传统第一个程序。 Python 和 C++ 都可以将文本打印到 console，但 C++ 需要包括 iostream library 和主 function。
 
 **Python**
 
@@ -52,11 +39,10 @@ the console, though C++ requires including the iostream library and a main funct
         return 0;
     }
 
-Variables
----------
+变量（Variables）
+--------------------------
 
-Modern C++ supports automatic type inference with the ``auto`` keyword, making variable
-declarations as concise as Python. The compiler deduces types from initialization values.
+现代 C++ 支持使用 ``auto`` 关键字进行自动 type 推理，使 variable 声明与 Python 一样简洁。 compiler 从初始化 values 推导出 types。
 
 **Python**
 
@@ -76,12 +62,10 @@ declarations as concise as Python. The compiler deduces types from initializatio
     auto name = "Alice";
     auto is_valid = true;
 
-Lists and Vectors
------------------
+列表和向量（Lists and Vectors）
+------------------------------------------------
 
-Python lists and C++ vectors are dynamic arrays that can grow and shrink. Both support
-indexing, appending elements, and querying size. C++ vectors require specifying the element
-type, but modern C++ can infer it from initialization.
+Python lists 和 C++ 向量是可以增长和收缩的动态 arrays。两者都支持索引、附加 elements 和查询大小。 C++ 向量需要指定 element type，但现代 C++ 可以从初始化中推断出来。
 
 **Python**
 
@@ -103,12 +87,10 @@ type, but modern C++ can infer it from initialization.
     std::cout << numbers[0] << std::endl;
     std::cout << numbers.size() << std::endl;
 
-Array Slicing and Access
--------------------------
+数组切片和访问（Array Slicing and Access）
+------------------------------------------------------------------
 
-Python supports powerful slicing syntax with negative indices and ranges. C++ doesn't have
-built-in slicing, but you can use iterators or create subvectors. Negative indexing requires
-manual calculation from the end.
+Python 支持带有负 indices 和 ranges 的强大切片语法。 C++ 没有内置切片，但您可以使用 iterators 或创建子向量。负索引需要从末尾开始手动计算。
 
 **Python**
 
@@ -147,12 +129,10 @@ manual calculation from the end.
 
     std::vector<int> reversed(numbers.rbegin(), numbers.rend());
 
-Dictionaries and Maps
----------------------
+字典与映射（Dictionaries and Maps）
+--------------------------------------------------------
 
-Dictionaries in Python and maps in C++ store key-value pairs. Both allow insertion, lookup,
-and modification using bracket notation. C++ maps keep keys sorted, while Python dicts
-maintain insertion order (Python 3.7+).
+Python 中的 Dictionaries 和 C++ 中的映射存储 key-value 对。两者都允许使用括号表示法进行插入、查找和修改。 C++ 映射保持 keys 排序，而 Python dicts 保持插入顺序 (Python 3.7+)。
 
 **Python**
 
@@ -173,12 +153,10 @@ maintain insertion order (Python 3.7+).
     ages["Charlie"] = 35;
     std::cout << ages["Alice"] << std::endl;
 
-For Loop
---------
+For循环（For Loop）
+------------------------------
 
-Both languages support traditional counting loops and range-based iteration. C++ range-based
-for loops (C++11) provide syntax similar to Python's for-in loops, making iteration over
-containers more readable.
+两种语言都支持传统计数 loops 和基于 range 的 iteration。基于 C++ range 的 loops (C++11) 提供类似于 Python 的 for-in loops 的语法，使得容器上的 iteration 更具可读性。
 
 **Python**
 
@@ -202,11 +180,10 @@ containers more readable.
         std::cout << item << std::endl;
     }
 
-While Loop
-----------
+While 循环（While Loop）
+----------------------------------------
 
-While loops execute as long as a condition is true. The syntax is nearly identical between
-Python and C++, with C++ requiring parentheses around the condition and braces for the body.
+而loops只要条件为true就执行。 Python 和 C++ 之间的语法几乎相同，其中 C++ 需要条件周围的括号和主体的大括号。
 
 **Python**
 
@@ -227,12 +204,10 @@ Python and C++, with C++ requiring parentheses around the condition and braces f
         i++;
     }
 
-If-Else
--------
+if-else 条件语句（If-Else）
+------------------------------------------
 
-Conditional statements control program flow based on boolean expressions. C++ requires
-parentheses around conditions and uses braces for blocks, while Python uses indentation.
-Both support chained conditions with elif/else if.
+有条件statements控制程序流程基于boolean expressions。 C++ 需要将条件括起来并使用大括号作为块，而 Python 使用缩进。两者都支持 elif/else if 的链式条件。
 
 **Python**
 
@@ -259,12 +234,10 @@ Both support chained conditions with elif/else if.
         std::cout << "Less" << std::endl;
     }
 
-Functions
----------
+函数（Functions）
+--------------------------
 
-Functions encapsulate reusable code. Modern C++ supports trailing return type syntax
-(-> type) similar to Python's type hints. The auto keyword allows type inference for
-return types when the function body is simple.
+Functions封装了可重用的代码。现代 C++ 支持尾随返回 type 语法 (-> type)，类似于 Python 的 type hints。当 function 主体很简单时，auto 关键字允许 type 推断返回 types。
 
 **Python**
 
@@ -285,13 +258,10 @@ return types when the function body is simple.
 
     auto result = add(3, 5);
 
-Lambda Functions
-----------------
+Lambda 函数（Lambda Functions）
+------------------------------------------------------
 
-Lambda functions are anonymous functions that can capture variables from their surrounding
-scope. Both Python and C++ support lambdas, making functional programming patterns possible.
-C++ lambdas can specify capture modes (by value, by reference) for more control over variable
-lifetime and performance.
+Lambda functions 是匿名 functions，可以从周围的 scope 捕获 variables。 Python和C++都支持lambdas，使得函数式编程模式成为可能。 C++ lambdas 可以指定捕获模式（通过 value，通过参考），以更好地控制 variable 的寿命和性能。
 
 **Python**
 
@@ -303,7 +273,7 @@ lifetime and performance.
     numbers = [1, 2, 3, 4]
     squared = list(map(lambda x: x * x, numbers))
 
-    # Capturing variables
+    # 捕获variables
     multiplier = 10
     multiply = lambda x: x * multiplier
     print(multiply(5))
@@ -324,17 +294,15 @@ lifetime and performance.
                    std::back_inserter(squared),
                    [](int x) { return x * x; });
 
-    // Capturing variables by value [=] or by reference [&]
+    // 通过 value [=] 或通过引用 [&] 捕获 variables
     int multiplier = 10;
     auto multiply = [multiplier](int x) { return x * multiplier; };
     std::cout << multiply(5) << std::endl;
 
-Lambda Capture Modes
---------------------
+Lambda 捕获模式（Lambda Capture Modes）
+------------------------------------------------------------------
 
-C++ lambdas provide explicit control over how variables are captured from the enclosing scope.
-This is more explicit than Python's implicit closure behavior and allows optimization by
-choosing between copying values or using references.
+C++ lambdas 提供对如何从封闭的 scope 捕获 variables 的显式控制。这比 Python 的隐式 closure 行为更明确，并且允许通过在复制 values 或使用引用之间进行选择来进行优化。
 
 **Python**
 
@@ -343,7 +311,7 @@ choosing between copying values or using references.
     x = 10
     y = 20
 
-    # Implicitly captures x and y
+    # 隐式捕获 x 和 y
     add_xy = lambda z: x + y + z
     print(add_xy(5))
 
@@ -354,25 +322,23 @@ choosing between copying values or using references.
     int x = 10;
     int y = 20;
 
-    // Capture by value
+    // value 捕获
     auto add_xy_val = [x, y](int z) { return x + y + z; };
     std::cout << add_xy_val(5) << std::endl;
 
-    // Capture by reference
+    // 通过引用捕获
     auto add_xy_ref = [&x, &y](int z) { return x + y + z; };
 
-    // Capture all by value
+    // value 捕获全部
     auto add_all_val = [=](int z) { return x + y + z; };
 
-    // Capture all by reference
+    // 通过引用捕获所有内容
     auto add_all_ref = [&](int z) { return x + y + z; };
 
-List Comprehension
-------------------
+列表推导式（List Comprehension）
+--------------------------------------------------
 
-Python's list comprehensions provide concise syntax for creating lists. C++ doesn't have
-direct syntax for this, but you can achieve similar results using loops or STL algorithms
-like std::transform and std::copy_if.
+Python 的 list comprehensions 提供了用于创建 lists 的简洁语法。 C++ 没有直接语法，但您可以使用 loops 或 STL 算法（例如 std::transform 和 std::copy_if）获得类似的结果。
 
 **Python**
 
@@ -400,12 +366,10 @@ like std::transform and std::copy_if.
         }
     }
 
-String Operations
------------------
+字符串操作（String Operations）
+------------------------------------------------
 
-Both languages provide rich string manipulation capabilities. C++ strings are mutable like
-Python strings in terms of concatenation, but individual character access works similarly.
-C++ requires explicit conversion functions for case changes.
+两种语言都提供丰富的 string 操作功能。在串联方面，C++ strings 是 mutable，类似于 Python strings，但单个字符访问的工作原理类似。 C++ 需要显式转换 functions 以进行大小写更改。
 
 **Python**
 
@@ -433,12 +397,10 @@ C++ requires explicit conversion functions for case changes.
     std::transform(upper.begin(), upper.end(), upper.begin(), ::toupper);
     std::cout << upper << std::endl;
 
-Classes
--------
+类（Classes）
+--------------------
 
-Object-oriented programming works similarly in both languages. C++ requires explicit
-access specifiers (public, private) and constructor initialization lists. Both support
-member variables and methods, with C++ using :: for scope resolution.
+面向 Object 的编程在两种语言中的工作方式类似。 C++ 需要显式访问说明符（公共、私有）和构造函数初始化 lists。两者都支持成员 variables 和 methods，其中 C++ 使用 :: 进行 scope 分辨率。
 
 **Python**
 
@@ -476,12 +438,10 @@ member variables and methods, with C++ using :: for scope resolution.
     Person p("Alice", 30);
     std::cout << p.greet() << std::endl;
 
-Optional Values
----------------
+可选值（Optional Values）
+----------------------------------------
 
-Python uses None to represent missing values, while C++ (C++17+) provides std::optional
-for type-safe optional values. This prevents null pointer errors and makes the absence
-of a value explicit in the type system.
+Python 使用 None 来表示缺失的 values，而 C++ (C++17+) 为 type 安全可选 values 提供 std::optional。这可以防止空指针错误，并使 type 系统中显式缺少 value。
 
 **Python**
 
@@ -516,12 +476,10 @@ of a value explicit in the type system.
         std::cout << result.value() << std::endl;
     }
 
-Smart Pointers
---------------
+智能指针（Smart Pointers）
+----------------------------------------
 
-Python handles memory automatically with garbage collection. C++ smart pointers (C++11+)
-provide automatic memory management through RAII. unique_ptr ensures single ownership,
-while shared_ptr allows multiple owners with reference counting.
+Python 与 garbage collection 自动处理内存。 C++ 智能指针 (C++11+) 通过 RAII 提供自动内存管理。 unique_ptr 确保单一所有权，而 shared_ptr 允许多个拥有者使用 reference counting。
 
 **Python**
 
@@ -548,8 +506,8 @@ while shared_ptr allows multiple owners with reference counting.
     auto resource = std::make_unique<Resource>("data");
     auto shared = std::make_shared<Resource>("data");
 
-File I/O
---------
+文件输入/输出（File I/O）
+----------------------------------
 
 **Python**
 
@@ -575,11 +533,10 @@ File I/O
     std::ofstream out("file.txt");
     out << "Hello";
 
-Exception Handling
-------------------
+异常处理（Exception Handling）
+------------------------------------------------
 
-Both languages support try-catch exception handling for error management. C++ uses
-typed exceptions and requires explicit exception types in catch blocks.
+两种语言都支持 try-catch exception 处理以进行错误管理。 C++ 使用类型化的 exceptions 并要求在 catch 块中显式 exception types。
 
 **Python**
 
@@ -607,11 +564,10 @@ typed exceptions and requires explicit exception types in catch blocks.
         std::cout << "Error: " << e.what() << std::endl;
     }
 
-Tuples
-------
+元组（Tuples）
+--------------------
 
-Tuples group multiple values together. C++17 introduces structured bindings that allow
-tuple unpacking similar to Python, making it easy to return and destructure multiple values.
+Tuples 将多个 values 组合在一起。 C++17 引入了结构化绑定，允许与 Python 类似的 tuple 解包，从而可以轻松返回和解构多个 values。
 
 **Python**
 
@@ -631,11 +587,10 @@ tuple unpacking similar to Python, making it easy to return and destructure mult
     auto [x, y] = point;
     std::cout << x << " " << y << std::endl;
 
-Enumerate
----------
+枚举（Enumerate）
+--------------------------
 
-Python's enumerate provides index-value pairs during iteration. C++ doesn't have a direct
-equivalent, but you can achieve the same result with traditional indexed loops.
+Python 的 enumerate 在 iteration 期间提供 index-value 对。 C++ 没有直接等效项，但您可以使用传统索引 loops 获得相同的结果。
 
 **Python**
 
@@ -657,11 +612,10 @@ equivalent, but you can achieve the same result with traditional indexed loops.
         std::cout << i << " " << items[i] << std::endl;
     }
 
-Filter and Map
---------------
+filter 与 map（Filter and Map）
+--------------------------------------------------------
 
-Python's filter and map functions apply transformations to sequences. C++ provides
-equivalent functionality through STL algorithms like ``std::copy_if`` and ``std::transform``.
+Python 的过滤器和映射 functions 将转换应用于序列。 C++ 通过 STL 算法（如 ``std::copy_if`` 和 ``std::transform`` ）提供等效功能。
 
 **Python**
 
@@ -690,11 +644,10 @@ equivalent functionality through STL algorithms like ``std::copy_if`` and ``std:
                    std::back_inserter(doubled),
                    [](int x) { return x * 2; });
 
-Any and All
------------
+any 与 all（Any and All）
+--------------------------------------------
 
-Check if any or all elements in a sequence satisfy a condition. C++ provides
-``std::any_of`` and ``std::all_of`` algorithms for these common operations.
+检查序列中的任何或所有 elements 是否满足条件。 C++ 为这些常见操作提供了 ``std::any_of`` 和 ``std::all_of`` 算法。
 
 **Python**
 
@@ -719,11 +672,10 @@ Check if any or all elements in a sequence satisfy a condition. C++ provides
     bool all_positive = std::all_of(numbers.begin(), numbers.end(),
                                      [](int x) { return x > 0; });
 
-Sorting
--------
+排序（Sorting）
+----------------------
 
-Sort sequences in ascending or descending order. Both languages provide in-place sorting
-and the ability to create sorted copies with custom comparison functions.
+按升序或降序对序列进行排序。两种语言都提供就地排序以及通过自定义比较 functions 创建排序副本的能力。
 
 **Python**
 
@@ -747,11 +699,10 @@ and the ability to create sorted copies with custom comparison functions.
     std::vector<int> sorted_nums = numbers;
     std::sort(sorted_nums.begin(), sorted_nums.end(), std::greater<int>());
 
-Min and Max
------------
+最小值和最大值（Min and Max）
+----------------------------------------
 
-Find the minimum and maximum values in a sequence. C++ uses iterator-based algorithms
-that return iterators, requiring dereferencing to get the actual values.
+查找序列中的最小值和最大值 values。 C++ 使用基于 iterator 的算法返回 iterators，需要取消引用才能获得实际的 values。
 
 **Python**
 
@@ -772,11 +723,10 @@ that return iterators, requiring dereferencing to get the actual values.
     std::cout << *std::min_element(numbers.begin(), numbers.end()) << std::endl;
     std::cout << *std::max_element(numbers.begin(), numbers.end()) << std::endl;
 
-Sum
----
+求和（Sum）
+--------------
 
-Calculate the sum of all elements in a sequence. C++ uses ``std::accumulate`` from
-the numeric library, which can also perform other reduction operations.
+计算序列中所有 elements 的总和。 C++ 使用来自数字 library 的 ``std::accumulate`` ，它还可以执行其他归约操作。
 
 **Python**
 
@@ -795,11 +745,10 @@ the numeric library, which can also perform other reduction operations.
     std::vector<int> numbers = {1, 2, 3, 4, 5};
     int total = std::accumulate(numbers.begin(), numbers.end(), 0);
 
-Zip
----
+zip 操作（Zip）
+----------------------
 
-Iterate over multiple sequences in parallel. Python's zip is built-in, while C++
-requires manual index-based iteration to achieve the same result.
+并行迭代多个序列。 Python的zip是内置的，而C++需要手动基于index的iteration才能达到相同的结果。
 
 **Python**
 
@@ -824,11 +773,10 @@ requires manual index-based iteration to achieve the same result.
         std::cout << names[i] << " " << ages[i] << std::endl;
     }
 
-Default Arguments
------------------
+默认参数（Default Arguments）
+----------------------------------------------
 
-Functions can have default parameter values that are used when arguments aren't provided.
-Both languages support this feature with similar syntax.
+Functions 可以具有默认的 parameter values，在未提供 arguments 时使用。两种语言都使用类似的语法支持此功能。
 
 **Python**
 

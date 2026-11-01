@@ -1,4 +1,4 @@
-/* Simple C extension module demonstrating Python C API basics. */
+/* 简单的 C 扩展 module 演示了 Python C API 基础知识。 */
 #include <Python.h>
 
 PyDoc_STRVAR(doc_mod, "Simple example C extension module.\n");

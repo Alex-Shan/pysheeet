@@ -1,0 +1,3929 @@
+{
+  "404": [],
+  "index": [
+    {
+      "language": "bash",
+      "hash": "bad9e642d9a03355373bfe0072d789a4b4ae7f5387c9b8739363361e3735b6ef"
+    }
+  ],
+  "notes/appendix/disaggregated-prefill-decode": [
+    {
+      "language": "bash",
+      "hash": "f418dcb0479f12d96164c329af7d88ff9475b780211681c39bcb6a656828c90f"
+    },
+    {
+      "language": "bash",
+      "hash": "58a8342b36e943d8187096c4846f5ad57b6d2229c5679046c560cd19369d2ea8"
+    },
+    {
+      "language": "bash",
+      "hash": "774a889b6c8be6b0d456ac3c1e8d99b41cd4c3e215e320211c90f5b27c8e7217"
+    },
+    {
+      "language": "bash",
+      "hash": "63771a5b3ec9d42d19bf5461434ac6f83fc65f0d9a76dafcb3fcb4cbdb8211c6"
+    },
+    {
+      "language": "bash",
+      "hash": "be77b9c2a50680ee4b5ab5946ddfeea46c2cef2c94519cfa6714c8384ab73011"
+    },
+    {
+      "language": "bash",
+      "hash": "0ddc09d4d850d3a115d88ef02daaf67fb32f1874f0fe7e749243b406a5fe222f"
+    }
+  ],
+  "notes/appendix/index": [],
+  "notes/appendix/megatron-efa-monitoring": [
+    {
+      "language": "bash",
+      "hash": "b971367eddd7237f666ae065b9881625c1848bec600a176bdf7492364ee95a33"
+    },
+    {
+      "language": "bash",
+      "hash": "6617f76142a0983a6b05f280a33801029bf2e71e0428da2927c0c113439b1f34"
+    },
+    {
+      "language": "bash",
+      "hash": "261002977de00983e147786c4c3a9a5010f8a29435fc8f5d00dd5b27b8ae2107"
+    },
+    {
+      "language": "bash",
+      "hash": "054fe8e2088848b18ccc47f9ac8e7a9410687532edf9b98b686a3acce4fea236"
+    },
+    {
+      "language": "python",
+      "hash": "9c717ebe51696101556a99bdd96c00ac80394c6906d9853d11cbd4319a84e46c"
+    },
+    {
+      "language": "text",
+      "hash": "9cad13783f3c7d0d36ce2d516c70d2e74366247511b3eb847863d60939a4c9fa"
+    },
+    {
+      "language": "bash",
+      "hash": "ec8742f943facfdb8a50733d2f065cc0ee1c1d76c99abaf50dd289c9fb0cd547"
+    },
+    {
+      "language": "bash",
+      "hash": "f294f2f54f37948cfaebcf070f70241b8d911bd4e66c59ce6472df733c53b508"
+    },
+    {
+      "language": "bash",
+      "hash": "12dd6661ebbbf893822d90f720b89dd51e611cca1324492040414261a970baeb"
+    }
+  ],
+  "notes/appendix/nccl-gin": [
+    {
+      "language": "bash",
+      "hash": "dc6a36c7c88a85ac56188e6cf0f373e436028a5ec180f311241f89a5e269e11d"
+    },
+    {
+      "language": "bash",
+      "hash": "1f5b7507d612fd3b8c1c2f88b2d00f858eb1c26dccc890b3d070182c94465e72"
+    },
+    {
+      "language": "bash",
+      "hash": "93a5cb0d4ff7525a8845dcc691c50c5fa48c48e6342ad84432d524d1f736c823"
+    },
+    {
+      "language": "bash",
+      "hash": "56d6906f7c70c4eff782264ef5f62e37d6075959774c1b70addf8aabea0de315"
+    },
+    {
+      "language": "text",
+      "hash": "eb4a6ed88745aafbbe81a727d88deef2dda94b92669f060a0098b47068954c1d"
+    },
+    {
+      "language": "text",
+      "hash": "b7d394b5163936e1ef9fff18046336a9baa846c3c23ff936c2708632ea0ea431"
+    },
+    {
+      "language": "bash",
+      "hash": "708ed53cdc57d8e7c4c625d5c1239f041293db38fa459a38c95994bcf72edbd0"
+    },
+    {
+      "language": "bash",
+      "hash": "a1fdeae7f3600c911305bd27fce6a72a77edd51851e748d0eae6436fb0cc0242"
+    },
+    {
+      "language": "bash",
+      "hash": "caaa61b72ea956fdb7b7d66281b80442b782afe84f2aa10fbbb889fa447dca4f"
+    },
+    {
+      "language": "bash",
+      "hash": "6b60481e3d88bd0f4e53dc5721edd3e380464e3a4ed64323dc12655c8f130f17"
+    },
+    {
+      "language": "bash",
+      "hash": "1588d599142a68961e0ee569d780a3bcd939f28d898eda58145b02deb85105f4"
+    }
+  ],
+  "notes/appendix/nccl-ring": [
+    {
+      "language": "bash",
+      "hash": "74457a33d9bf71226cfbe877bcd14cfaacca2317e6dc0443b2acba057799a96c"
+    },
+    {
+      "language": "bash",
+      "hash": "c82c2e736e3d9d6d97105057d1de59491408b728d7f071a03cd823b54698e4f9"
+    }
+  ],
+  "notes/appendix/nvshmem-multi-nic": [
+    {
+      "language": "bash",
+      "hash": "2625b0b30d9d3abd7ff457e7cd9dd6afd1ad22569ae07139fefc0bc47ec7d56f"
+    },
+    {
+      "language": "bash",
+      "hash": "444d60c05bbf0db67a54085de60e82e003a219a71a175383346cf2f791c7bad2"
+    },
+    {
+      "language": "bash",
+      "hash": "89b8edb02652429ff8ef3631da7351e8eef9d77cf996fa02c69c73f39601d9d1"
+    }
+  ],
+  "notes/appendix/python-gdb": [
+    {
+      "language": "bash",
+      "hash": "9b5070bdd94f543ea26ca9cee262e52c848f2cc3b920247d8d8d9c8738ef9d4d"
+    },
+    {
+      "language": "python",
+      "hash": "fc77dfbbe45ad5717ce8445dd067e3c039e4af0c81427f5a2ed95f5cdfdbbb76"
+    },
+    {
+      "language": "bash",
+      "hash": "324fa4ac0a4b637c5c41711527f8ede61bbec3f95fe9a508ce21bd343e370ff4"
+    },
+    {
+      "language": "python",
+      "hash": "c24e2d9dd6d340b4732a0f1a82e9647f29e1a7b085bb26ef77962c458e96bb0e"
+    },
+    {
+      "language": "bash",
+      "hash": "30b799ded6a36159b27f67d63ac4fb8c8bdf8e211d77b7aebc3b756c118b5294"
+    },
+    {
+      "language": "python",
+      "hash": "694891c7723664def5cccd010612681499e31fe6a6d2370b9799e3f758f5f279"
+    },
+    {
+      "language": "python",
+      "hash": "bf19628bf372366d02b6fa0a644db84c11754d40a68218deae07f29eefbc088f"
+    },
+    {
+      "language": "cpp",
+      "hash": "59eb6d2625c634356b37e0e870908e2a3f713d491566226e63d416817f5dd46a"
+    },
+    {
+      "language": "bash",
+      "hash": "be4c1bb743b588c6a4d55bee465df4f5f55d4d0860c5d4585a655cb1f449499b"
+    },
+    {
+      "language": "python",
+      "hash": "13ddb95a8123844857fd6550245936d83b1ce4ef8cd93a80cb705c208f0f0f2b"
+    },
+    {
+      "language": "bash",
+      "hash": "07c1da800603c3f97770cc6ef9807aa0c9bf4248ff3236a99e6690b7bebb0121"
+    },
+    {
+      "language": "python",
+      "hash": "a40006eb30594603fc7e05180a20def845b99a4969e9aa24543293ead24cf692"
+    },
+    {
+      "language": "bash",
+      "hash": "526155ba11afdcb3b00f6fb85b0fdb3b0623d7382916317aa1ed17d939c7b93d"
+    },
+    {
+      "language": "bash",
+      "hash": "52e6a4a821e72665083108a3aaa30d13f41187eeed1b1ca2c83fd6fa85fbb52e"
+    },
+    {
+      "language": "bash",
+      "hash": "d83429b2c86368e52d7aa3abbb8e3c6391d95d6bf7b1478eec5dc705cf9b13f5"
+    }
+  ],
+  "notes/appendix/python-walrus": [
+    {
+      "language": "cpp",
+      "hash": "95687692d1ad99cebe8f823cb0dadd408462d9fbc903432291bfc1ae6b9322a8"
+    },
+    {
+      "language": "python",
+      "hash": "5eb387d1767d7074d31a82defa3740be3bf6e997f4b5ce4e6290a5362cd14738"
+    },
+    {
+      "language": "cpp",
+      "hash": "8dfac8803ffa4790f123f34cfaa06bc32d70409238a6b12b24798d0be8663f72"
+    },
+    {
+      "language": "cpp",
+      "hash": "40ead4190874360a286561ac9f617fd6f5c08b425a1e7711e98eecd15f133238"
+    },
+    {
+      "language": "python3",
+      "hash": "0ee224212bc9977047206bd7d3987026b1797f453c9ea07041ea11e42be5af6c"
+    },
+    {
+      "language": "go",
+      "hash": "214678a1d7b0b153453e4009daec5cd8bc738617f97b9931483e58ac77b6c0ba"
+    },
+    {
+      "language": "python3",
+      "hash": "b0265557198df101abcc0422f18fe07a2a580f12060df08c565b0174b7d04b43"
+    },
+    {
+      "language": "python3",
+      "hash": "29b3fc9250e68d588c898c3708274322b1585d41c6f5d17802192ebca032cd7b"
+    },
+    {
+      "language": "python3",
+      "hash": "5a89d9a80fc853d76fc28dcd9d91433754df0146b320498821d92a7a4962002c"
+    },
+    {
+      "language": "python3",
+      "hash": "2f19b2773ee7a2cb0ed2db5cd2a3c6e232d907c5829de04250a7d9380f355f73"
+    },
+    {
+      "language": "python3",
+      "hash": "79f4b3fca46c106eae66d48c92eefed09fc9c77f8086524dc42482e92f46cd43"
+    }
+  ],
+  "notes/asyncio/index": [],
+  "notes/asyncio/python-asyncio-advanced": [
+    {
+      "language": "python",
+      "hash": "22542ecb841dc9ca5a9c274219905fb710f4051f7a4b7efd86e9bc59e9c5575a"
+    },
+    {
+      "language": "python",
+      "hash": "a5a680f8843850fb48e303d56151c347b051c9c878a84bc3bc7d2586363cbd4d"
+    },
+    {
+      "language": "python",
+      "hash": "5d79aab9d9f922926be769344592799b1e48c7f10643b24c1c8b46abfbcb0a58"
+    },
+    {
+      "language": "python",
+      "hash": "cad92e3a5e08d4a5897845df5c52dd8fa6eecb8301b2c014d31c141b7860261d"
+    },
+    {
+      "language": "python",
+      "hash": "8401e781c653d1426bb66dcdd554cda725f09055b48507255383859087c48dfb"
+    },
+    {
+      "language": "python",
+      "hash": "cba7a4f78db67d7e0f6bb92a84ff4dfffed16527024ba8684a01f05e9af96e9c"
+    },
+    {
+      "language": "python",
+      "hash": "9ee0fb64bef51e1ad9f4d992cbd8f124469d47740b7fee9fb31a50378c00a6b7"
+    },
+    {
+      "language": "python",
+      "hash": "5c7e685f0c1055883d9aa0b28d7eafc73162e844a218943c0476df9a258f0af0"
+    },
+    {
+      "language": "python",
+      "hash": "8ac4f637e758d98869e9f14b292e7a22936d606c3533b9dfbb89a5779c96f72c"
+    },
+    {
+      "language": "python",
+      "hash": "1373cc32ca9ad5ef7fde2b2473fd0da97a67d91d8c347c80214a0ca7e6eea75a"
+    },
+    {
+      "language": "python",
+      "hash": "226c931541e415330df0e01c725e50dfee64ecfcdf18e4e3b33a42a7ae7252ef"
+    },
+    {
+      "language": "python",
+      "hash": "125bc151ec84db6103d691cd87360af4fa10c33cfc999489be0468b621473f1a"
+    },
+    {
+      "language": "python",
+      "hash": "f28a0e15ecd79945a38051043441e70c30e1937ede3487d9cd57f77374608ec2"
+    },
+    {
+      "language": "python",
+      "hash": "a6c9251fd8f6f172a4d3f6fdc6a3dd847eda105ecff855d195c248e488d5793e"
+    },
+    {
+      "language": "python",
+      "hash": "3c5249e25fa86e8887f709838c7dca1e13a370fe65162b0c2acc8cbde8bc6a5c"
+    },
+    {
+      "language": "python",
+      "hash": "7bcbfe6fded57af5f4950fecee45cee0f65cf2a65badbbd52a2838b542ba424c"
+    }
+  ],
+  "notes/asyncio/python-asyncio-basic": [
+    {
+      "language": "python",
+      "hash": "dbfb6eb9e75a424f79307117a95bca26b8abfb39acf075b633892e211e8c00a8"
+    },
+    {
+      "language": "python",
+      "hash": "418011e172bc461d5102d47810adda98d11e8b0dbf9d97d123caa59025bd84f1"
+    },
+    {
+      "language": "python",
+      "hash": "ebc18e24654fa4e4f351db29ed01d43582076c8b1499a2025b0ea4ca1f9c2b55"
+    },
+    {
+      "language": "python",
+      "hash": "847d40acab26799b8e7497fbf0c28a98fa0725b0332a28aea7353e76abdf1d5c"
+    },
+    {
+      "language": "python",
+      "hash": "88fdd06eff3b4d18ef8e1958315426e0e1db42f5b41d53fec564ff4b7b0fc51c"
+    },
+    {
+      "language": "python",
+      "hash": "c3d3888d8f94467e626886d9ceb5e6271849d0851ea2b73079e12ceaa62c047e"
+    },
+    {
+      "language": "python",
+      "hash": "f07842528b6f9bbbf62d0a30a71b20449e1fc4047102b3270c9b86b9cb3cdf4b"
+    },
+    {
+      "language": "python",
+      "hash": "93bf35aceec3fc319062aa605f9beba0b98b1ad50c30f1a955e4f55e8b84268b"
+    },
+    {
+      "language": "python",
+      "hash": "1bf6bdca12cd2f8bd04785422a78ffec2f415d8629ac75e69c150015a2704e86"
+    },
+    {
+      "language": "python",
+      "hash": "557c86115cc29eb42192e0f3759161af2c8ea21dfbc6cae13d5b8f9d728fb7b1"
+    },
+    {
+      "language": "python",
+      "hash": "224455225af19281b44165ac63d9503aad5d6202796e63938befa07c3ec93d64"
+    },
+    {
+      "language": "python",
+      "hash": "b52b5f2ad760f439a0ca27e5e6a021055b82d90746d110065f9e1412493e921e"
+    },
+    {
+      "language": "python",
+      "hash": "34dbb5c63c02cced17ab549f6b45e05ccfad8f8004b819df3fbcb8f79b242021"
+    }
+  ],
+  "notes/asyncio/python-asyncio-guide": [
+    {
+      "language": "python",
+      "hash": "d89d6036b76d70b93f31cd94a9dd3bc95bd26becaed54ad8d37ead26238b4a13"
+    },
+    {
+      "language": "python",
+      "hash": "b68f64f62d564c9052bc91d2cfd115af9cb50d20b14d4145f6aebbd8fd48ee9b"
+    },
+    {
+      "language": "python",
+      "hash": "649073cbf44de74e552c973d5fc7cdab0ef07e8d6b151749bea6052c42c14985"
+    },
+    {
+      "language": "python",
+      "hash": "c93ff50d1f84890b1f1f66e467945ee5f356bfb4ceee66454e0c0147491c3832"
+    },
+    {
+      "language": "python",
+      "hash": "daca4fe7f0d2fe48a1ede8b3d3dfa48e1456f527d30a326b97af66bfaf8e41c8"
+    },
+    {
+      "language": "python",
+      "hash": "6062c5fa6fb81affb4613e3d6680c1cc30cc87b668d23ec3e90ad7af2254d6c2"
+    },
+    {
+      "language": "python",
+      "hash": "0b40b43ee0140c1ddd5156efa89345f2f3457657ba19f4904d7bb60d62e96025"
+    },
+    {
+      "language": "python",
+      "hash": "135a48d07c9425099603cd357e893ff83e9749af6158f7007bc288997151b156"
+    }
+  ],
+  "notes/asyncio/python-asyncio-server": [
+    {
+      "language": "python",
+      "hash": "283fe818b8fa196387807e012872787d1aa237d18fd252b1522ba450a3a79bad"
+    },
+    {
+      "language": "python",
+      "hash": "6861b4db5df16d75b66abd458e161522306188237106b65a9faad44fe833558c"
+    },
+    {
+      "language": "python",
+      "hash": "f4bb2aa9a02d05c8188fa85cc825c10d444cfe259f04bcd374ef7c445ae0303f"
+    },
+    {
+      "language": "python",
+      "hash": "4d0c704a8bc83a966577d82307f3bb6fd3992263d75a96be2a958c5e61a46938"
+    },
+    {
+      "language": "python",
+      "hash": "1100f07a6137d91ad0aa12726bf9676d36eb76b15dd94ac40cd405bbb3899a2c"
+    },
+    {
+      "language": "python",
+      "hash": "737f4769fb737aae402dccacf9b6d3f480813d687fe586ca929a44adf1d0583a"
+    },
+    {
+      "language": "python",
+      "hash": "b06b846663a4a9b7ab30294e620f8599ead5d1fcf9f63718e4e19956e7776f86"
+    },
+    {
+      "language": "python",
+      "hash": "565346bb193871d2df605cdd8b8017aef03d6c55417e14c97e6663cc33802329"
+    },
+    {
+      "language": "python",
+      "hash": "3d0e29a95cd5b5f98b5b83556013140ba0dcd09a026658a079189c555fdcb190"
+    },
+    {
+      "language": "python",
+      "hash": "89841d57f93f0caf69c622132df1f65fa568515a3f589f8d057710cf4f8a53f6"
+    },
+    {
+      "language": "python",
+      "hash": "09c4fe37603bd2e09a0a289b67790356ca513126922cd4d192760547ba22905f"
+    }
+  ],
+  "notes/basic/index": [],
+  "notes/basic/python-basic": [
+    {
+      "language": "python",
+      "hash": "f19561a68bd875aa413dcbd64b8b78037c283e0c580b818e951aee0d74e490c3"
+    },
+    {
+      "language": "python",
+      "hash": "83a03b26c1e2e9422dc6635e20aed67954e5b4617bf4d61b22a01dcfdafb8706"
+    },
+    {
+      "language": "python",
+      "hash": "77c512e07a4fa43a47fc23d5104268ab8afc81e4e1739763395e97631bbde6ae"
+    },
+    {
+      "language": "python",
+      "hash": "fcbe060e7ca730b63042062966850fa273b5713e36157344f52315c4c7d89e4e"
+    },
+    {
+      "language": "python",
+      "hash": "e7909ba185b4e9a0db37e18d59f915a818a199a4e118753d0290d87c3a9f0d10"
+    },
+    {
+      "language": "python",
+      "hash": "b5fe382c78cdfe90ab3f70761af11ed57d5b5dd4a934f0db47d6f96136bebfef"
+    },
+    {
+      "language": "python",
+      "hash": "1ceca4f78317dc86ca83312174f77709ae1cb036a2681fcc0cd822fd3ce4293c"
+    },
+    {
+      "language": "python",
+      "hash": "b0233543411df0cbe7782be9498a8f65c4b6526c20a80cf977c1b8f6f5ec5925"
+    },
+    {
+      "language": "python",
+      "hash": "b30a35badde4271b4b31fa4dc373ab50a4db3cf5bd85ed98f043dfcecf3799a9"
+    },
+    {
+      "language": "python",
+      "hash": "06efc11c2604840201830501fa5d403320b33df94a0ca7d32d39704f932a5edb"
+    },
+    {
+      "language": "python",
+      "hash": "b839cf96cf37fdc9a6be31a7a23ad6ba8e0c5994d080f19abc6e952d9f7e6c23"
+    },
+    {
+      "language": "python",
+      "hash": "1213d32744b65a93085f92b67d568f19bc09e7cb1e1202accd2e3fb69cfbd768"
+    },
+    {
+      "language": "python",
+      "hash": "de487528ec7686756113c395b0ddb10256348370726cc4ed2780426704e94ff4"
+    },
+    {
+      "language": "python",
+      "hash": "149aeddb2bd3bed56ae8024cf31daf51f860f1b0a0dc42aee2d1b4c22be15a53"
+    },
+    {
+      "language": "python",
+      "hash": "1df575dff1c0f7fc0086f0761185c08840cb3c971e82f980b5bfc822e56b1036"
+    },
+    {
+      "language": "python",
+      "hash": "59c05b1fec0fa1bd8e600ebf58cb60e4aed90d9e4fc94665b4d606912c75208c"
+    },
+    {
+      "language": "python",
+      "hash": "bd2775c0e3ab4d15cfe559f4dddc318b17add29755d9c707b53036d300b66d1b"
+    },
+    {
+      "language": "python",
+      "hash": "06d5ef58f86aa0d6cb7e71363639c7868f28291a2ed808b3cb30836bea871e1f"
+    },
+    {
+      "language": "python",
+      "hash": "72fcbd05bb029620a02d03ee5b4fd8558577c0fb432377ec33f577598d208141"
+    },
+    {
+      "language": "python",
+      "hash": "d74e202a65b9ac4dfdc1b0247490ec9b6997c07dfaac3283938ae5fa858437a4"
+    },
+    {
+      "language": "python",
+      "hash": "1ccf16877a10a13778f8d7be8e3ac7a23b0812d8120223c04efe71d9af0b9529"
+    },
+    {
+      "language": "python",
+      "hash": "e6fb73d33e6e64f986785e80c345fd64f83282a1ca6b97280d126edd889a92e3"
+    },
+    {
+      "language": "python",
+      "hash": "1585092478b7f3e7c694e2f507dca59121cb316375aeba65cba2fc6540a671b5"
+    },
+    {
+      "language": "python",
+      "hash": "b242213d68725de82bd92b7e59bb03b0395193ee7d12de646fb2e65795c1c923"
+    },
+    {
+      "language": "python",
+      "hash": "00a1b92c7abcf7d361281fc59b7d9104dd054b43763274cf4b65f3b420179a7f"
+    }
+  ],
+  "notes/basic/python-dict": [
+    {
+      "language": "python",
+      "hash": "75ffcbaeaf8049daa3f1c26c6ea93a959aa4f882b5d7282ca45d25b8aad80066"
+    },
+    {
+      "language": "python",
+      "hash": "519f25d68dd1961c48ad3bd56ecb32f5c3cfa15e52e54b6374789639b19c0dec"
+    },
+    {
+      "language": "python",
+      "hash": "a3235fd6a218c30f81aa2c0e2ec1488f94c69a9171430b7cb652f437e36b6828"
+    },
+    {
+      "language": "python",
+      "hash": "baa7b84bdb6567b5c58523c03d06d9dc315e9a84645d99f8bc35476af7a65e1d"
+    },
+    {
+      "language": "python",
+      "hash": "6e64273bb61a9bf857da35573608792b61d9c9758adab712a97b9cbcda1a14ab"
+    },
+    {
+      "language": "python",
+      "hash": "95637001b135f4549bb15067db8d36ac557b0ab7089e22018a7163b454e393ab"
+    },
+    {
+      "language": "python",
+      "hash": "e631ae556a758e9b78b8ffe872c318cacadc5bde63e4ec360ba5860bf552fd5c"
+    },
+    {
+      "language": "python",
+      "hash": "f46ba25b1d6950dc6c219834e81d95ad2594ffca4047dce870133ca6f039de65"
+    },
+    {
+      "language": "python",
+      "hash": "d73517b7db364149404d830d8bfec3478cc212c1634e6be26a318b335130dfc9"
+    },
+    {
+      "language": "python",
+      "hash": "1fe7fd2ca5e3a7efab3593884807361d7403f63ce272ef025e8b41a62c0d5913"
+    },
+    {
+      "language": "python",
+      "hash": "541879754bd83078113d02451517b3079af18b3ebed133d4acdd42005e0c89e0"
+    }
+  ],
+  "notes/basic/python-func": [
+    {
+      "language": "python",
+      "hash": "7605d74733cf34b9ef6f6154985683ed80aeee54e88b9ccdde61eddd0fa5bbef"
+    },
+    {
+      "language": "python",
+      "hash": "2cba29ffad802ab8ebc633d2e0e1b0e05b62b32dfdfbfaa385335480e392d43c"
+    },
+    {
+      "language": "python",
+      "hash": "4b4a07bc1c3a9dd1586933e37c0ed490af5a4e2a261a8fb4a7d3463afd2589d3"
+    },
+    {
+      "language": "python",
+      "hash": "24d761b393e707095714c334f9eb7d1d993690cb58c81997d1583c619d05b6de"
+    },
+    {
+      "language": "python",
+      "hash": "35670607df05bcc431477e0b81a6d14633d7f8479912b1b80758af98ddfcefbe"
+    },
+    {
+      "language": "python",
+      "hash": "18d6392d0fa6841ea7d1a50a4e01085c7287a05321ec894bc725defec635efd4"
+    },
+    {
+      "language": "python",
+      "hash": "bad6c77cc3ec974ab739f5234d285da6db1eb36beb37029299376ab0a0b4526e"
+    },
+    {
+      "language": "python",
+      "hash": "3078882c2bf93d4d5c4ca5c45a033ebbe46f88b33dc4c5c74a362fe2062173dc"
+    },
+    {
+      "language": "python",
+      "hash": "ce6d3dbf6c3e32cfe1fcc2bea08dfd8c04dd6761a2fc932832065a76b239916f"
+    },
+    {
+      "language": "python",
+      "hash": "7fa041000619924df73600a95d9d361b9933cbbdcb11cf3f070c315f72f84bbf"
+    },
+    {
+      "language": "python",
+      "hash": "f48a0653af27ba05aa2a5f1ea21984a405c3295f8afddd4acc6894052da5fcb0"
+    },
+    {
+      "language": "python",
+      "hash": "35990ef66e17954b2d6513a89bb617c2a2892cc090132a34cc4ca66acfd19dce"
+    },
+    {
+      "language": "python",
+      "hash": "fda6e4a22a98cbbb16b55a391dd024265d07b85b3ccc0cfb12e1c1b787a19f6a"
+    },
+    {
+      "language": "python",
+      "hash": "8843af3e3cf832db49bb3c3668e1ededec38afc5ace3fc326d36323cb15a036a"
+    },
+    {
+      "language": "python",
+      "hash": "2a3f89b48d8898117c138cfd25653923583759c79419e80dfcb2c5a8dce8d07b"
+    },
+    {
+      "language": "python",
+      "hash": "d82b22fcf975ad74a5e89bcf2b77a7593d5c06a2a142623b59fce3bc6de9adc4"
+    },
+    {
+      "language": "python",
+      "hash": "4e3b1c42d1215d1e38279153f5e618654032b0204c1f6ef7d94384f31b1ab18c"
+    },
+    {
+      "language": "python",
+      "hash": "6315840ca065abe82fb96e63676dab32224f120542356941307bfd504dee7018"
+    },
+    {
+      "language": "python",
+      "hash": "4e78b5a6cc7e8f9eb73270b100e40cdf66447094042f902e9a4e01fa2884a649"
+    },
+    {
+      "language": "python",
+      "hash": "3d009612fa56ec485946e2f8be6b739e66318c143f2ab009694e3eed243ab44c"
+    },
+    {
+      "language": "python",
+      "hash": "bff4b7d9d4f50bc4aa45262cd3c4b76dbacd7c334531d64264e7879095b87605"
+    },
+    {
+      "language": "python",
+      "hash": "542e504bfc77c4baa3f99ca81d4b1584b578a39c2a791d1051d8d8a92a231245"
+    }
+  ],
+  "notes/basic/python-future": [
+    {
+      "language": "python",
+      "hash": "3324ffda7bbe75b638a8f52f3c2e5154a6b0a449a13da6285e4f07123773240d"
+    },
+    {
+      "language": "python",
+      "hash": "ff95c9dbd3bfdb85f662fcaa3db2480d983aa92c210cc2926c1948e7913e49d4"
+    },
+    {
+      "language": "python",
+      "hash": "d103d6b01043c6ff94a3245637de304a7a76e197bd55313d6c6c0c74d2e35d40"
+    },
+    {
+      "language": "python",
+      "hash": "fc7807f581b729892a72aca3feb81a784b214c543744fb65c58a6da161b3396d"
+    },
+    {
+      "language": "python",
+      "hash": "6b4c5d8dfa71ac4a45d8053728ecb593b0c57900e43f8d1813aa58ff75253f5e"
+    },
+    {
+      "language": "python",
+      "hash": "efa3e292bdda87dd16790aef393329f8317ae4a5f9fb3f7db8b133d4b6931756"
+    },
+    {
+      "language": "bash",
+      "hash": "1ea0ab8cf9f20550f2ccdf1bd47421d07f3a3034bd70255e79c4120c1ac48c2c"
+    },
+    {
+      "language": "python",
+      "hash": "70dabfa665974093e9271e899ec209ba5fa93e41fd283446ff8298a9a51f4890"
+    },
+    {
+      "language": "python",
+      "hash": "72ec10415f9e18c7dfc157e5f756f7677f624d49397d85406684b30eed4a2f87"
+    },
+    {
+      "language": "python",
+      "hash": "4f511a960ab130549857a4d1b5f0dcd20e6f1ac2e35d4243f833c6a8e6058410"
+    },
+    {
+      "language": "python",
+      "hash": "50b7f0ee6a93f98f82178f4ae799f4213333ab63ff1e8004a84f4d6d5f737ed5"
+    }
+  ],
+  "notes/basic/python-generator": [
+    {
+      "language": "python",
+      "hash": "da19133a3e325cf997396186a5939e17df0ef0726fd6854a417afc703eb66831"
+    },
+    {
+      "language": "python",
+      "hash": "735df01ff86849ea820c5149834c0d92d40be61fa5123e3311e11e49cca27ffe"
+    },
+    {
+      "language": "python",
+      "hash": "1d7288002d5a435930b27a709e6453d226cb3b7be604caec257ddf12d41dc449"
+    },
+    {
+      "language": "python",
+      "hash": "b05f0247b4d8afccf5a7b00abb490f2258e646bf81850bcbd3b70cef3c1f5358"
+    },
+    {
+      "language": "python",
+      "hash": "3664cc83992e14fb0e66e0dcdd44b08dcd56e6117b0684b27996a5f28f754682"
+    },
+    {
+      "language": "python",
+      "hash": "56bc9751e0023c67fbcd86d3aefaec6627407211ff29739fee32d51ddb53c23d"
+    },
+    {
+      "language": "python",
+      "hash": "50ad33f39abcf3bbfad2733ecc65f1f228b1aabfdd22b21ea2d004a346f020f6"
+    },
+    {
+      "language": "python",
+      "hash": "ffbde151bd406c32706a8aced4af631f875ca3133fa3ba668d802e193bc74625"
+    },
+    {
+      "language": "python",
+      "hash": "a30e28e6533d3c206dddf850ff3de409aef0ef9fc705560fdb7bbc59470820e5"
+    },
+    {
+      "language": "python",
+      "hash": "37d88df1320ce1d9c239dcc19b080fbc6a180149ac47aa6e0c24b9301aa3a16d"
+    },
+    {
+      "language": "python",
+      "hash": "4736c141d95132e0f82dae1466c5643eb54edeae532115246b95671e9f6dbf5e"
+    },
+    {
+      "language": "python",
+      "hash": "50dde3901a53f45fbb665e09e12d2086c7d1820af7febd05c8939603d3203adf"
+    },
+    {
+      "language": "python",
+      "hash": "7bf408e591b6380b50d6c676eb5dbd58655236d7264d45da1e024f54c75e1b35"
+    },
+    {
+      "language": "python",
+      "hash": "f74e38b6cbc580b5ec9c015e964f25675168528d18661f8a5c30be2c883fb1dc"
+    },
+    {
+      "language": "python",
+      "hash": "0f1df2c367f1616a4c7edad4be0893a0f98e9d645663dacc3d94412358a8512a"
+    },
+    {
+      "language": "python",
+      "hash": "fc92aebdd87b4dc3ced0ab8062981c8dbe4b06d032d798d75eaf432c8d129fd8"
+    },
+    {
+      "language": "python",
+      "hash": "fbbe7532529aded37c4714c5cafa5279b106bf7728bd17b27ea24d754642a836"
+    },
+    {
+      "language": "python",
+      "hash": "a0d244b81bd1a6f4314e6b3aac250f649848327d1413b3d98e2a456433824099"
+    },
+    {
+      "language": "python",
+      "hash": "71e066931a4de6b5e89ecf60aaad75f2b0be41ca4258a5b02adb5d9324af671f"
+    },
+    {
+      "language": "python",
+      "hash": "662d20a26fee3079aed9442f4700cee03b0a787adcd8f88d75fddedf5a6e50cc"
+    },
+    {
+      "language": "python",
+      "hash": "e6812de548a48b1aa6b118b89e8a4c3e97b07f94ea664b90139e9b0bae21d5e5"
+    },
+    {
+      "language": "python",
+      "hash": "b85b3409fb15ca1c41970f211592daa8a3c9d118d15ee8b48861a9c0beef05af"
+    },
+    {
+      "language": "python",
+      "hash": "a80da8ae493b9b72737c21f4e0ff372c9efb07cce30dc67c1c815718974bea69"
+    },
+    {
+      "language": "python",
+      "hash": "67e908fd3c97776b613265afbde85019b6892f7104e7c63abe5f94890737b2d0"
+    },
+    {
+      "language": "python",
+      "hash": "3b402538ece0f90a9224b78db43f6364a5d645e735ea546f49d9a35b488a3f3f"
+    },
+    {
+      "language": "python",
+      "hash": "a454ccf716460f5708e9cb490a1959408aef606b0b43e4fdb65210ee08f39f31"
+    },
+    {
+      "language": "python",
+      "hash": "8f342a2a66c4ce2f644789042b21d0cbfe782be94d99ba270c605b4a0f2adffc"
+    },
+    {
+      "language": "python",
+      "hash": "9392219a3c47db70fc5485d1c05825909fc5bfd7c418ba628ac1d2d99e163040"
+    }
+  ],
+  "notes/basic/python-heap": [
+    {
+      "language": "python",
+      "hash": "5ae85a8c70fc952d96f3a26f4da838fd2e1fb77181ac6dc87f20462e975e7b61"
+    },
+    {
+      "language": "python",
+      "hash": "52ac1e99cc2722dc0fe89b4c328f803c12fb6b7dfe2cda6ed508896864b5960c"
+    },
+    {
+      "language": "python",
+      "hash": "4ae49a72ce0c6dd858b8cb2155ca89cf391b6dec374cffae0b6e56576b5609e7"
+    },
+    {
+      "language": "python",
+      "hash": "63f5f0dae66bf1d25a6e9c6c18511348367001582543bea34069eb8a4ac80201"
+    },
+    {
+      "language": "python",
+      "hash": "f4454afc11e951fafa18703722bb8ae555d5cd32dfdb5d10253f4b655a61de7c"
+    },
+    {
+      "language": "python",
+      "hash": "163bdea3b896526ac9f0cda152fec726e50b18fd9f01e4f4c90144ee8feaef11"
+    },
+    {
+      "language": "python",
+      "hash": "5f4f98206daaba5397d2a8589039b3ad51a2a5b0a2f94f047d96e4d4bb26446f"
+    },
+    {
+      "language": "python",
+      "hash": "d2216cf8015187ff51fbf9c514daf90d426c73756eb163a2a06a2c2bd702a5ad"
+    },
+    {
+      "language": "python",
+      "hash": "8c8b5574d6b1f875c45352367ea0cb02355f2b6c79d4a8ed63459a40c97a1df5"
+    },
+    {
+      "language": "python",
+      "hash": "af09546466f844ecb155e01913a9c03994faaffbbf64301eb85b1d500a2e97d3"
+    },
+    {
+      "language": "python",
+      "hash": "2679277a1dc42ca0ae5b3c70ce774f516702729c9fe1d291164108141f500685"
+    },
+    {
+      "language": "python",
+      "hash": "b86b19e95e746ce054be829cb6fcc4e17d1802057a213cf55387cc1e05e80b8b"
+    },
+    {
+      "language": "python",
+      "hash": "1d5cb7912152a0d0249b8ec7fe1e19ba3a3ee48c12ed6897029a0b86a562c4ce"
+    }
+  ],
+  "notes/basic/python-list": [
+    {
+      "language": "python",
+      "hash": "770f34d832c52cb43fcb45551ea63a720396ed7d75cac9f8ea7811bb02886809"
+    },
+    {
+      "language": "python",
+      "hash": "53c77001789d38a0be7acbbfbc2afec2f739a9f3d3fad618d8220e11a1d58d6f"
+    },
+    {
+      "language": "python",
+      "hash": "842e26b4841747077e79ae510ea0af25220cfe3d57223acb0c3f6b15f1e4ab12"
+    },
+    {
+      "language": "python",
+      "hash": "a14ab1772a17d59c9e1ad7ce78a4b862a85f2da4f7fbc10012fb329b68ed82b9"
+    },
+    {
+      "language": "python",
+      "hash": "84a9834243420136f34e8f12dcaf9e0f9ba2fdc7e98186fd6af9235be970b323"
+    },
+    {
+      "language": "python",
+      "hash": "c14aec232ab38a15b06ff7d25cb30b3bc6aa6e6b7d69d7238a333f3f36d02fab"
+    },
+    {
+      "language": "python",
+      "hash": "59c35993cc4929790f8a977237ec29d606ce04af082c61a7fbaed3ad4a05e741"
+    },
+    {
+      "language": "python",
+      "hash": "99f4dec3646402cd1866a18a228d70a37bb2119ae7d9453371304167987f8f42"
+    },
+    {
+      "language": "python",
+      "hash": "5830d12c7ea38ce38cf6a3d21f4bb7b4224fc9329d970b2138f47466f4bbbb89"
+    },
+    {
+      "language": "python",
+      "hash": "192fb6b401bc8fb804e9f297fa931fd8cad805ec6c388fe1bbeaa5c614ae2360"
+    },
+    {
+      "language": "python",
+      "hash": "a9c96d79eca1ddba14c91251bb232c691ea1ff76012900234604a57f54047bf9"
+    },
+    {
+      "language": "python",
+      "hash": "6ecec7c4eab27e3b8e448002e6ca375049eaeb7d07e5fb65dea85163038c19c4"
+    },
+    {
+      "language": "python",
+      "hash": "34028a77e2580b34731706e201a7b4664536ab9c34a3f3b16950580bf3879bd0"
+    },
+    {
+      "language": "python",
+      "hash": "1ba8df701920467296fc414050df5e9b93d7835d14ffc4536dc8b1d4df53fc48"
+    },
+    {
+      "language": "bash",
+      "hash": "dd4f0796bd722ab37e76c98ffcc6c46bcfcbc74afd935266006c01e85f245428"
+    },
+    {
+      "language": "python",
+      "hash": "07fc8f9ccef74097faa0d2d4302ec1a1733b9521f02a4aadb50c2ceccf9c349e"
+    },
+    {
+      "language": "bash",
+      "hash": "1c4b2a916e554b54e4872cac4ed045c0c9105f2aca66d5051f7f97773848f6b8"
+    },
+    {
+      "language": "python",
+      "hash": "fb3857c36d13daacab79464afeb3d20dea5c86f74405a41df9440fc9fc609092"
+    },
+    {
+      "language": "bash",
+      "hash": "eeb8e92a89576a40059452a2ea734042af4d43960d0f4d2cba092915dcf196fc"
+    },
+    {
+      "language": "python",
+      "hash": "d23dda4e3ba2a1308808267abdf89d83692914194cc466ad660eb9ec03d5a547"
+    },
+    {
+      "language": "python",
+      "hash": "01faf721ccbc7a9290c0d65e6585d5a441123a852c3720fe6c4bb515374f345f"
+    },
+    {
+      "language": "python",
+      "hash": "11af05be68eb84c411814d697552691d04ce2db54ad66a64a7eafa0d653b8849"
+    },
+    {
+      "language": "python",
+      "hash": "2ce1d4cb378794256e396d4283c7151a2851655f5568a18e873b3d61b207cca7"
+    },
+    {
+      "language": "python",
+      "hash": "54e3754308b263fa4292cb602318e18d829c29c7721847ef88d4efe952b8c58d"
+    },
+    {
+      "language": "python",
+      "hash": "25bacd9843cc313cb19f66f914a2f0767276c59544d33463a528467a17c8854b"
+    },
+    {
+      "language": "python",
+      "hash": "49b81487971b5edc1fd8a9d2784d784662384a2f3384b349008f07be5396d6a9"
+    },
+    {
+      "language": "python",
+      "hash": "4158d31c09025e6ecabcd9ca86a1afe18ea14b67de17c1ad0ad5f2e5080af92f"
+    },
+    {
+      "language": "python",
+      "hash": "69c7cd9761b11966fc179e3c99c75f27515ebd6127cb777be1d9611dfcab9cbd"
+    },
+    {
+      "language": "python",
+      "hash": "cd07a32ca2cf1c5609d3369eee737c670087a79a3bac5fff729d02bcc54ad988"
+    },
+    {
+      "language": "python",
+      "hash": "c53159ed3ece31d7bd2b4908ede71429e8e7c0f26bce52522aad90305c506119"
+    },
+    {
+      "language": "python",
+      "hash": "2a8307b7d0e2958ba2452213057130d4c976070eb65e22caaddf4ef57aa67b9c"
+    },
+    {
+      "language": "python",
+      "hash": "b9401b01bd2caa456d54e133b84d1b4232daf5027f7ce71b68c0ec28b0e93a19"
+    },
+    {
+      "language": "python",
+      "hash": "6b0f72087c7dff7315b6b4aa75cf158dbae9225feb0aad9b7b988417ddbac3c1"
+    },
+    {
+      "language": "python",
+      "hash": "8b914c1b2350e06cf674da34e2fd29cd494ae282e6265b9f8c74920d17f83684"
+    },
+    {
+      "language": "python",
+      "hash": "ff11dd428c6c868a2a7314bb1bbaf7fd1ba24ca3bb119556d2d71e377f3b5192"
+    },
+    {
+      "language": "python",
+      "hash": "de6287607c967caa4cd57ea7d82d3c1c386315d868c231285475a0ff7a16d021"
+    },
+    {
+      "language": "python",
+      "hash": "d050347f123320c3e91d10da776e4c0c5047950d33b37267e267e27add06d033"
+    },
+    {
+      "language": "python",
+      "hash": "b0a29e9e817a3b7da966e8a2f30e903837e0d3aad585b6626d8f8aafebb6032a"
+    },
+    {
+      "language": "python",
+      "hash": "f7c449faf35a261601fb076e9a94fa44e336f33a1af0710d9474db24fd443dda"
+    },
+    {
+      "language": "python",
+      "hash": "a263db3d7f40c01c9c1a63b57c61de6302162588e722fac1acde5fd35d0355d9"
+    }
+  ],
+  "notes/basic/python-object": [
+    {
+      "language": "python",
+      "hash": "2c4dd71352f87ecc96d06d2727eb9c645a693a042ff2a5ce38ab5d06f53e65ab"
+    },
+    {
+      "language": "python",
+      "hash": "ea97b9369fb0e02ea4c686feb3d72c4bc5527cd8c6b2c38c7dce54734d156276"
+    },
+    {
+      "language": "python",
+      "hash": "eff01dcb02d93f36f0c0b5155cf98bc42e53cc40dbca14ce33b88544c6ac93ec"
+    },
+    {
+      "language": "python",
+      "hash": "f65f59a95a940b8cf50563270bfabde73963db0795a109b8c218d384aed5db15"
+    },
+    {
+      "language": "python",
+      "hash": "3bc96b344e4086fc5496fd6729813b129d9089f27dd2ab475857a56ef7e64b1c"
+    },
+    {
+      "language": "python",
+      "hash": "687acdbe14683ee231589610baf358a33743ff84cfced886b1bdb1dcedc8f22d"
+    },
+    {
+      "language": "python",
+      "hash": "954bb24dc9d3ee7c21a518bb652b8f5053c226d5a011790227d84948fcf8ab25"
+    },
+    {
+      "language": "python",
+      "hash": "69bc528a3f2002ded4e349f17e954d8d83287716585a271edf617aa2ba4a9a1f"
+    },
+    {
+      "language": "python",
+      "hash": "3ad5c84ef06fef69c121bfafe6cdf77a38c9074dcbcbca89699280fa1575d557"
+    },
+    {
+      "language": "python",
+      "hash": "dd69ca385fc924b5ce77f8bba5f171a4c860ebfe7a2b7263a0dfa3f9d8d7443f"
+    },
+    {
+      "language": "python",
+      "hash": "0fd9af99d1bb1806f9b32f85d4751f63834d9f70b7c09fcdc6cefd28e652f35b"
+    },
+    {
+      "language": "python",
+      "hash": "1aefce0e1f51dd0304a373ca2d4824c1bea3b5e30b7ea32fb6e5d5f0a1d185e7"
+    },
+    {
+      "language": "python",
+      "hash": "7b4acffea2e9a67e6fa7b3f817722bde376824d725a6f95b92fde589a57ea9eb"
+    },
+    {
+      "language": "python",
+      "hash": "b7c5805aebd157724791a11b9429a1286aee7d814c3d120ad1b8a4b30bd89793"
+    },
+    {
+      "language": "python",
+      "hash": "e5b8ff5825c0b1f721e12f03956ea4fdaf455ec985a11101a7c4e8c0640c77a8"
+    },
+    {
+      "language": "python",
+      "hash": "c5228d7031531c05a088a9572a6acca2dd9fd17f737a1d676b58d10629c75cc7"
+    },
+    {
+      "language": "python",
+      "hash": "38071fa0fea4a30c325a7a7897e4a4b316fb28276c4e5309a48fb3774ec4d673"
+    },
+    {
+      "language": "python",
+      "hash": "c284a2f8c323217ec730f9b5891a04ae874f1ae214107b37b2e4b2de29eda7f2"
+    },
+    {
+      "language": "python",
+      "hash": "d3434c5ebf3dc49c442b8bcef26e3a278bf2abfdf9682baeed4951ee9a1fa238"
+    },
+    {
+      "language": "python",
+      "hash": "1abd0786097bba90e067154060ecfd1a5888fe142e8322a59ee8deba2d6ba90b"
+    },
+    {
+      "language": "python",
+      "hash": "586f9dcd387690396d02e3d22e60ad457b752ee9e5fc0b38da3046d4453d1ee3"
+    },
+    {
+      "language": "python",
+      "hash": "24bfeab8177eef644b32a4721f51c6599714a9ff3b7a0d716879c09f3764f4a0"
+    }
+  ],
+  "notes/basic/python-rexp": [
+    {
+      "language": "python",
+      "hash": "e29243c269e822bbc9a91afe9dc18a54cdd7833caa36306be23d2db98fd63cf2"
+    },
+    {
+      "language": "python",
+      "hash": "dfe8669b6c920baae69de02a9fb72472bc03540b23a7a1a5a4fb862b48ba898c"
+    },
+    {
+      "language": "python",
+      "hash": "296977c1d10c4e9ba077651013e8717836f1bf26d9bcd2b9119bf5541c1aab3f"
+    },
+    {
+      "language": "python",
+      "hash": "f1da2d07d5f84f26ffeb6cf80fdbb869ba65034c6432b7f145dadf47f98da1a5"
+    },
+    {
+      "language": "python",
+      "hash": "8bc64a1259772cf98a49dad35ea9b9da476e837e2281bef1a7e704379aae67f4"
+    },
+    {
+      "language": "python",
+      "hash": "0b317e4c973b8108c1f84f46c3711110fc03b32bee990148a7b9bdf365eed877"
+    },
+    {
+      "language": "python",
+      "hash": "2c78f9233c2a9d198e08db59a937cbfabfc8dbb010eb41913798e93ea36b0e7b"
+    },
+    {
+      "language": "python",
+      "hash": "baca46e71d178cfe51d140fe164ffb8dd11e8b388b681c0bb0175d47c04593df"
+    },
+    {
+      "language": "python",
+      "hash": "d4253576022684b6fbd0dd28a1735c25240b8085e68cbf973195c63a0cee924f"
+    },
+    {
+      "language": "python",
+      "hash": "65c9579ea2322676d3e220effdd0f9e6b7d6267e20f7831bc462427f0d1bb691"
+    },
+    {
+      "language": "python",
+      "hash": "db7ff4485246b31df33fa4b2261e6adca7bc4c7f715d7fd47072bd05b43395fa"
+    },
+    {
+      "language": "python",
+      "hash": "af013cb1efe556213e4d521580ec389dba39e4c9e529d7850459672e4f4952b8"
+    },
+    {
+      "language": "python",
+      "hash": "744183c4264cb2f49136208afcc76f707ba67129fd3b8b5ce8253594b3a6ae7e"
+    },
+    {
+      "language": "python",
+      "hash": "7594128fe86190f599e9ca9bc23e9524de86e7ef99ac3b3c183637b767bf292e"
+    },
+    {
+      "language": "python",
+      "hash": "7af2643ddc3094ffcf3450b3dfabbcde3ba20db24ed37c834898352a71113582"
+    },
+    {
+      "language": "python",
+      "hash": "78d72bbe29299cf11ab48f7ebaed856a86458d0f0920111d09298af860ac1434"
+    },
+    {
+      "language": "python",
+      "hash": "4b7c1679d4ea16ef84b1013b04dcbc1395f37e8c9553856f2fcb779668a35e98"
+    },
+    {
+      "language": "python",
+      "hash": "969b486ba04a62a166bc7578288dc2c92ac3a786b0f0f0384015ae3e09a49514"
+    },
+    {
+      "language": "python",
+      "hash": "b4f21da6cf5e95d206e15b04dc076aad2ed6d4ea31ef332f4df51ed088f4481d"
+    },
+    {
+      "language": "python",
+      "hash": "7752c5f2f8c3fd920c2a7a43b650945ac7dd044b31cf68228c679a81aae2cdd2"
+    }
+  ],
+  "notes/basic/python-set": [
+    {
+      "language": "python",
+      "hash": "1a0b46faabd3c867b3ede5b87a7c14d20de98197a0216e543a07e78d7dc88c02"
+    },
+    {
+      "language": "python",
+      "hash": "7875a28189f7b6e77989827199f75c8c1953388a8090d6fdc175f686496ea7e8"
+    },
+    {
+      "language": "python",
+      "hash": "eb41e3935b6924646ebcd99e17cbf00b3d34558c6c1cb3eb59abfe9a7f411420"
+    },
+    {
+      "language": "python",
+      "hash": "82f882ee634aeb305df56f1eeec004225fab88a70f2f98549a9753acc6763457"
+    },
+    {
+      "language": "python",
+      "hash": "abbac76801c0660b58619b45bf809a562e47a981e3c4f308a24bcd5aecc1d22a"
+    },
+    {
+      "language": "python",
+      "hash": "57bc1cda39e488f006420f0757ce9247628269378f71bc79643be1e1929152a0"
+    },
+    {
+      "language": "python",
+      "hash": "4d7d49472959882952a014a02fc1bbb99a8c8972ab8c727c67eb69ab61d6dd35"
+    },
+    {
+      "language": "python",
+      "hash": "7c0aba7ac5ed89ec32d8ede0d90575a315421180fa9a97ed3f7458d73d7b404f"
+    },
+    {
+      "language": "python",
+      "hash": "efb2bc5e177f5cf127773dd700fa206e6a591c96b836e36cd4fe2575a27493ab"
+    },
+    {
+      "language": "python",
+      "hash": "d5a71d4bd1255d17f24fb6bf0253470caca92f36fdcdaba2a281f9eee2040fd3"
+    },
+    {
+      "language": "python",
+      "hash": "c55d72ec2ddbb9f0950242dbbe2f57bd71c3fa949be770a57205c9626c8b8952"
+    },
+    {
+      "language": "python",
+      "hash": "6cfbf08756160120b0626535ba1071016103d91c0eee1150af3d0c8fe78f1d7c"
+    },
+    {
+      "language": "python",
+      "hash": "f9f229dfe195473e734bebbbc63af76776bf6defdf8246fafe8b5475fad89bc4"
+    },
+    {
+      "language": "python",
+      "hash": "79c1c46f5d8ab0315784ceb838bcd132cc478d479fc2221192796b60b716285e"
+    },
+    {
+      "language": "python",
+      "hash": "b72836312297db737ff5dc17e84b71ac0fda7d0df685379dc116a711af691f66"
+    },
+    {
+      "language": "python",
+      "hash": "45bcc6e303a6cafcf770e94619aabc874d36a1d48a9c63f5f11317c08a274916"
+    },
+    {
+      "language": "python",
+      "hash": "5076a8be5864cdd5220d50426c840d210b752ee27aee08ee061d4ababdb259fa"
+    },
+    {
+      "language": "python",
+      "hash": "5de96c7a36783d5f2ef14200cede9fc5b0b40c095d8da5a68da9db574f37a747"
+    },
+    {
+      "language": "python",
+      "hash": "b172ff3d155cbeb07a31410567469cd2ae5e83f4c1c3439e6d39aa52e2062fc6"
+    }
+  ],
+  "notes/basic/python-typing": [
+    {
+      "language": "python",
+      "hash": "a847f49e9e88221fdcc1db97761369076714d659169de1b4ed1998b75defb871"
+    },
+    {
+      "language": "bash",
+      "hash": "3b0a19ae3ab188597904677b9b459222e0edbe5a1b14c54509a82b751c1678c8"
+    },
+    {
+      "language": "python",
+      "hash": "73a1a8ef2fb5145b19626e0ab5eec560c66e37f13d76a184b2a5174a367735f2"
+    },
+    {
+      "language": "bash",
+      "hash": "5427189687981ed906763e864510bbd0c9a7c57c1b4776591269b806da4842c6"
+    },
+    {
+      "language": "python",
+      "hash": "23d4fa3f8fc4275ba0d09d809fbaef2fb91446f964ee231cdc1c56b7cd831f19"
+    },
+    {
+      "language": "python",
+      "hash": "ddd0869a859ebc7da8f1e84aea9a366e033ee225c272932c8f8f861474c0093c"
+    },
+    {
+      "language": "python",
+      "hash": "1d70753f18d6e5db22a0dc373c2a86a09171aa874deabef650e845c37baf5a31"
+    },
+    {
+      "language": "python",
+      "hash": "dd14660d882d5d080140cbc483426a09a068810c00230d0afefbe6901f7375dc"
+    },
+    {
+      "language": "python",
+      "hash": "8bee05ddb5b206c5dca5aaeb7007cd866e2a21fdda79ea615194b2095df19080"
+    },
+    {
+      "language": "python",
+      "hash": "ac37134dcaca3ca3c4d857bac8e0c4cffc7461a3b9d7a2a8aec479321c43b50f"
+    },
+    {
+      "language": "python",
+      "hash": "ac8d88c66c2459d0b232715a1d8b823d9ff08ff5d7be3ba5a3488a80c9cc843e"
+    },
+    {
+      "language": "python",
+      "hash": "7e2b896910703333f51601879685eb90e2f031d84b2fced6b9f03d0cbfb96bfc"
+    },
+    {
+      "language": "bash",
+      "hash": "8d87ca0abe0f1998206c870c48f2121bfa61dca187f9e7927d8fcb61e14bc046"
+    },
+    {
+      "language": "python",
+      "hash": "0116c205bd59aeb224bdade15780364341184faaa15b478d107d1458a502e394"
+    },
+    {
+      "language": "bash",
+      "hash": "95b35aacd842af6cd0cd6fbef7f0200d889ed2717360ce77377d3bf97dc1e628"
+    },
+    {
+      "language": "python",
+      "hash": "66c90f63c91ee3c2edce3109cafe5db89d3dd09933afa69006797c2b94b1c7a5"
+    },
+    {
+      "language": "python",
+      "hash": "aa929a506a77806007fe13fefdc17bcec6c06db613c1b0cc49e10864cc1d0a79"
+    },
+    {
+      "language": "python",
+      "hash": "a1b596466f0f082150b51043f65e44ed490a0cf6b73c99ec850db8fdf4ee885d"
+    },
+    {
+      "language": "bash",
+      "hash": "1d40328e4baa0b7d5e79f8b0153b0ba672b46ac69d2a55c116819ac0bdd26013"
+    },
+    {
+      "language": "python",
+      "hash": "273747937e990dcd8ded8dd2ef33009e8b2cd0d834246ba327c03956d3d1a6a4"
+    },
+    {
+      "language": "bash",
+      "hash": "611fd08b874285af3c512a10a91a8ad876ea85697368c652522d52952b280101"
+    },
+    {
+      "language": "python",
+      "hash": "841459a3f9f87844417b770b7f09b0560bdaf0b2a62f42f5850eeb03e467951d"
+    },
+    {
+      "language": "bash",
+      "hash": "b7ff77e7db90609bc04d6b722a4da9e8af5b04de562b03af7e08ed39215f9e88"
+    },
+    {
+      "language": "python",
+      "hash": "f257623d59fcc3290655e11cdd6a0c5029ccc1811b179646d3ee584da0d406b6"
+    },
+    {
+      "language": "python",
+      "hash": "c9c14712f42765850bfc237120e6da789d1fbbfabfad68e6d08a90bccef346bf"
+    },
+    {
+      "language": "bash",
+      "hash": "fd093fa9e29cc70c34a9b17c528b1d9cb809dde5c2244aba72f796d6266d8dd4"
+    },
+    {
+      "language": "python",
+      "hash": "81cbdcd0ed74cdad65808b7fb7a38b26061f9071cc54d50a1751498fd856913d"
+    },
+    {
+      "language": "python",
+      "hash": "923518e51f27d605a620387ce1f6d06d847a868476f055359fdf38727a34f0ec"
+    },
+    {
+      "language": "cpp",
+      "hash": "52baf8038bbeaaa8dafe264c8f138c866ebf3e8d94ba690ef69b276757d320ef"
+    },
+    {
+      "language": "python",
+      "hash": "df6ba0dd81a9ef5101505179ca2570f643b25627fdbca158643266f9f39fcddc"
+    },
+    {
+      "language": "python",
+      "hash": "025b7a1aec6b9bf871fbfd2a9db6087f75e643125b1113d274a6f4dadee9d73e"
+    },
+    {
+      "language": "bash",
+      "hash": "43ba9d5851ec2d3e19edb2de748affeec48d8d90710a9add009ad6324b109c4d"
+    },
+    {
+      "language": "cpp",
+      "hash": "a2f62a2f84a94c6761a6043e24b9a0111dc6dc7b480cd8fb5bfd3985bcfaea8f"
+    },
+    {
+      "language": "python",
+      "hash": "2fd649b5887a601f35842dc90f3322055558b41c544df434bb88a3b7443fc855"
+    },
+    {
+      "language": "cpp",
+      "hash": "a90f70dc84f2ef1340fb3d51d9efafce267e78651b1106dd4303c181dbbdf0e6"
+    },
+    {
+      "language": "python",
+      "hash": "b00526727120dd644297a4e5f1d2f2b782e22405c1ca3b923ba0bd00edab57f7"
+    },
+    {
+      "language": "bash",
+      "hash": "5b9d0ed2032407f3479afa6d49c4399601673f8add0df46a8ed1d9e45dfa63f1"
+    },
+    {
+      "language": "python",
+      "hash": "5b4f17ffd01116a24eb84924986f7a819c5183d85c889fe11809296af68b7eeb"
+    },
+    {
+      "language": "bash",
+      "hash": "7fb183ec89cc52a7f6094769ea1992b8e370276d57c3ab3030f882777f100ea5"
+    },
+    {
+      "language": "python",
+      "hash": "28532778c0e59f214a8286108be803b0ad2d17e764254037710adb3256405d63"
+    },
+    {
+      "language": "bash",
+      "hash": "2d9ff6c8602c4756d22e14dd6fbe39ceb1cf1941273292b40174d9fff3466085"
+    },
+    {
+      "language": "python",
+      "hash": "95864d4833511c79f7f1510b44e3af3f36c4e2d1d062ff1475c08435d54d6486"
+    },
+    {
+      "language": "bash",
+      "hash": "2aac95d60992b46dc2a5f1ab4a1f94d93ee3a5484f9bd5a197654dc740648399"
+    },
+    {
+      "language": "python",
+      "hash": "735767f1742a60ab6e63df3da59d31dbd2915d196180b680c4efc141f2164716"
+    },
+    {
+      "language": "bash",
+      "hash": "d60c1b28d5c11b4f8ed045277e196cd0ccb7613e16d372baf90ebf154b5c6231"
+    },
+    {
+      "language": "python",
+      "hash": "d5eb466a22be651ba9bea71f6b0ca72b48a95da5862ff185bf83ff7ffed68661"
+    },
+    {
+      "language": "bash",
+      "hash": "49cd098453c1980de620831dbaed5181a03d74bcdd1cb2d7e61644912dee59a7"
+    },
+    {
+      "language": "cpp",
+      "hash": "ab9d435ee6b5c58677a2036fa163700bbac63b758a60b2ecc020c4b113225dbe"
+    },
+    {
+      "language": "python",
+      "hash": "9d9e6194455ea9392d41b69b1ecdf47e7ad66e1fbadbac74db8ce16acb1106b7"
+    },
+    {
+      "language": "bash",
+      "hash": "233bfccb634aaf9f0aa6e553c57b5e96b190328b1de9aa096a816bc30465b77a"
+    },
+    {
+      "language": "python",
+      "hash": "9111fa0e7d905133ae0caf577e0c778bf1f6147dfa9969e1b9f5557a41923112"
+    },
+    {
+      "language": "bash",
+      "hash": "f31d8dcb79dfaf9ec520414d61fd77e26fd777deb6a9e2fd48b26415a690d8e8"
+    },
+    {
+      "language": "python",
+      "hash": "a2a3216c8fcb7a425b40917499e86bbc5ec44948325164f2dd54b7828a0e58a3"
+    },
+    {
+      "language": "bash",
+      "hash": "141d8cbcdb86363390eb1a8fb65097fa13754d42a79e922eae19814517680f51"
+    },
+    {
+      "language": "python",
+      "hash": "ac69f6261beb0a77d48e314505657af4eae4baa216b6a374800c2b5289a7c24d"
+    },
+    {
+      "language": "bash",
+      "hash": "141d8cbcdb86363390eb1a8fb65097fa13754d42a79e922eae19814517680f51"
+    },
+    {
+      "language": "python",
+      "hash": "ce79f3512086a981b144bb5b1c7908d90e8748d6fd431b6c9b30bed2c72c999d"
+    },
+    {
+      "language": "bash",
+      "hash": "8b65935bdb006fb6d3f3a14cd9fd6383d47c8ba493451c35b7d96fd1aa9069a5"
+    },
+    {
+      "language": "bash",
+      "hash": "048082ae9f79c78113d3fd42a0855c77b19192afb6b6837f7fbd3e173902e5ca"
+    },
+    {
+      "language": "python",
+      "hash": "7543720e6d9246b9fe1bc68f6b296eb6213e47a40ed4734cc260da1a7dc8f2b3"
+    },
+    {
+      "language": "python",
+      "hash": "0b99b0e37859003308dda2e2b55bed297d0f61d676cc93f90c5e687f28c1d63f"
+    },
+    {
+      "language": "bash",
+      "hash": "18df8984fe2eb27cd270dd51324c7111b1b00ae44f1151ee534730a861db50bc"
+    }
+  ],
+  "notes/basic/python-unicode": [
+    {
+      "language": "python",
+      "hash": "07bc7856d568f8d7fa6bb81210b69e729dab0c723918b937ac58e930c3b0d903"
+    },
+    {
+      "language": "python",
+      "hash": "a23e7afa2d8914a89c345a87bdeebddc8e9313ca18f6601617ef11c11e460c83"
+    },
+    {
+      "language": "python",
+      "hash": "6c65211de46c8e58f8e44d1a8651a035acb985a05c7d333b3b31755ee9d95a93"
+    },
+    {
+      "language": "python",
+      "hash": "1e06f2c9dfb2082783871ca8f8ba6068948aac121d357678703e751308ecf0d5"
+    },
+    {
+      "language": "python",
+      "hash": "e9dd482750594c9650b0235e8bea2283cb55c5946a444ac9081bbcac5c6d0d67"
+    },
+    {
+      "language": "python",
+      "hash": "15e53077b38c76570ba83cabbe0cac7abb632e620f95f54148ee88a690951a75"
+    },
+    {
+      "language": "python",
+      "hash": "84d6775a7563dd99eaf2ede237518d5c8dc8cc622b681045410c0ef59747bcc1"
+    },
+    {
+      "language": "python",
+      "hash": "7befdf028c11690602147ae48fe4195b1c7de31cd03b205ce83ea8a662b86c6f"
+    },
+    {
+      "language": "python",
+      "hash": "78fb543fea1706a16a4ded24ff724a635e7000dc7483dfa4de14f7d77574089e"
+    },
+    {
+      "language": "python",
+      "hash": "a1e68950f9f1c6e231899c88314a418be256040d8f03badc28b42f5b7871cee5"
+    },
+    {
+      "language": "python",
+      "hash": "3b4fe831b80cd959d544037220572977644c9d6969ab0be93ef9657c7581c990"
+    },
+    {
+      "language": "python",
+      "hash": "2600f6f9d867b15e634d812c653b53ac22bbace485ae716a5e9b1a2e6c0356e3"
+    }
+  ],
+  "notes/concurrency/index": [],
+  "notes/concurrency/python-futures": [
+    {
+      "language": "python",
+      "hash": "bf227422572d9072f94d168a37e32f1dfed6c998410629efc286611853bb56ab"
+    },
+    {
+      "language": "python",
+      "hash": "80c13ab2db5905ff555dd21b54fe6fbdd1454219a8b86e85b493f506c0f9c61a"
+    },
+    {
+      "language": "python",
+      "hash": "a21ab1da21d52d403d09857e95a73aead0adb25c053343471dabfa3579e4ee10"
+    },
+    {
+      "language": "python",
+      "hash": "f0142279658123a40cef8cae50bd13e8189469a88e4add01ffea81964e1be67a"
+    },
+    {
+      "language": "python",
+      "hash": "ccb850c8af7be95a09f16bcd6a35cc18a7c6e6f7ef05853c9d6a77d7bb755b09"
+    },
+    {
+      "language": "python",
+      "hash": "b6200909fa5f31a9295fb40b67f518774a4c5cd07c32a0c29534cf9fa027fa3f"
+    },
+    {
+      "language": "python",
+      "hash": "f2af8fcf425f031478123b38dc4542848bf4d29fc3349cef74e278f696ff33ae"
+    },
+    {
+      "language": "python",
+      "hash": "b9da61150d8cfc79565d0a9af3c484dbfb0269bf7b565ebe7d5e07676ec9f4a1"
+    },
+    {
+      "language": "python",
+      "hash": "f0a9d1ec2cd1c36b637a7db34c9c2e05d7d1558883d8c32e27baae778e080d17"
+    },
+    {
+      "language": "python",
+      "hash": "75164d09d507afcf1b6de688f374e43b9073f6619bb1a092323658da2bd69bc0"
+    },
+    {
+      "language": "python",
+      "hash": "2cc4d9c497c8271593bd80c5c50a0a126049fbb0f9076a2b17fc6aa8df7a321f"
+    },
+    {
+      "language": "python",
+      "hash": "89285039aa7216ee0ef4d7fbf3de979a70465743776c316d539974752ecd7453"
+    }
+  ],
+  "notes/concurrency/python-multiprocessing": [
+    {
+      "language": "python",
+      "hash": "40d104bbd45a5ce15c258e2450ddc99b1a3afc7954dbb86f8e8f51203203e8ba"
+    },
+    {
+      "language": "python",
+      "hash": "0a4b9b011db7d5197239521c3057e2549cff97a773eeb0474003cf064c96f37f"
+    },
+    {
+      "language": "python",
+      "hash": "fd3ad8d21c69407c152905ae34efd3e0cb1ec5a8a68046e7ad352a853c54f3db"
+    },
+    {
+      "language": "python",
+      "hash": "bcb98987713e4bf11aaa89a904cbff4c85e6fd8e36cf2d2b8403866fc0145f35"
+    },
+    {
+      "language": "python",
+      "hash": "28848e9bdc7459e00e524e418e4b038d9853a8ee74de48496868ac997a091d3e"
+    },
+    {
+      "language": "python",
+      "hash": "1ab9331ff306dfb10edc1ec621435af9c8c7bc353f78bddb1805f5d1dfaade3f"
+    },
+    {
+      "language": "python",
+      "hash": "4cba7f7907efa1cd783f912803d338a2292a4808c7f757237e43dcfd4bb01769"
+    },
+    {
+      "language": "python",
+      "hash": "6703de5dbcd0b5a1ba6e06000271a8c93f6148dc74af5e77be2dadde44a16e32"
+    },
+    {
+      "language": "python",
+      "hash": "645bea369ca522ad705d5c73d907f84ff40362672992f24ab4f2ee146b4b41d2"
+    },
+    {
+      "language": "python",
+      "hash": "d9d12b81a07f5c37ceda57d32133f7801d9aa444c89d620d1d0d86fb35bf9bec"
+    },
+    {
+      "language": "python",
+      "hash": "8cb9c35f6c9ece4e1821d944941d0c68e82bb0f65e2b9c806bd9763c4aec98e4"
+    },
+    {
+      "language": "python",
+      "hash": "f97d6f4ca68c5322903de2d4b7ad91d892efea6985a2efd34a6e9a20a9829554"
+    }
+  ],
+  "notes/concurrency/python-threading": [
+    {
+      "language": "python",
+      "hash": "bec574e5d41a71ffffac3b7de85305b5552796c37cd763a6578a257286775628"
+    },
+    {
+      "language": "python",
+      "hash": "5625e54add58204525132363c1baa0993b071e75d631142d814d2e257619f8c7"
+    },
+    {
+      "language": "python",
+      "hash": "a208d78ca5ad1e3b93b11ce7812ecd37a532a425f153360aac5b70cb6dfbe452"
+    },
+    {
+      "language": "python",
+      "hash": "42115f3af3b79e36b6ee805ada2e3f0c3c7a029756dd88eec80dabdc69945961"
+    },
+    {
+      "language": "python",
+      "hash": "11b41f24a864398f79ee57d6cff3ea0e17033b10d155447985e71186cef5bef7"
+    },
+    {
+      "language": "python",
+      "hash": "1cb768e80ac53d77d592d59fa84f4dbd606aa9acddd11cacfad0741efaeb8e31"
+    },
+    {
+      "language": "python",
+      "hash": "ab78107926e956aacd50725866006a978ba66d86d2efcd6d52b7362a420ee19f"
+    },
+    {
+      "language": "python",
+      "hash": "ae0920570eea13c09b11602373f79fc1c95ebedf7594bc74d11839086a79631b"
+    },
+    {
+      "language": "python",
+      "hash": "15d88211218ea8728a40107e6ac4bea75429d0bc2cb6c9be17644ebccfc692ec"
+    },
+    {
+      "language": "python",
+      "hash": "b3a610fcab89fcd5ea2b81c3c4a4150a6003995bb9089127e303a8f6680e018d"
+    },
+    {
+      "language": "python",
+      "hash": "4e3c8157d9f2e805adcf62133fc1eea0f2b636a0cc42919faaadc87c39813ec8"
+    },
+    {
+      "language": "python",
+      "hash": "6f1234ce17bcc334f1968d90da85e0cfc7bf9db85325cc54e62a1850158e8dfa"
+    },
+    {
+      "language": "python",
+      "hash": "17fd44b90838c2239252f2204cf28d5902a57b601ce556f19884d74e9eeed4aa"
+    },
+    {
+      "language": "python",
+      "hash": "72beb6f337fe82949f125a42058816a2e5404f1fe3c83aa2c6025cd71a0ded0d"
+    }
+  ],
+  "notes/database/index": [],
+  "notes/database/python-sqlalchemy-orm": [
+    {
+      "language": "python",
+      "hash": "5033c1a48a702ec041c83dd97a13eb6a93311e71284065c0d7166c737d43a738"
+    },
+    {
+      "language": "python",
+      "hash": "2f9ac6bfecdb4e09f7d5f1691bed3cd8361bb77aacef5480a289212fb08b2b81"
+    },
+    {
+      "language": "python",
+      "hash": "fe60f65cfa9535f91d35c0005d5fb511dd6f1b1ddb0d0f6a7340c8bba95d4663"
+    },
+    {
+      "language": "python",
+      "hash": "20e3d38ba59eb71247ea2c162773b98302bafb1aef67573a5715f7384d923ca3"
+    },
+    {
+      "language": "python",
+      "hash": "0bd3785bf6be2fb2a0ae924b2899bea884bcaa2aef53623e1fb0fdb918c306b9"
+    },
+    {
+      "language": "python",
+      "hash": "7125c7816e7333e2068937f3ee991a09f1afd13bb0715724d66e08a620ed15b1"
+    },
+    {
+      "language": "python",
+      "hash": "cb2b6f964948d15cfa782010383a96aa3bcdbfad5c6544a0ddc1037f61a12bcd"
+    },
+    {
+      "language": "python",
+      "hash": "8c32cfbecec4e757422bf7e4479b5b37deac9dad79c9d09a128410bcddab19e2"
+    },
+    {
+      "language": "python",
+      "hash": "9fc2f28f8cdbccfaf9b4634ce94791d151e0854025e55e88087769343740c6b9"
+    },
+    {
+      "language": "python",
+      "hash": "eed602fb4ba00da7abc40ecfd0bf80637899105d2bc2290a454ccf647696e4bc"
+    },
+    {
+      "language": "python",
+      "hash": "6bb342926489d754ac688c45ec440baf573df804ddb2fca2af363c408b9a75da"
+    },
+    {
+      "language": "python",
+      "hash": "007af0c5e591529de547c743566e46d0c48ce0c879afe3d4d5ae4e1f4001c449"
+    },
+    {
+      "language": "python",
+      "hash": "3ce4bb740a9dae13c06301d45b6f882a920987609b9059e7e89fa56efd308744"
+    },
+    {
+      "language": "python",
+      "hash": "4dee560182f03ee401fb8ead5482ed698712fa0caab54a7f8bfa2390c5ac1a02"
+    }
+  ],
+  "notes/database/python-sqlalchemy-query": [
+    {
+      "language": "python",
+      "hash": "63507e1e011d16ed2348eb14f8209235e8438d3e05593669a53dcca602651ec9"
+    },
+    {
+      "language": "python",
+      "hash": "d5a462d6defc38af9b0e7184e979150153a1e0d6039ebc6af0d997cac280e457"
+    },
+    {
+      "language": "python",
+      "hash": "28ff759217afe61750b031bb8048b142d4111a456d67744e6a1dba3e1e35a3d9"
+    },
+    {
+      "language": "python",
+      "hash": "c327d6bfe54d8eddad0af38692da60acb9d00953731d6ba132cf8f41f785ee4e"
+    },
+    {
+      "language": "python",
+      "hash": "7a95354912a679568612f191174cd0f6d66129c48dc3242df1809713d5018990"
+    },
+    {
+      "language": "python",
+      "hash": "fe5cbb0753dc2129826a8e11f89da3316dfada78062cdc4f87bfe3a08354320c"
+    },
+    {
+      "language": "python",
+      "hash": "a00f3c51e735aa898a408c6d393150f7416710b53cc1e3eeae5513b6d6f636b4"
+    },
+    {
+      "language": "python",
+      "hash": "725e49933b67e9685fec03ba0b28dab46c27eacc0ad6224da5f329ccda66e15b"
+    },
+    {
+      "language": "python",
+      "hash": "537b729ab3f74cc0083c596d8934ff1528c447bea1e7c0a22236e029e21f6e4d"
+    },
+    {
+      "language": "python",
+      "hash": "a7740941bbdafb0a0467431bd7b7668b2d7ae4d088293a9383b6881f64ca11d8"
+    },
+    {
+      "language": "python",
+      "hash": "52e902f0c18b5b6e66971b854c317ad081d6c57dd6641818d2023199164789d0"
+    },
+    {
+      "language": "python",
+      "hash": "4dca6455fafb4e9c9325322b58d651dec2d841f6b9f7ddc041a51c03fc771bb9"
+    },
+    {
+      "language": "python",
+      "hash": "622cf879b289fce8d8b647ec1441a0689af1bd274c17f08e38c86f37fbe8ade1"
+    }
+  ],
+  "notes/database/python-sqlalchemy": [
+    {
+      "language": "python",
+      "hash": "320339f82811eab7bfc48bb4170ce8d0aedc370ed6b82d6e5185c603f32779f6"
+    },
+    {
+      "language": "python",
+      "hash": "751af3236b805bd121148b950e9a67d8216e1262e42a164e46bf8688be84bd1d"
+    },
+    {
+      "language": "python",
+      "hash": "f4d30b7cf1265c7ea75807a4d42daa18481e62e39f6a81957e0e05a31367b744"
+    },
+    {
+      "language": "python",
+      "hash": "c39c9ee117729128d08c265133d7744ed9f4f304a8a575e69252feda19170994"
+    },
+    {
+      "language": "python",
+      "hash": "872bf54fceae20887fb91c0a7ebcf8a94fd00194ca59c1dc31512bce2e94e006"
+    },
+    {
+      "language": "python",
+      "hash": "0bf910490ab7c5a7c10c66935797f7015f2e787edb3a58812ea5d0a536a55960"
+    },
+    {
+      "language": "python",
+      "hash": "74356b059e2875c3795bbf157715e40c3f19dca6b4d0ef9d56f351fd6bfdf08b"
+    },
+    {
+      "language": "python",
+      "hash": "2290c3b47cb34c4bfb943423a747c69d1653cd83b04863b5b0be128adbb9cf8d"
+    },
+    {
+      "language": "python",
+      "hash": "f67b8028137313415aca1ed06961475de22de9cdaa3369003a3cca8cc16ff521"
+    },
+    {
+      "language": "python",
+      "hash": "19b96b4b6204a1fb442efbbec969ca7113e972fa8106b1e9c8cfc375cc6b7d4a"
+    },
+    {
+      "language": "python",
+      "hash": "3f7cd4b577629dd88b5f370188794c660bc21e187f890cdfa16b64b0c28dd26c"
+    },
+    {
+      "language": "python",
+      "hash": "17084660eb69b290990d1271fe3097511a5c71f1f1b9c4931f2a9b03c29e9a00"
+    },
+    {
+      "language": "python",
+      "hash": "81073ff22e5ea6860f17cedcb538bea662e0a136b7d5a1971cd696a3f7a160ee"
+    },
+    {
+      "language": "python",
+      "hash": "2fd33feb71c799c56d27f3ae16846a55e1ea2c0d08792e302edb9155083610a5"
+    },
+    {
+      "language": "python",
+      "hash": "7a9f3ab7101c9d21c47277d28f5bc0322f625cddf6993b0a14001eac68add28d"
+    }
+  ],
+  "notes/extension/cpp-from-python": [
+    {
+      "language": "python",
+      "hash": "cf603e7740f7f7cbf211c7b240f8426c0bf602353290cdb3c9a52adbb0dfaec1"
+    },
+    {
+      "language": "cpp",
+      "hash": "aeb21ccbf97e0d8f373df5760f7e42dd3ad48a392b21bd28ca7926f922d81141"
+    },
+    {
+      "language": "python",
+      "hash": "a948f14ec84db71d39cdf85425b46598b9c9399bde7255625eeb54f41fd684b7"
+    },
+    {
+      "language": "cpp",
+      "hash": "4f112d492ae827468f75ce142c3c8db4a24764e305be773ae9dec50dcc6fc6c5"
+    },
+    {
+      "language": "python",
+      "hash": "b2388d24880cfdec4cdb958277df66d01c4c040b25cc35501c58fc5d17958568"
+    },
+    {
+      "language": "cpp",
+      "hash": "f4c5be1cfcfbe37c3936ce57fd57d0050395d39ed39b38c84248d424826df727"
+    },
+    {
+      "language": "python",
+      "hash": "07ec66c49a81a9158eafe161f0f484e57c8745d34eb77096943ccec28a74a5db"
+    },
+    {
+      "language": "cpp",
+      "hash": "7d8dbed53ce57fd3265e6914297401aa261cebd10a252d9b2fc119f5969bf3d2"
+    },
+    {
+      "language": "python",
+      "hash": "810c298705bf252806ae52aacd3b2344c20fc0a09da946b3333e492bf865b610"
+    },
+    {
+      "language": "cpp",
+      "hash": "383636f4bb55e1f49de4756388add20f70de75badaf740fa002a94f440a55338"
+    },
+    {
+      "language": "python",
+      "hash": "a0530c26f23be8efd7dabbc09f5aba83f430c436e3ffb764d4882660af7e6847"
+    },
+    {
+      "language": "cpp",
+      "hash": "db8d55fd1439dfdcadcbbdb364fd6cb579c097b2af6a3be88997c09ded44615e"
+    },
+    {
+      "language": "python",
+      "hash": "b3c30150efd478829d711a70db418f86a8aeb2836856899aa2a7f51de5237425"
+    },
+    {
+      "language": "cpp",
+      "hash": "b92bce0ab5336fd162b2323494ea9e1bec38cbd631d599ddc6d78912578afb90"
+    },
+    {
+      "language": "python",
+      "hash": "154f392ce2e38aec1fa7cca731ddbfedf79a3e556f55fc9cd0f2eddd024399e9"
+    },
+    {
+      "language": "cpp",
+      "hash": "17aeb6fa18a0181004b94559aa655719b4cb66d703182997ca2d90caf7d7f40e"
+    },
+    {
+      "language": "python",
+      "hash": "c6e514cab3007a5d13c25cf90fbb83efc51e314561f3a72a40345ef4c9b1925e"
+    },
+    {
+      "language": "cpp",
+      "hash": "2002046a036b1362f00e7399a42b249ea4f6ebca762d322b20d46f2e7d06275a"
+    },
+    {
+      "language": "python",
+      "hash": "3c01194f31667190336fa34eb06fc27a756a964333157428ecb0756d59fd0970"
+    },
+    {
+      "language": "cpp",
+      "hash": "acf464b6ca847b3a55b1decd326b6fe3168bafd51cfda71b2383f96cd5300f2a"
+    },
+    {
+      "language": "python",
+      "hash": "5de7b7bd47650e6e03cb48bcbcb17317fb89de487bd8956f89e3af58b0037d14"
+    },
+    {
+      "language": "cpp",
+      "hash": "0f63db1b1306a6b7da48fd00583129f60e1a01aa5c1b44911f07e326b59a50bc"
+    },
+    {
+      "language": "python",
+      "hash": "d3e86e7c0c402281eb83484014e1ad6356dc88c886a3e1204f9ff790c5a40235"
+    },
+    {
+      "language": "cpp",
+      "hash": "f3b35a397dff3d2cf34248f0fe075af04996736632994f0b95e4a6cefde5334d"
+    },
+    {
+      "language": "python",
+      "hash": "525a3bbb73d453d89e3bd38d38d903f969dbc428eb577b55a386a738d9afa743"
+    },
+    {
+      "language": "cpp",
+      "hash": "876111667cbc90537ee203eef7c65dbe100dca6010a636dc4732ab4603b3ade7"
+    },
+    {
+      "language": "python",
+      "hash": "46b23c65d5d727dcb80cf5946b9e145105b55eed9541de063f82178a49e6524f"
+    },
+    {
+      "language": "cpp",
+      "hash": "f3f1c9d5ffe05aa443789e95e7163cf540f3e22825134429e4360aa593701845"
+    },
+    {
+      "language": "python",
+      "hash": "143967d1a294dd8703fbea7e1c12fc6182af8e4bbd9268d9c8365bf6b8cbda75"
+    },
+    {
+      "language": "cpp",
+      "hash": "71f5f118bfa1cebba3d450af5e427c6d5be62bab5fdd672a832ae96592b16e3c"
+    },
+    {
+      "language": "python",
+      "hash": "72e8174e4d1ddebc7113b0128414472a6ed99d8a40aec28533cb950d6ab40788"
+    },
+    {
+      "language": "cpp",
+      "hash": "37add3232869880782a6edbd720061f28495ba72415b62b95e8f8db2ad8bf373"
+    },
+    {
+      "language": "python",
+      "hash": "841829a739fe9aa1ed2a218d416f770be6bdf625d564ef4d1c73cef065d25394"
+    },
+    {
+      "language": "cpp",
+      "hash": "d5e54a8175c8836f56a680942a6933b02d2470d1e704a85f99e2b9b7486a0a7e"
+    },
+    {
+      "language": "python",
+      "hash": "b30412ffc15416273e81d53ae45c78726f9ae0a6c5110ff787328d35ce241344"
+    },
+    {
+      "language": "cpp",
+      "hash": "bf70428b45943f4e2f8d6b8b2562fb5d98d61e4ecc853b0369a23317db9f097b"
+    },
+    {
+      "language": "python",
+      "hash": "53e5029cef8c53274aad5ac7f6907a36d28b7b3ebebb3573a8349304e5b25bc4"
+    },
+    {
+      "language": "cpp",
+      "hash": "a81032aab1311c8b2f08b595622c2ec8582fdb25cf8bb8560d938ed4239beb8d"
+    },
+    {
+      "language": "python",
+      "hash": "f9846de29b8fb9ca4b7c9282d32f9a236095afb7555b22c35a611d247282191f"
+    },
+    {
+      "language": "cpp",
+      "hash": "269cc6100228e2ea82ded6605c9ba5611b867c82b095d8cc9c330a73551852c3"
+    },
+    {
+      "language": "python",
+      "hash": "d50bf52b701065be0b08c249c9adb6b70d62089d9f660db18f4c81e77098cbc4"
+    },
+    {
+      "language": "cpp",
+      "hash": "c0324d9408c8d985bb4986aef8ac32439f42bef3e35b89379cb666ecb09d07eb"
+    },
+    {
+      "language": "python",
+      "hash": "680d86925467f49faaeec38acec9643d128003b44dae274c8517b8f365927600"
+    },
+    {
+      "language": "cpp",
+      "hash": "e433ba63f091d3819a2290fdf657aab06f29bb8f64f358c133afecae435b37ad"
+    },
+    {
+      "language": "python",
+      "hash": "aba75bb11d68fac516de69e2491167d6fc36759e9183ae9bda2affc069d571af"
+    },
+    {
+      "language": "cpp",
+      "hash": "d5f2d759e4504a76d9365e67267f6a01c2221ead005efb164e51d4bda45993ea"
+    },
+    {
+      "language": "python",
+      "hash": "d7e81025694b9f39b3c834021594be9e47e8724f2a7f67b57d7f8755847f72a4"
+    },
+    {
+      "language": "cpp",
+      "hash": "2f42979fe3cda0f5104b85c9790925d7d05292f5cb085dc9bb5c420584c36a74"
+    },
+    {
+      "language": "python",
+      "hash": "d38b14b0a39379b790d677d4a823c61a2f7a3824e221b7a5bc1db780f6c9d72e"
+    },
+    {
+      "language": "cpp",
+      "hash": "9fb8547fad735e5eb87e8e1fbea8cbb865bd4ea5a49783155ffda4648da56a45"
+    },
+    {
+      "language": "python",
+      "hash": "8c0e61899fa220e40b93980e93eb9769bd7982db70def5336ccd94145b4998a7"
+    },
+    {
+      "language": "cpp",
+      "hash": "41a1cfbf04adc8c8446ecca91b14d96463394875b44c3a433c43373d73e81e9d"
+    },
+    {
+      "language": "python",
+      "hash": "9663cd03fa03bb0853ee4049111dcc307f657cc636c4a364ed24f3a8e2ab7e5e"
+    },
+    {
+      "language": "cpp",
+      "hash": "3b46d942d15d3d6056d6ae8df135099e78bc21d411753c67cf3ba84cebaaa160"
+    }
+  ],
+  "notes/extension/index": [],
+  "notes/extension/python-capi": [
+    {
+      "language": "python",
+      "hash": "03438fcbf4fccecd232803b466246f311ea84f983ec937cf70cb98e32adadcea"
+    },
+    {
+      "language": "bash",
+      "hash": "72e0f88f287f51f203f3c0463e0a0041d8121ac2e6e8582d59d4a54a7f0d580c"
+    },
+    {
+      "language": "python",
+      "hash": "faabffdac97ccd52dc4787ee8710d5c8895f1b049b32b5505453cefd35a28f30"
+    },
+    {
+      "language": "c",
+      "hash": "4a9e6bb98ec9fcc90a48f611bd29b126264468543661fc053b6d62d7a514de87"
+    },
+    {
+      "language": "bash",
+      "hash": "9248c40b248132119f42e3995895818aca5f28ede33b0d00cc1da834861a0b47"
+    },
+    {
+      "language": "c",
+      "hash": "36eb16bfcf8ac2cb2cdc6c69cbbae3f3b50de549e17a43b8da829b06f98ebb1a"
+    },
+    {
+      "language": "bash",
+      "hash": "b0aae5b78d49588556616134fe87638eca7d66bad3755e9a4bc43babece40a37"
+    },
+    {
+      "language": "c",
+      "hash": "1665d4416ef545034fff4ed98fdd068f07e1a1f3ce6437adec289ce84a9bfca2"
+    },
+    {
+      "language": "bash",
+      "hash": "785b11565fcbea5022beb9ef7a562b2dacf429a647c18e1a46bc935c5c8c1f4f"
+    },
+    {
+      "language": "bash",
+      "hash": "b0ee87a082c2895aedea6cbe70ee446b317460c677d11572aa174c980dcd5776"
+    },
+    {
+      "language": "c",
+      "hash": "6ec441298323ee4eacf792ee521bc3a4e9834969aa16ab579c222cca9bb79d63"
+    },
+    {
+      "language": "c",
+      "hash": "8e3e5e9cbb624024715c53bf55f3b0f9d9cd810422245f50102383690081e304"
+    },
+    {
+      "language": "bash",
+      "hash": "c298ff1e53f12dd702b7e9bf0deeb8242e06b9d6e55dbd6a2a4044602972acf2"
+    },
+    {
+      "language": "c",
+      "hash": "aa90c4af8699c5180e7475054fc73e0ba19d25d365f06e1c62a2b95bff29869e"
+    },
+    {
+      "language": "bash",
+      "hash": "deb9695798dac1341f69ca65cc1ee5dc716eb12ad573fc333e84a430fcbb41a9"
+    },
+    {
+      "language": "c",
+      "hash": "0cc554949b59588d2318aeccebb99c440dd4cd0dd7cfb4da9408ecfdbe604b79"
+    },
+    {
+      "language": "bash",
+      "hash": "7423352b9baa937e6989c4dc8dce3aa1cd324d21c714b347e2510f543b2e62e2"
+    },
+    {
+      "language": "c",
+      "hash": "ffd058b728a9cb003d219059b4a5ecd79c8d077b0b6073b8f00d361baa5bc863"
+    },
+    {
+      "language": "bash",
+      "hash": "4d9999cda24f4189c122869b32a595f51f6fcd471b60b00f2bc8a7a4c4b0cfed"
+    },
+    {
+      "language": "c",
+      "hash": "f0a902fcfe3343a017f5661d57010ada132f40a315a3f3beefafe771d183b2fd"
+    },
+    {
+      "language": "bash",
+      "hash": "542f983dee0c6f34c62235d5e277b5561867e40ab0331265ab619c602910b588"
+    },
+    {
+      "language": "c",
+      "hash": "cabe1b84859b5af926045f66a1e276b570fb70e8fb4e1e5b154f2dca9badf579"
+    },
+    {
+      "language": "bash",
+      "hash": "aae670060cc587a56d80e40e641a99fdd96e24fd6104585995ac743c56ff669d"
+    },
+    {
+      "language": "c",
+      "hash": "7db80d66f4057eabffe945160fc5a6a721057084394c3c365cd2c9fd3b223482"
+    },
+    {
+      "language": "bash",
+      "hash": "dc2e3ebca8f51112663aa88948e310f0a73e497c24fb67d1d8fd9f7a54606a5a"
+    },
+    {
+      "language": "c",
+      "hash": "b1bc863e52cc76de0f0fa82591cb2fe0df9112b682f3362c1bbff7fbaa9ceaac"
+    },
+    {
+      "language": "bash",
+      "hash": "ced0209b339e9607e4c6b8578ed7aa13cfa116954d6ba661e63fcf1da20a0c47"
+    },
+    {
+      "language": "c",
+      "hash": "b3f7ba6a63d78cbcec0b2402dc0dc44877cc9525edea38b04647dc0d76f01972"
+    },
+    {
+      "language": "bash",
+      "hash": "ce16ffa7dbb567fe53647c45210cf1d36c1012198f7c6a26c04e79c37d2e5e70"
+    },
+    {
+      "language": "c",
+      "hash": "a1ba36533251435f9748bcdfec011b6d6349fda68b3c46ca61a0e140ee9fb9ea"
+    },
+    {
+      "language": "bash",
+      "hash": "b3060d01949a105b751a2744485fdd9985817748091618d37ed3954131152924"
+    },
+    {
+      "language": "c",
+      "hash": "576d9fc5b4c1abf69ffefd72ec6ec04212ee60bf56a195c2f325df4e52601ec4"
+    },
+    {
+      "language": "bash",
+      "hash": "c4c5879125d0e5a2fca9bdc65b78136316afd1db0c152f4b05a4d29c4a7a853e"
+    },
+    {
+      "language": "c",
+      "hash": "aedc33d7726a4d7b1313fcb4fd27f2d72eea122a9f4d289437f57d91e2da6f9e"
+    },
+    {
+      "language": "c",
+      "hash": "2f6ed16dd2d0a155ebce709e493dce168e39317c63e29494472bbfd46484749b"
+    },
+    {
+      "language": "bash",
+      "hash": "d8c0eb47f81aaf3d18a8011ddd738478d6b7f4d8f31690651643e13d4449d5e6"
+    },
+    {
+      "language": "c",
+      "hash": "b62bfe8f7c63b4a7f135ac91978457e84764747be20a961939fc2d28f2167708"
+    },
+    {
+      "language": "c",
+      "hash": "f3f14421348d0c62c6b82cf2d7c28f9f0d23bed0b4029ea612576668408728a4"
+    },
+    {
+      "language": "bash",
+      "hash": "a941ffa10acbc4054cba1b42b45c5959839ec3672d054d043184429af9de9bd4"
+    },
+    {
+      "language": "c",
+      "hash": "ddd206d61d2b7f556bb9130b3f714993efad349e48f1f87dcd275e9ca3104a1d"
+    },
+    {
+      "language": "python",
+      "hash": "3e194afcb640073d88d1d5b137f54df4d1a42c8b433e22235cb8203542463591"
+    }
+  ],
+  "notes/extension/python-cext-modern": [
+    {
+      "language": "python",
+      "hash": "cfdd09b370d87a63240f0a40a61265b09a6a9a034183ba491d92025ceb6a0ffe"
+    },
+    {
+      "language": "cpp",
+      "hash": "fb0962b2e4e029f0f2ffaa41a2d795c5c461e63ce9e849e8756d4f684dbfd4bb"
+    },
+    {
+      "language": "python",
+      "hash": "8784c9fab420619126030098fe3b8f37f1b6e264575baccd89ce2c4c2fafdda9"
+    },
+    {
+      "language": "bash",
+      "hash": "89e71d6f5c5694b8ff9b3c862993de9802279bab9d8b7b64bf03dbf4f8596f9e"
+    },
+    {
+      "language": "cpp",
+      "hash": "2099adbd0ce8ed4693d5a452976603a415daa6519f61ba2a109adc6ba6f35b61"
+    },
+    {
+      "language": "python",
+      "hash": "0668a0e50d47eb73807b71bd5d06ef1fda953d375fc3ec49f10f3b958b688ad5"
+    },
+    {
+      "language": "cpp",
+      "hash": "7c09ed6596ec53d6723ac7622b01dcf3e512cee66b1596ba138d8baa2a3ccc96"
+    },
+    {
+      "language": "python",
+      "hash": "a788fbb461a0ec0a9c7d296ab1013c40ade166162ac1eb85327c681e15deef87"
+    },
+    {
+      "language": "cpp",
+      "hash": "240ed8e259bf4b5cc058a347dce261fbc15e79ca2a268b97e162887f7dea64e1"
+    },
+    {
+      "language": "python",
+      "hash": "4ed8d8323e0a94a016c67a98f195e6266254b9de75009b89db0b745ae2891422"
+    },
+    {
+      "language": "c",
+      "hash": "122367d730ab3f4709ad4ba198e1dd6551b2c4862fe51f2337857756e14cb186"
+    },
+    {
+      "language": "python",
+      "hash": "e21eb8a1f92505cd39c9d5684945896a4f39ae4880d1a5ab1e30c9fea20b0d14"
+    },
+    {
+      "language": "c",
+      "hash": "26a1e749a0e88d6e8a3f03dd3350a10c9d3f758ffaf0124496a7314432a46e94"
+    },
+    {
+      "language": "python",
+      "hash": "a989c0210e52d2b41e1a3ed7cb84e0b936da02a1e32e28fccc2c999d15daa25e"
+    },
+    {
+      "language": "python",
+      "hash": "6e31d0dcaed25673d31e7ed84d697da20e731fc607940e806d3a2b8aa6dd0c54"
+    },
+    {
+      "language": "python",
+      "hash": "08742097c905cd111f391e07ccfc4be6ed8b9f5aafe5c68301e8f59e8f594e2e"
+    },
+    {
+      "language": "cython",
+      "hash": "4340e94411ab0107b64650603eb09dec9bfbc007e71accc0ba6d745ecc79a1bc"
+    },
+    {
+      "language": "python",
+      "hash": "04f83dead209e5acf9541a46ebcaa3bbfbcd0707127f1bcc511dabf4a1375854"
+    },
+    {
+      "language": "bash",
+      "hash": "c091f297659b7a1a776156110b9a2d9372adf29205962897bc75cb0c45bac532"
+    },
+    {
+      "language": "python",
+      "hash": "b0ff69ce33feb1a24ede6d848597254040d0024d6a0dc74da7932993f33daf8a"
+    },
+    {
+      "language": "cpp",
+      "hash": "a3a2f88364985e5a37ff4fa9136c061c4f0672e4a6b44ed5b855b51a403e532a"
+    },
+    {
+      "language": "cpp",
+      "hash": "8f75cba72d6c3e73d2b17e28a5d0be1fe37c88c7ab165713aba1023c37256678"
+    }
+  ],
+  "notes/extension/python-ctypes": [
+    {
+      "language": "python",
+      "hash": "137ee31a4dfe4198ace29dd28f8aa6d0cda057001fb7e4052d94763151e01697"
+    },
+    {
+      "language": "python",
+      "hash": "4a1ce215f798d61f3f755911a3a3acfb7799eec19cb85aa432c0df1466316321"
+    },
+    {
+      "language": "python",
+      "hash": "92487c8717194defdf512250eab8cefc9cafbadc8cae9935cbf692f2d393f2a8"
+    },
+    {
+      "language": "python",
+      "hash": "152f0f6535cb887f1bb8cc37365f22592f8c6ae83fce1c426cbc6127114e91ad"
+    },
+    {
+      "language": "python",
+      "hash": "d8f1e9f9d3d9bd11c0298478c9fe54666eeff4a0776433542c9bccbef7014b9f"
+    },
+    {
+      "language": "c",
+      "hash": "e3f54b244b96a9ed7e65f1c58686f0c2528220ae2418f6193c91d426a7174f62"
+    },
+    {
+      "language": "python",
+      "hash": "31db0f1c9aacdccb8777ff61db2f88c28881b82cce066a7d048ee8f6822e6f7d"
+    },
+    {
+      "language": "python",
+      "hash": "c53855b9f35774b58fe069c73cc0555c27affe19fc4b22f7d8ff989818600146"
+    },
+    {
+      "language": "python",
+      "hash": "b0f91e08028e9cb4410d03f7ee18dad63d2792e455b5b56b7545517c50ba9ac5"
+    },
+    {
+      "language": "python",
+      "hash": "c0248596bb0f83b3a44a36a06c8e4f9d83119802c3f68563b2067c3d0d412e1e"
+    },
+    {
+      "language": "python",
+      "hash": "a9bad5c9a7d845e2ab65acbf5e56714005acaa4a3a9af196c268924a6dea0d65"
+    },
+    {
+      "language": "python",
+      "hash": "360e06294bad7cf182e5e407e5df876f45ad54702bc45755ec6bc0dc056196e8"
+    },
+    {
+      "language": "python",
+      "hash": "23f441bc202d4404c8f88b00f586ce2ff27d01e3eb738a6e545747e023dd93bd"
+    },
+    {
+      "language": "python",
+      "hash": "8c830f3ce140f56735e4f51d8e0cf1f5bbab5a68503379ddb79f20ca63b8c4eb"
+    },
+    {
+      "language": "python",
+      "hash": "b8f6885f7081b2f27bea4c6d6849897d3191c9032cd2739430a6c849ffcc1868"
+    },
+    {
+      "language": "python",
+      "hash": "2e06e964bff3bcadf04f28ea5e35060aa2e65a4c27cc9674bfe86f68609a6c33"
+    },
+    {
+      "language": "python",
+      "hash": "2c910d23cb5f27bde9c80f702befa7ae0607a687948837eb8bb3ce37d6917f8c"
+    }
+  ],
+  "notes/hpc/index": [],
+  "notes/hpc/ray": [
+    {
+      "language": "python",
+      "hash": "3334e97b9250bb519ec071a308a880b2c15f8e2e3ead02eb91a572123f9b1282"
+    },
+    {
+      "language": "python",
+      "hash": "c550fb4c8d511f32f44931499683a85fe25443915195b5c1263b697e2b7b0554"
+    },
+    {
+      "language": "python",
+      "hash": "f3258b2a0a0afc390ee16ad6751b487b611bb147dc064d229d15bb05e75fd793"
+    },
+    {
+      "language": "python",
+      "hash": "ead907a9fee86dead02f9ca728d7d87a8049ae7f7f7d761747dbb5773d800eca"
+    },
+    {
+      "language": "python",
+      "hash": "0b13b24308e63b9c5d959036142d1642c1b2030a45023dbf258278576cbb8b01"
+    },
+    {
+      "language": "python",
+      "hash": "f95efa14671afba01cbb4d6a31ae19581fb2a6c320117a8df5af92584e48ff67"
+    },
+    {
+      "language": "python",
+      "hash": "d0e4de0240254261add3282c3448489a1b3048aef4259912750440e1f707795c"
+    },
+    {
+      "language": "python",
+      "hash": "d1fd070507285568a5164c53bb7c4305a7d5c8ee29fa6fdd3f0b4bd2241b776e"
+    },
+    {
+      "language": "python",
+      "hash": "2d325ce1e895028ba98039300636c11d1ba3d03f27a0958308de4d06f633369e"
+    },
+    {
+      "language": "python",
+      "hash": "b386f485f4c3aa555714d1627dbaf985fbe6ac4bb6cf710f0eda90d8ac387c6c"
+    },
+    {
+      "language": "bash",
+      "hash": "c16628c1a606238a11fb77eef0a1d795462fe8aa8c5c665e2a42308e44027934"
+    },
+    {
+      "language": "python",
+      "hash": "2e6623c9b65675ad5499de130923361b6433163c9b1741cf273fb57a3d198a4e"
+    },
+    {
+      "language": "bash",
+      "hash": "262eb4b79850f9141d1d51286fbf82d17946af7b21e4b41499b6092e50824ec1"
+    },
+    {
+      "language": "bash",
+      "hash": "f01a8c56c21c07e2b73723fe4a87ed4d1388ab5e196f02ee0701134999ad8fb0"
+    },
+    {
+      "language": "bash",
+      "hash": "81ced7199bb7e0fbe1a7faccefbfc7cae7ac185179be734380280a84c199f557"
+    },
+    {
+      "language": "bash",
+      "hash": "624f647d4d6082f5129ea893245d4847c0bd08e7533576bb1a47e7572d08e452"
+    },
+    {
+      "language": "bash",
+      "hash": "a3872e31373c7571ebf4900fee317e6b89aac77308a0d5df0434280429b489d5"
+    },
+    {
+      "language": "bash",
+      "hash": "7bdaf1fd73da5a52af8945b365f67d26ffeee0733311c1bf81f54a98dcf06f1a"
+    },
+    {
+      "language": "bash",
+      "hash": "7beabb2bc48552f653ce5e26b75a793de9312eb15cd1b4fdf99f10441e489792"
+    },
+    {
+      "language": "bash",
+      "hash": "e83f92623ad50d6f063ff769e64385e1edfd06732a2eb4f95a38d53c96fda620"
+    }
+  ],
+  "notes/hpc/slurm": [
+    {
+      "language": "bash",
+      "hash": "9819b2cc54c94065e7f58ae9dac937ad6547d53dbbfcc864d09cf469911e9bc8"
+    },
+    {
+      "language": "bash",
+      "hash": "4565284936d58af50e488872fa2492658ce6fead282e349c47c63a7a000b3b4d"
+    },
+    {
+      "language": "bash",
+      "hash": "e0d2cdc55dc332fe6c20787503d53a5fea84a91a69f834be2218f39ce93604e6"
+    },
+    {
+      "language": "bash",
+      "hash": "4616a60d9f3ca56f1a58187f53d1ba71a90c5cbe9bb7efddd932b9d1f732997e"
+    },
+    {
+      "language": "bash",
+      "hash": "c250cdd087e5bb28d638e25555c75c653bcacce7cd000aa0404b84872d2e2d61"
+    },
+    {
+      "language": "bash",
+      "hash": "e90d87f20b6f96998523517082ee2c693200a5af4246c6034b519840085c2587"
+    },
+    {
+      "language": "bash",
+      "hash": "b989fcc0334fcd75fb68fdac4f4b9d1bd4435b5d0c098086bfd78aee3fd4de9c"
+    },
+    {
+      "language": "bash",
+      "hash": "9602f241d53fb1362f615e5859904c7d82449f8c09d47a819a71fc13305a788e"
+    },
+    {
+      "language": "bash",
+      "hash": "11c1437268e409e9bd80ad017e68257293f784549973c738ce6f971c6b9a16b6"
+    },
+    {
+      "language": "bash",
+      "hash": "5348d2cdc0c6e4c1dc1a25968d1a7f67c8a2d54bafa81926fcb49278038554f3"
+    },
+    {
+      "language": "bash",
+      "hash": "24292d2cf95492b2c86bc8655c496e625e28199517b745b68c5c2c088cf8f8ca"
+    },
+    {
+      "language": "bash",
+      "hash": "19c973c23148e8adb569c4155ec3d9049a48266f5058e0db03fc33b4818366aa"
+    },
+    {
+      "language": "bash",
+      "hash": "9722e5cb2423952f7c50160c898d948ce8ef3f46c82353f6f2de00731a206868"
+    },
+    {
+      "language": "bash",
+      "hash": "934bb53c3d9454a2b9694a8ac872949c6fb465306ad6ef6781b0a757ecc8694a"
+    },
+    {
+      "language": "bash",
+      "hash": "9e9ed844771a0794e9f35ce05a102a0bedb1eb1754daf1eff9df276c647caf8e"
+    },
+    {
+      "language": "bash",
+      "hash": "160450d95f7188fbc34dd29d2cd23070f563ca71e22469e50594aff013392613"
+    },
+    {
+      "language": "bash",
+      "hash": "d4703a0167f0eed9d139040ba64547404e99229be7148a5a84d2c7df0d48d746"
+    },
+    {
+      "language": "bash",
+      "hash": "a552b5516e3f4011f98c5c1d7dff9ceafd26f05f42d6db9b8da4c1bc01b5ca77"
+    },
+    {
+      "language": "bash",
+      "hash": "cb6db4cb047137be51991de2b6dd353bd1e1465e67e83c98fcaa854b6dea6c37"
+    },
+    {
+      "language": "bash",
+      "hash": "af6a1a60f4079ea2a5b699b257c1efea778960f41a331e92321cecef5197db7f"
+    }
+  ],
+  "notes/interview/index": [],
+  "notes/llm/index": [],
+  "notes/llm/llm-bench": [
+    {
+      "language": "bash",
+      "hash": "94546d3f7966a515978023cbeba5f038fa7627908439ecafb81a79cf850bea83"
+    },
+    {
+      "language": "bash",
+      "hash": "63995a90ceca25ac88e56ade1bc35577e0fa1fd4de26a50d192de44292ee2de1"
+    },
+    {
+      "language": "bash",
+      "hash": "b4efe8026edc2e7f9a09f2620f36e32f9217069d9bf964466dbabbcb5c13129c"
+    },
+    {
+      "language": "bash",
+      "hash": "e3c91f3ebd1b50ef776b3bb336ff630ee0c176b92fb5d962bbc045fba612a1a7"
+    },
+    {
+      "language": "bash",
+      "hash": "8d32b2dcfc8b32133bfce31e3865173a3cee54c69d31cfe2a928a61825fa7ae8"
+    },
+    {
+      "language": "bash",
+      "hash": "716d04324488a718fe5c53db28c865c2e9602576327e3ba9608c6278d1712bda"
+    },
+    {
+      "language": "bash",
+      "hash": "166b8383d817a82c2653a57bc9cda1fbd20e78ac52b25cc7487916d4044e5704"
+    },
+    {
+      "language": "bash",
+      "hash": "a81f860edc4fd4cd94c4234c5106dadd80d8e364dcab7b06ef3f6d704bbb536f"
+    },
+    {
+      "language": "bash",
+      "hash": "90a72ad8c860f57cde3450bf487d3f389bfcf428bcbbb6305d4339503c723efd"
+    },
+    {
+      "language": "bash",
+      "hash": "8f9808fad15989c0dcb3d244f266127da458e9dd99a76ba268bf0625cb09252d"
+    },
+    {
+      "language": "bash",
+      "hash": "994b20ce85c09ad5da71ceff42ab2f175fd43512ba9908d43941cbd0c3b81d98"
+    },
+    {
+      "language": "bash",
+      "hash": "d42eb653a26b3bfbaa644534607e32824c0960f95398bd4277593ab650f34155"
+    },
+    {
+      "language": "bash",
+      "hash": "81f1ae3ccbbcc6c340af2befcc9179e55cf458d33afb3e777becdf25ce21b884"
+    }
+  ],
+  "notes/llm/llm-serving": [
+    {
+      "language": "bash",
+      "hash": "c7b5d7e6fa5de04ea92cabf20edfa1ab768854f033696f11a17a163ec5b9a7bb"
+    },
+    {
+      "language": "bash",
+      "hash": "1675284651559d225113fcce220b1f00d39c5a7a286bb3065af27d33a8e12495"
+    },
+    {
+      "language": "bash",
+      "hash": "a6a447354dc274e0ad63c66c21f970c2cecbe777e5fcd660197410cb4cd05f01"
+    },
+    {
+      "language": "bash",
+      "hash": "372769fdc67d786a8058928495e45bc227d3833fbb545e00ad88baeda23938b6"
+    },
+    {
+      "language": "bash",
+      "hash": "850b5cdb5e51dec035ae2a6bf97611558d7351d63c1d5f48649a13fce0c9f83a"
+    },
+    {
+      "language": "bash",
+      "hash": "c615f51d2af2102853f8297418aca89cef74b821bf127d1be69677a9c8db010c"
+    },
+    {
+      "language": "bash",
+      "hash": "c30b7c386822a7a9ee4ab35407504c8ca38ac049854c88c93c27b25b13bd19c1"
+    },
+    {
+      "language": "text",
+      "hash": "5aedaa8e5c38ae37431b7a3282992798ab7f2bfe7fe25b88caf486a9424cc6b0"
+    },
+    {
+      "language": "bash",
+      "hash": "43cb9f136ef0d9b22fca35cbb5a762c20fead2773b97493f998f06822a8cb138"
+    },
+    {
+      "language": "bash",
+      "hash": "35706c2cf4cf2f3ab214c9a907bee3e3952b6a5d3443a732b2e7ca7e55ef69a9"
+    },
+    {
+      "language": "bash",
+      "hash": "baf69cea3ddaced482bd164cf36ba99c2ce5fdf83ebbea440cdff7fc3799330b"
+    }
+  ],
+  "notes/llm/megatron": [
+    {
+      "language": "bash",
+      "hash": "fb3f28aee16b7881aa7d7f2e911dec9a410259defb6795aedd2ecbe4933f00f2"
+    },
+    {
+      "language": "python",
+      "hash": "f4d431b9bf080094c7805231bf364e31ac4685c853929c9eb77875d0e00df463"
+    },
+    {
+      "language": "bash",
+      "hash": "b1ab5152145889544008fce31aa16acedf744d1c6d8ac0c9f671e82ce52e58c7"
+    },
+    {
+      "language": "bash",
+      "hash": "e9ca320e579587dad214f217b36f7cbd1fc01725684b2df0289d61134ab215f5"
+    },
+    {
+      "language": "python",
+      "hash": "050fc5ebb2a7bb398d256faebe593dbd4f14e29100510b44af736f1fe95727e8"
+    },
+    {
+      "language": "bash",
+      "hash": "329d17a3372686063234aa8fd40ee82881c2d808b16f029edfcedd2e6a01ae69"
+    }
+  ],
+  "notes/llm/pytorch": [
+    {
+      "language": "python",
+      "hash": "87fefce4fbf0e01ebc85022164db637f4c966a0c28b5cf83c3248ad136a6d3b0"
+    },
+    {
+      "language": "python",
+      "hash": "06ffcb02c559126411c23f7ab9ff17a2d492963b6093084d4b6237187a9da6e4"
+    },
+    {
+      "language": "python",
+      "hash": "16626d7540e59b3e38fef78fb6b46cd9236f9e059201b4a5aea6040bfd8ed86e"
+    },
+    {
+      "language": "python",
+      "hash": "5cb347091a31f7909a0d6434f2dbb01b4b74c4fb660bcfd3571e24895eaf5ad3"
+    },
+    {
+      "language": "python",
+      "hash": "2e83db01db42bf230f82ddfffe5c9919ec996a2699995c77a693aaf5e8b86a12"
+    },
+    {
+      "language": "python",
+      "hash": "55fef544f88cd5b8d98a8e7ff5a0bc5a8ffbce53be1465dbd1b86bd97a500ccc"
+    },
+    {
+      "language": "python",
+      "hash": "d8f4f15999794eec6953affecb4e6a8f17af517d5af45a76e4a99286a15e47c7"
+    },
+    {
+      "language": "python",
+      "hash": "2521f56ae31f68204aa059f0202fe21e6d3b8258c3607e09b99ce102c84a2cc5"
+    },
+    {
+      "language": "python",
+      "hash": "354d79fd413301d6d2878ce957358033c220b0bee2887f26097e4cee061ca078"
+    },
+    {
+      "language": "python",
+      "hash": "a8802747743da69a58a193c36de64ca1d7695e2a11355cfc5d694277053e140c"
+    },
+    {
+      "language": "python",
+      "hash": "608d17a671fd253c30f80b4ffccdb13a1de6afa73a65fed226c534e7414cfc9f"
+    },
+    {
+      "language": "python",
+      "hash": "44e69ab3b3d6470fd6f9aa3c5bc14620684c3aa2ebf25d8948d1cef7ac25c106"
+    },
+    {
+      "language": "python",
+      "hash": "183622f7bcb5a6850a1de6a83f991ed22c98bcab365e92a1ecdf926e783aa3e6"
+    },
+    {
+      "language": "python",
+      "hash": "fb75402632b898b7b96a87e67df94bc54fbed8f9ec5566647b5f1c9c606e560c"
+    },
+    {
+      "language": "python",
+      "hash": "7d3f726b6b20c89c8fe6e685ab55a4adb483478c28701f66584fad8335b61765"
+    },
+    {
+      "language": "python",
+      "hash": "df8dcb7c6d38ef9974a719f063c6f03e8c3b12cf90f330261c4add2b9c06122b"
+    },
+    {
+      "language": "python",
+      "hash": "271aaa27a101cb20ab361fbf8f8ac8a9687494d16f5b0d1ddebbdc1f3e10b0ce"
+    },
+    {
+      "language": "python",
+      "hash": "97b5c331a87f5af177266bba900dfa09adef0155250d6515035a879ce7de3f17"
+    },
+    {
+      "language": "python",
+      "hash": "0c8c1e2fb356eec0ab02dadc97714cc3210eabe4fb548a821552257d0cd9e01c"
+    },
+    {
+      "language": "python",
+      "hash": "af17f71124a2b8506d7269fbbc48a5828c4d3823b9df5cfb85e41bab30bf51db"
+    },
+    {
+      "language": "python",
+      "hash": "f6a815f38dc587d3d49133cf2c18fdf6a935726e1a8fe8f72e44d2bc8008f4f3"
+    },
+    {
+      "language": "python",
+      "hash": "3899f19056b2ad1ab808da05f7f213dc2fad6c8e46e5b31dcf52136e16c242df"
+    },
+    {
+      "language": "python",
+      "hash": "3cb864e6f1abe08a0872503fea4d5f0dd3688f78e3d9cb7a998c83eecf09a195"
+    },
+    {
+      "language": "python",
+      "hash": "761800197a6863cb525fc8fab4601453ed953b72ab38aae0477045fb910a11bc"
+    },
+    {
+      "language": "python",
+      "hash": "45c22f49a677e4d3cb65050af3505645ce82d04043cf7340503ee17ca3ab4e38"
+    },
+    {
+      "language": "python",
+      "hash": "fd0d14f51845e64f1593268e71ccff452ba0f0723b2805ae3270b185e59dccf3"
+    },
+    {
+      "language": "python",
+      "hash": "fdb1196c23cf830da87cbfb33324c4083f444b9c83eaf3e333f4251e61aa7741"
+    },
+    {
+      "language": "python",
+      "hash": "6342bcb176fe6dec1bed1cdfc0a24f5de3de3c39cdf35935edd91a9283d4dc16"
+    },
+    {
+      "language": "python",
+      "hash": "18388c95983ccc315da079e0193bfb4e6991c6dadb9e61a118bc9ea9fea4c0f7"
+    },
+    {
+      "language": "python",
+      "hash": "bd4674149eb4d11154b72d3b32a280226e210a4bb0a420d59e4d6c6623797479"
+    },
+    {
+      "language": "python",
+      "hash": "f6be8113ca80ef0784e1b636a53ec96086dc59efd3316d24758556819a5b350d"
+    },
+    {
+      "language": "python",
+      "hash": "dbdf6dfdc4daf890e704fc633d7006790a553373736372a5c13c9bfb9c3a83dd"
+    },
+    {
+      "language": "python",
+      "hash": "59be376431c01bb2fab3f4cf29af8fa1cf892e076bd5f2207087ea0f0175e408"
+    },
+    {
+      "language": "python",
+      "hash": "750b6ff1fdc591912d398a943d8fafd415141852399e9638a05c64d4b6809ddc"
+    },
+    {
+      "language": "python",
+      "hash": "c774be1d16a1c7c5d503aeb54373c01244b2e8be90b9cd966f268f0dd0e27779"
+    },
+    {
+      "language": "python",
+      "hash": "6dca1dd34c42887c1ca6abd12f1f679311bbac983efa21643d6c8869e444371a"
+    },
+    {
+      "language": "bash",
+      "hash": "0513d00d5b31d1d2f6202f678f6a2da45f3ebb04d11bd43c6eb9afee6ec7a23b"
+    },
+    {
+      "language": "bash",
+      "hash": "caa2e6c9a5ee5cd7ff9f95cf6bf2bb26c7fc700c6e362cfcdcefe9cfc24b486e"
+    },
+    {
+      "language": "python",
+      "hash": "f20c75ee9ef6329aa703ee2655ce567b3c3e452f31007209afe1353992f1bc4f"
+    },
+    {
+      "language": "python",
+      "hash": "52a17a5987933b17133682f8bace06f010ff42d021a78bde9d159bec165b123c"
+    }
+  ],
+  "notes/network/index": [],
+  "notes/network/python-socket-async": [
+    {
+      "language": "python",
+      "hash": "a58e8662adbd1f930fbb7ed5c6465244bc08344ccc1ed61b31429f217435f1f0"
+    },
+    {
+      "language": "python",
+      "hash": "37e9c99b596e473d3ef2d624d18c689f09f6e5683d1a3b19d8ff85cb3104855e"
+    },
+    {
+      "language": "python",
+      "hash": "05a171cf2d2d692f7804e27d24c511cc6cff6f9bafd5bf94b69efa65a659c055"
+    },
+    {
+      "language": "python",
+      "hash": "2bc5f556ba63b210022350f8ac7e90311270e9c57bd86aa79e05427925a735e7"
+    },
+    {
+      "language": "python",
+      "hash": "0d6916b96d841b4a536b30bf84ad44294009784e82eda15096a80b6e618b854a"
+    }
+  ],
+  "notes/network/python-socket-server": [
+    {
+      "language": "python",
+      "hash": "289717622ca6e8a0b5465a74b0f0b1a198709c79eb641ad40027e567df024253"
+    },
+    {
+      "language": "console",
+      "hash": "7449f55d82500573758249a8ef9dbd5e58db4b8e41d39efe8e7320f4d19382f6"
+    },
+    {
+      "language": "python",
+      "hash": "e5741a66acd0b669d34b3b9e6851dd345706e9696364ef2618dd22002f4cdb1d"
+    },
+    {
+      "language": "bash",
+      "hash": "83d24bb7b6050a4f298db87fc0bf9eefbd748b5210484db81a45c654bcdf56ec"
+    },
+    {
+      "language": "python",
+      "hash": "8783e11d8a36a5cf42dc2e9ae5857fe1c1fb604d8ff07edb9c19c3c34d0fa37a"
+    },
+    {
+      "language": "bash",
+      "hash": "4a8a61f38328ba8b6490676ea9d3d15eab8cebf005ae49f46f0e06b7653d2428"
+    },
+    {
+      "language": "python",
+      "hash": "21f7d0339467d14fd61fba236d021c2a1294a5ad5e73e3b54354200b2de90172"
+    },
+    {
+      "language": "python",
+      "hash": "f256191514386c1f9f7fccd842a875309003a8ea06d10d8ccf0505737a631120"
+    },
+    {
+      "language": "console",
+      "hash": "13f09f67474306f093250ed575666ba5ed7aea10464d9bac342ada01583e214f"
+    },
+    {
+      "language": "python",
+      "hash": "d44d0a970e7fccca936fe9dafa261530440c4e3301d9f6bb4e18f437f3c6dd93"
+    },
+    {
+      "language": "python",
+      "hash": "7c6f2318c443dbd63ef4a67a000370e6789cea462ec1c0ed915a18b814f24871"
+    },
+    {
+      "language": "python",
+      "hash": "5bed1ff53c6f86a6f55b0bc341b41ef3d18c7c593ae0da43186ee7dd297931e4"
+    },
+    {
+      "language": "console",
+      "hash": "d3dfc9dfb53edd5fe31fd9e9c65b1bff2c6c30ab8f0007673fec7f0ef9fc0285"
+    },
+    {
+      "language": "python",
+      "hash": "dd2676db9688561bae44eda86fa476e0528aa5b8183a2acf508c304025619907"
+    },
+    {
+      "language": "console",
+      "hash": "3fe56ef8433cc68e1128f88f30c3eb53534a63bbc49b9197ee5fac08642173f0"
+    },
+    {
+      "language": "python",
+      "hash": "d4705e3718fd40421b0f914ce9f0d085d89a57fc4dfbb6bd9079f9ca9c0d22ce"
+    },
+    {
+      "language": "bash",
+      "hash": "67fa470a93b0218679d190d87b90412c99613e1ab952a5b7a0935b7ceefd4146"
+    },
+    {
+      "language": "python",
+      "hash": "7975e30adf1ca7c476a87265b90d80921353bc754584c1ef00c129c5c365fab2"
+    },
+    {
+      "language": "python",
+      "hash": "20ecf59f6bcfd2c5eccbf2018ffb22e968a1deb1303bb52bfee666eb5da611d1"
+    }
+  ],
+  "notes/network/python-socket-sniffer": [
+    {
+      "language": "python",
+      "hash": "a073de20b6fe249322894b9c73c8a6c12f9438e88aef0eb6d6eae826b5998ea5"
+    },
+    {
+      "language": "console",
+      "hash": "e91c6383c6e55df6eb64d70d0e201dfa8b5c7a07148bf2bbaa2748f4ee75e8b5"
+    },
+    {
+      "language": "python",
+      "hash": "d18c4082025745fb8a3495e5644ac4652490fe025525d51ed7b11eb877242fb8"
+    },
+    {
+      "language": "python",
+      "hash": "46eb325960eaf9b64d1206986a062a3902d7a4269f895f2a9e33c3ca699a5fe6"
+    },
+    {
+      "language": "python",
+      "hash": "114bdade2ae78d23e2c1d919ec8f7f8802ad3efbe5ff4803c632dff48b6c568c"
+    },
+    {
+      "language": "python",
+      "hash": "77c66ab3129153c459ef0ca9d5afb599b4d48d3eafd5fddc9d84ad09c7a48259"
+    },
+    {
+      "language": "python",
+      "hash": "0007f4b30e29c2e9671e9693a4f1c26a591e99fbb2709a9359722f67f7cecc25"
+    },
+    {
+      "language": "python",
+      "hash": "231ffe4cdbb01fc826dd4a6d10cb88f22fa0b0329ef143283828aa9cff085426"
+    }
+  ],
+  "notes/network/python-socket-ssl": [
+    {
+      "language": "python",
+      "hash": "498bf8079f731d2291ed3185e589a266a118da235219c9300ca082a4574e363d"
+    },
+    {
+      "language": "bash",
+      "hash": "c058c4bb4879a58c9f1451cecd2085697e5be99db22d320536dc8a0d46a1f594"
+    },
+    {
+      "language": "python",
+      "hash": "bbaf9746c06b33e35b802a96a5f1ed879f166a31ad8f5eb955bec0d1506672ec"
+    },
+    {
+      "language": "python",
+      "hash": "87a555738d0b5b19a85c3806eee02e9709d5ac6f5bac250db366eec711222bb6"
+    },
+    {
+      "language": "python",
+      "hash": "5080df4d867ee5b0ce09902c10372582cf2f3760d7e024d4b90b0a8b85cd0104"
+    },
+    {
+      "language": "python",
+      "hash": "d13847fefacfc5da9503e194ba3b3bd121496de2c97047db49d524436dbb7d97"
+    },
+    {
+      "language": "python",
+      "hash": "c794a7e79e9fcab64e0ae7e60ab579a0cdb413917fdf9d0ee8dd7dede7718f6e"
+    },
+    {
+      "language": "python",
+      "hash": "2fb7bdfcc5c15caed14b155b1e644f54c18072da2cfe56f0f2d6e0a6dfdea416"
+    },
+    {
+      "language": "python",
+      "hash": "13e08151e61b983ab4748deda6c5c91db2b6e9cb14c6c3dfa699b7d544a236d2"
+    },
+    {
+      "language": "python",
+      "hash": "4078860f129a08315ad3dec07bda2d1937dd4498f72ca0db4565e4ef7934e717"
+    }
+  ],
+  "notes/network/python-socket": [
+    {
+      "language": "python",
+      "hash": "fc096ed60ce71ad3b6735932059b7d00fe070c3ed22523e99a97a55b2d7a6a8f"
+    },
+    {
+      "language": "python",
+      "hash": "b196e6b8db6ec641af694040885cd368593ec5aaed72ca0bd6a51eba6747c6f5"
+    },
+    {
+      "language": "console",
+      "hash": "92b1f8b5c90bab6484113dde165f5f97ba9e8bcb22baeed531c0b44b9bb6204a"
+    },
+    {
+      "language": "console",
+      "hash": "19a6ae65f62ea5398c0a0d8bef2af491045b6bd4ea1c6be7e568f54f124581e8"
+    },
+    {
+      "language": "python",
+      "hash": "c7e2dd55f3ae4eedbd91022c7c8420bd76ac0bd8bf6ee87e14a353e241e8b4d5"
+    },
+    {
+      "language": "python",
+      "hash": "d35ade4300824fafb1d9bf85d3f0adef5d7e008e34d0375db2f4b55e5db938e9"
+    },
+    {
+      "language": "python",
+      "hash": "033f750ccd9a2ec7c30076287c0965778daa6d495a9df16e34bc5715eb58de88"
+    },
+    {
+      "language": "python",
+      "hash": "0b583f527e6c6640858541a916d547643a0eead325c88653b03ddfc22d2091eb"
+    },
+    {
+      "language": "python",
+      "hash": "7147cd83545673ba2366b72f04fb6ebd9c124e903ed19bebbdc54a465ac498df"
+    },
+    {
+      "language": "python",
+      "hash": "9270fd47fe04c6fa9dd1357076588c04582dee25fcaef3b8fdb6383a3872a138"
+    },
+    {
+      "language": "python",
+      "hash": "6c79749e436d9cf337ef1b0bdcad06a9ad4c5ab1bce55b2f4fc4359c2230e3f9"
+    },
+    {
+      "language": "python",
+      "hash": "afa0ef2a1e27d99fb9b04e005ea718fda8448af4ba98b96ba4b85490ae93b216"
+    },
+    {
+      "language": "python",
+      "hash": "95b695b441da90586ba943595c780d649056f85bbf35d7222102851f8c86c195"
+    },
+    {
+      "language": "python",
+      "hash": "aaac6902c36f49383f26778a8547db4a483fec7a26e8ef75206c51d567070825"
+    },
+    {
+      "language": "python",
+      "hash": "355697bf5ad9d5a4aed52d0fe276595e79050f17352235fd3d04cbc21d0370ad"
+    },
+    {
+      "language": "python",
+      "hash": "ab5ce9444ba8e887a3241727929fac4ab1a676cacbc00fc7f52237e3783e9679"
+    },
+    {
+      "language": "python",
+      "hash": "5d6f3c703411cd4d7a162a0d3ed5c926a6685b9cd3a57cf88fea5bdefda00e3c"
+    },
+    {
+      "language": "python",
+      "hash": "74593be66c40a8d4c5e0eebc9c11180e255f05b23f79291fb3d9ef165978c85b"
+    }
+  ],
+  "notes/network/python-ssh": [
+    {
+      "language": "python",
+      "hash": "67c4319ea08def57944dadd39e3da6f31e980f9db563bd666f778d0e48139cc9"
+    },
+    {
+      "language": "python",
+      "hash": "fc9dba92afc66f862b4457aab4f415c7cd2d8f21cd8d2fcb648e55c8ca95c9ce"
+    },
+    {
+      "language": "python",
+      "hash": "114a2c61bb7bd4204b915d0a1843489ae9cdfa2b9eeeb91e5ad95dc535739913"
+    },
+    {
+      "language": "python",
+      "hash": "020cde024798fd2dd789f6587b721ba6ca5c02212109bf1de9ca163a1c692a2c"
+    },
+    {
+      "language": "python",
+      "hash": "73008e4e1909d4d81ab50023156b888890e207446f5e0198f54a16d7e9cc12bf"
+    },
+    {
+      "language": "python",
+      "hash": "baeee44572892159e4f1314a5041c60f68e29e3611ba78047d040da1263b8ff8"
+    },
+    {
+      "language": "python",
+      "hash": "c0bf312e52d99765d923f13e8d87d79968dded2c4bd5bac7364487a5cce9114e"
+    },
+    {
+      "language": "python",
+      "hash": "a15c9cb2faa766793e880eb8e631f0dfa627206c544479ac01e4fa8f3eacfad2"
+    },
+    {
+      "language": "python",
+      "hash": "dc65ac5fd0cea060a821eeeb28763ecd995ae4803c18cbc2b99cee3a45d3e044"
+    },
+    {
+      "language": "python",
+      "hash": "0456e290c9be0e655f2160cb7b553ba8cd108265c466cf089a4a63ed62e8d8ec"
+    },
+    {
+      "language": "python",
+      "hash": "ddc1a559482c1b653acb186175d534075f50aa53dbd453aa6e6acdc773f3d522"
+    },
+    {
+      "language": "python",
+      "hash": "831934ab0b453b57be5baac719683d35764cf9031e566183bbea02b267c799ae"
+    },
+    {
+      "language": "python",
+      "hash": "89d30ae5c5720723362e9130d8db1b22d7fa61db72f0f9ad159e4421e6f5b5cf"
+    },
+    {
+      "language": "bash",
+      "hash": "f2e52fa14eceab42fa7de2e61b87d448cefd7cbb30acbdb1e4ac1c6dc68390d6"
+    },
+    {
+      "language": "python",
+      "hash": "8f6597ccdb09b0de032e43a92af0c42a67e0f623b8360ebff514fe57ef721bae"
+    },
+    {
+      "language": "python",
+      "hash": "1af4e87de605eee58c84f1f17c8bbdadbb23be5545eb53e98a8d73f65eb76769"
+    },
+    {
+      "language": "text",
+      "hash": "cfc113739cd745849571a87c12ad64ed3bce4fde6c8f27d614bf24818e654d98"
+    },
+    {
+      "language": "bash",
+      "hash": "77d442edc76b0960f4d6e7b7696fa1fdbfc490c347bd6678d24eb53dfe77481a"
+    },
+    {
+      "language": "python",
+      "hash": "f65b0cc39510e1e428bc5bf6e18d75a3be2643a3006d6082bf8976ecbaf600e3"
+    },
+    {
+      "language": "python",
+      "hash": "ffa14657c01bdc1917216420ca83bc289138f822cd5a0b49cce1047b1ae40acd"
+    },
+    {
+      "language": "text",
+      "hash": "e47af0d5729a916de92e563bc0cc28876c73368700e7144877fdbac245c6345f"
+    },
+    {
+      "language": "bash",
+      "hash": "4be0e790cc6bca1429665793fbf6261d60ecf4f3073d721d54073453b2debfdc"
+    }
+  ],
+  "notes/os/index": [],
+  "notes/os/python-date": [
+    {
+      "language": "python",
+      "hash": "2b1fd8753028f0fd8f41c09e2e84b766377cd06f95bdb90e9f11229693d19940"
+    },
+    {
+      "language": "python",
+      "hash": "429f5b691ff19f207fb6bb730dc36f090d138d11f8981f9b8317fc780ded88cc"
+    },
+    {
+      "language": "python",
+      "hash": "264c4dd20ee108ddfb53f9ac1949b19d1bb61a414bf76e824127b3047b418b79"
+    },
+    {
+      "language": "python",
+      "hash": "82dc31863a9437c5f7e902fb5922fc0b540b64c4783d142d84dd076daeda6d2a"
+    },
+    {
+      "language": "python",
+      "hash": "527c602536172d2a4d4c520cf9f2eaf761e25ccc2c74ab5ce9f85aad1e4dad18"
+    },
+    {
+      "language": "python",
+      "hash": "7b9b9b77f25fad3729e5d1031dfd7ea1f0bf26d8ad653871f7687147ee10d468"
+    },
+    {
+      "language": "python",
+      "hash": "2aa49df73e5dde2c91c925471d78886e19ee3c8ad9b91e2b016565fbd950a342"
+    },
+    {
+      "language": "python",
+      "hash": "24efd9163b64fbcb6e4dbbd16317bbed378b5799fbd8ce5e479c0d374f4b71ff"
+    },
+    {
+      "language": "python",
+      "hash": "a5419bb0f93ec306f302b4bac250c1f28a2badef5728bacdf73115a2c4b7ea29"
+    },
+    {
+      "language": "python",
+      "hash": "5116123b406cd7ee3c481dff9d557fe37bd5a056ab1e9849b39164c3a8083418"
+    },
+    {
+      "language": "python",
+      "hash": "3b16baa8c72b20a0217ff8b69e98c21ce1d394c7782a4dbaa422598acba5c91b"
+    },
+    {
+      "language": "python",
+      "hash": "65a532970ffffa83dec061b1d90f04f4dfe30b8469bef4f39f05de4ba47a3a1e"
+    },
+    {
+      "language": "python",
+      "hash": "9c5d082346eb07816a4bfa04a8810b5bef286024c61d561de6664032c7c3e37f"
+    },
+    {
+      "language": "python",
+      "hash": "339e3f09c252f0015c502e41685a6b27632e398d1d6860e4fc203952693af689"
+    },
+    {
+      "language": "python",
+      "hash": "5b83d16e5370082439f4a4b316d1de64c77ecc211d1e53dd887770933f1f6667"
+    }
+  ],
+  "notes/os/python-io": [
+    {
+      "language": "python",
+      "hash": "c30e3beff5a7efbb05130dba79cea8473bded938fc403573ff0f74f3e281fe94"
+    },
+    {
+      "language": "python",
+      "hash": "b56b9ba20a493f313bf4bc10321ae1a8f41fb7ac811a35a42f28a7caa4514967"
+    },
+    {
+      "language": "python",
+      "hash": "ac47ecf9f41ea1a0421823ae35c46640f96839f09b03afa86934fbee4bf7634d"
+    },
+    {
+      "language": "python",
+      "hash": "6d3a0c2ca04d74b028f4b9ea394a5a524c53743fd8d17daaa7508f20d872148b"
+    },
+    {
+      "language": "python",
+      "hash": "798c115a787871eb475e4d6a56652b1fd7c2a4e1be5b099f5851dbe3e791f654"
+    },
+    {
+      "language": "python",
+      "hash": "22f643d12be49433abd1157fdcf69ca76cc706a5313a8a5f3820de14a60bd61f"
+    },
+    {
+      "language": "python",
+      "hash": "05ef4d0d31854899c854e33d7e015d165b5f7dc32fbcc27f0a25d5efbab03675"
+    },
+    {
+      "language": "python",
+      "hash": "b907ef0ed78c1cf948a3ecf908cc5d3aa43d31354aff5d19b27e2a32b1a04418"
+    },
+    {
+      "language": "python",
+      "hash": "5f483ba9b607ec7f71a05dad628aa4b13eac22745bcd958d664cfc56045b9445"
+    },
+    {
+      "language": "python",
+      "hash": "f452fb29e0e2102c31e219a0cea651829459c013c022773ef700a42b6d4ec93e"
+    },
+    {
+      "language": "python",
+      "hash": "2620069e2907724f4b0d9f06d2f285a6f6905f46f0abf5797666ec094362863b"
+    },
+    {
+      "language": "python",
+      "hash": "21d484f09d589df1ebe283e76c1e6c77802c9bae3a8b9b32121e4eb69b4da68d"
+    },
+    {
+      "language": "python",
+      "hash": "08919aa35f1cf1cf61da482e903865cf1e0166b12ae53ce72e2655ad8a4d0641"
+    },
+    {
+      "language": "python",
+      "hash": "b27386011d8d2d0e4cc1faffa9c8ff8f00403601d76bef4824d847dd9762cec2"
+    },
+    {
+      "language": "python",
+      "hash": "3d6b2fb11fa32f6ae7fa4984500e21d435e50e818fd9d13559e25387c1a2b83b"
+    },
+    {
+      "language": "python",
+      "hash": "c86ea3c77badb1f36c52f5190d1d7b995b1be6c666d81572716b8a9c4c2c05b2"
+    },
+    {
+      "language": "python",
+      "hash": "5e45aba7b963b98f4d0ec194f18acf9962e5505d74146e59eecc752e08b3515a"
+    },
+    {
+      "language": "python",
+      "hash": "94bf86ba0e7d35b373c43de7ddc09486c489869a3988758c6eb3084c968e1dd0"
+    },
+    {
+      "language": "python",
+      "hash": "e6e884c9d3b17f1330f311279c56a2dfcb33159b220604eef69aa3d389bdf2e4"
+    },
+    {
+      "language": "python",
+      "hash": "80188553e3b11cc6b05e837706f632d3711fc8b78a5c5d833818cf6e32c22ca3"
+    },
+    {
+      "language": "python",
+      "hash": "58563fc7c7578dd0274179e8d8aed0321bd49b754ff92730a98471908ef893cc"
+    },
+    {
+      "language": "python",
+      "hash": "6c3faec957c5deff8af0e8eeba3396bec850e345ca27787c39cd7dcc06022785"
+    },
+    {
+      "language": "python",
+      "hash": "426f06ae2ff8dfa05a68a0e999de00063d587fd969e0c9052433b1ea11b65fa2"
+    },
+    {
+      "language": "python",
+      "hash": "d8e3ba3d4bc052f25b1c72c8b5745371a6359ec32218a8dbcd9ddb02ce8a261d"
+    },
+    {
+      "language": "python",
+      "hash": "0994b61ccfcd129e2e601f33ec79af3991fa694a6b2e48d7e98c82e0fc9b3625"
+    }
+  ],
+  "notes/os/python-os": [
+    {
+      "language": "python",
+      "hash": "980eeeac16834a7bb638a6a630b0030944ec6f172846a114d6cfa2279c96e9c4"
+    },
+    {
+      "language": "python",
+      "hash": "c8cc85d7949b753b068671ecbcd699e05e3280de892c5a3c0033077313059c38"
+    },
+    {
+      "language": "python",
+      "hash": "289f89bf779c22301a610ecc1357a148112818b32c5e12e1cc4e8b2a4b415569"
+    },
+    {
+      "language": "python",
+      "hash": "490e18d8a26e03cfcd7dc9875ea46e7b0c774ad3a6811fb1b44c69a0453d7cd4"
+    },
+    {
+      "language": "python",
+      "hash": "f732b5ffc02322e182847252cd9c682022146afd8a1226a695714e77666e8028"
+    },
+    {
+      "language": "python",
+      "hash": "6d98662b46d7be54495cec70c5a6705abe56d140bb3bac2161eaf5ad3e26ba32"
+    },
+    {
+      "language": "python",
+      "hash": "32d84b3ebbd7ed158634e1f82dee9fd0db6a04458e5383317b9b75e279e3a6ee"
+    },
+    {
+      "language": "python",
+      "hash": "5ce3c35644758903d26c53ef168fa123f4f0d5ded6f5da674fa62eb767551d4c"
+    },
+    {
+      "language": "python",
+      "hash": "f8a420a6c844f221f1025b00eec3f7ec03be4869277622816e0d27c5e2c0e380"
+    },
+    {
+      "language": "python",
+      "hash": "0b7dc86012a70e2b51d1d8d230d77b5f9e5e33e6aff06367a9323eb1f5424621"
+    },
+    {
+      "language": "python",
+      "hash": "329dbf57e0b3c9d0744b0bc161f16d0b7b8e5fb0330a299e68970b7d1f90b221"
+    },
+    {
+      "language": "python",
+      "hash": "5b3771d7a53f047edc09a016cf99560db2708f16bc790f0fc6fb4399f923f0c5"
+    }
+  ],
+  "notes/python-new-py3": [
+    {
+      "language": "python",
+      "hash": "a0966f7a298bdf6046639325164b5111eadf9f426afc5bd17231c8b71f290b81"
+    },
+    {
+      "language": "python",
+      "hash": "681606febc13ba9c6845af81b98a1c4c2860624e2026ee470c75734a8722107a"
+    },
+    {
+      "language": "python",
+      "hash": "91ba1ac04bb73b56f34d6d06d71bdc9ad5648449439804517320b1702b1c715f"
+    },
+    {
+      "language": "python",
+      "hash": "8bd307e16ca4762e0aee4463f08904b3b915baf345b93a4fa4173fcbc259794f"
+    },
+    {
+      "language": "python",
+      "hash": "58f214774d15054e20b41e3dce9db0dbc7575bdf4a864898e111d2456c2dda18"
+    },
+    {
+      "language": "python",
+      "hash": "7de02d2296974271e699b7574d5c3afa89a2462162d8d082f3fac9b0256973fa"
+    },
+    {
+      "language": "python",
+      "hash": "cd9061f624da37c0076389a70f792255aabbd7e1b43d3091d313d38b1fdc1d5a"
+    },
+    {
+      "language": "python",
+      "hash": "62565c5f1ec798d926a019929d15d4a47d4de6b7b0be287f4b1549987f026141"
+    },
+    {
+      "language": "python",
+      "hash": "838057e2553f0790c7cbc4e5547d2f65da5fd8e3e6f6779c045082de460aa5e1"
+    },
+    {
+      "language": "python",
+      "hash": "800514753e3ed16b08f48c4ec88dfec85f56c4ad2a0ecdde41c73ce5ba56f3c7"
+    },
+    {
+      "language": "python",
+      "hash": "5cdc637b2465c6194f558e5bc4f76e61cb07b65958de4ac8e31ca41d2703073b"
+    },
+    {
+      "language": "python",
+      "hash": "f0e82af205027ebadd4cf71f5e36eca3367aff2e369d5c6fec49b1c83cd8372f"
+    },
+    {
+      "language": "python",
+      "hash": "961f29384a7953eb1977629296e3f9959d2987f63748aea1e16ba08ac82f1c92"
+    },
+    {
+      "language": "python",
+      "hash": "c331421c68bcf6c4a0b4e9ced01650349c8780f763afc64618d77b63513a8eb9"
+    },
+    {
+      "language": "python",
+      "hash": "079418828fe622ca0147273b7e1a3cd9982192d6143dbc141060a7a9c7123214"
+    },
+    {
+      "language": "python",
+      "hash": "ecd6d690b3191f1c92e47f3725eca90c995e2f5e7e557e10ff60e67789bc4269"
+    },
+    {
+      "language": "python",
+      "hash": "9d65f06cc7ebfb8bb4835b6061375fb8eaee677c4e4066d75e7e0877101c6d70"
+    },
+    {
+      "language": "python",
+      "hash": "e881a7a19b9e27a3d9ae10ef2b80079b3b788bf1e30eb1759fe1468d089e0c7c"
+    },
+    {
+      "language": "python",
+      "hash": "5c7705d05b5bb535fea3c40c63b7fa1e0586e4a93f7858c7b2c68dfa9c3b8f61"
+    },
+    {
+      "language": "python",
+      "hash": "7595598e863914cdebc10465822c7eafbcb6523a617f4bd9d2dad1cf97df47ad"
+    },
+    {
+      "language": "python",
+      "hash": "9f3581963e1000bf20d7265afc7c55c94bb66da9fe15c660d77142893208bdfb"
+    },
+    {
+      "language": "python",
+      "hash": "c4e01acac9b45b4c1e7368b2027d289c12dda34db83c4b02a319a5ebec1b4a7b"
+    },
+    {
+      "language": "python",
+      "hash": "098975cc4d2f2360eb49f33b4f95c70495e99425f12fd247bed577bc8b698466"
+    },
+    {
+      "language": "python",
+      "hash": "b2c107ba545be05ffa7039f4a941a6461e0c65ddaa8b3f59db2d661796fa1e92"
+    },
+    {
+      "language": "python",
+      "hash": "66ebac678d126fb9b5c8ebe57dec707816bf9eb2a31a5cf14142bdbd1777e995"
+    },
+    {
+      "language": "python",
+      "hash": "0ab83f68a06c7edae372949f2d8cdb57a187e8fdd2ffdd90bbc0294b0d400693"
+    },
+    {
+      "language": "python",
+      "hash": "7674c5772d1731be7213d916d687363c77f1375e88b6266950e87cc48bea5f40"
+    },
+    {
+      "language": "python",
+      "hash": "ad71929f33e229a0463f2d04391ea97a31a03fdcbea48ef2038655ba19f6a368"
+    },
+    {
+      "language": "python",
+      "hash": "3ee5b34ac49ddb7621a52e205f7beb2ea836926793f53978585b9060d7a1e348"
+    },
+    {
+      "language": "python",
+      "hash": "01231d539cd0bcfae1d297bfd8d2d091fc7a400e66441c204efaaa6c80e23293"
+    },
+    {
+      "language": "python",
+      "hash": "0650b2cbe1b45fa31b1f02d414ace521b68c11edf0acec988a71a39e974308be"
+    },
+    {
+      "language": "python",
+      "hash": "62e0f78ac62e78de7c9acca4388a020174cf9cb84ef6edeac0088d32e73c4c75"
+    },
+    {
+      "language": "python",
+      "hash": "9851ab598d6656c8f76f850c58f9340507b6f036788e0ab1da84d4d12eec89d0"
+    },
+    {
+      "language": "python",
+      "hash": "27a842b2871ea84790ceb8d9210b8d6d4f2a3f84e9e3b9f7c1a8ff2c6ae26997"
+    },
+    {
+      "language": "python",
+      "hash": "47f34b77cdb7b8dc2bc64a923d53bd3e61865f85ec4022059e0b4c3871633446"
+    },
+    {
+      "language": "python",
+      "hash": "9068220d1ddbe7e53b6dbe049086b40542e4d22016fb43b90713d07dc10d1397"
+    },
+    {
+      "language": "python",
+      "hash": "3124645abc9f9aee97d15bcdea63d198005d1ae2d4cb79feb6353a246e7876e5"
+    },
+    {
+      "language": "python",
+      "hash": "f4c217fc5f758941459061fd270c8ea1faa2e01cc40454bbfc13e4dc2c65c4f9"
+    },
+    {
+      "language": "python",
+      "hash": "f3ef30c078223d57f35e10b358b9cd571845b718c82e21850e9acaa0e1c52b06"
+    },
+    {
+      "language": "python",
+      "hash": "fb136cd45b96cd38438ff28d09275b9091dbadef56fd73bda0d7dbbcf5fc8643"
+    },
+    {
+      "language": "python",
+      "hash": "040e3ce5ca56677bee914e62a058fc11ddae7db9b6a672825f1362cdd25e7082"
+    },
+    {
+      "language": "python",
+      "hash": "d79f9c4806facf6febab5df96428ac2361df4cf4e8e1eed53ad4929514ee68c8"
+    },
+    {
+      "language": "python",
+      "hash": "a3300cddefee67ba4bc51b8b7bbd556238990878f8452054c04ec2492b8fdc79"
+    }
+  ],
+  "notes/security/index": [],
+  "notes/security/python-crypto": [
+    {
+      "language": "python",
+      "hash": "17ab27e0784a42650f6b27749139343dee14864d90b34003dd9560bb1bf46291"
+    },
+    {
+      "language": "python",
+      "hash": "560a9495706bb83ad55a2d46354f3371a19e79358b6f53309a026ee8641ebe5c"
+    },
+    {
+      "language": "python",
+      "hash": "075edf7a341620de47e689b8c87f541b1edb4fe10c0f6f003e14ed57419f00cc"
+    },
+    {
+      "language": "python",
+      "hash": "1f2c1b66008f1c4fa654f539c3a08a81cd3078e7c10a1ce7feab9e7b612a82cd"
+    },
+    {
+      "language": "python",
+      "hash": "64875442ef6070025c04aacf6e16e35b31afc12b1f8a92060950a97b019a93ba"
+    },
+    {
+      "language": "python",
+      "hash": "e2004f078b87a21192b6f508bbc43cb15a7c68d50a25b89eddae6d286d0245da"
+    },
+    {
+      "language": "python",
+      "hash": "964569847609806016d7a5de0420730dfbaa445d2c15c00459f6bd57b0636f7b"
+    },
+    {
+      "language": "python",
+      "hash": "b9bf4cdd7f4493a5dbf85fdd4de511072b2000c4bdcd7bd9f41d10b015bc1805"
+    },
+    {
+      "language": "python",
+      "hash": "7b7710e8e9b21858b8b3f6f9d1b91620a9a1ecb231abfef84b294ca3da280fd1"
+    },
+    {
+      "language": "python",
+      "hash": "582a31edde0e444373ecef98a58bd2489831f2bf6a6e82e27f1332dd34366938"
+    },
+    {
+      "language": "text",
+      "hash": "bdc6dabe56903ba0c3399bb9469f94a17f3253012295cab27af03a289a3a3630"
+    },
+    {
+      "language": "text",
+      "hash": "36dfcce91026c9f97d705758eaef2771a0750006530e7c3b7a35ad6f9a1feaa8"
+    },
+    {
+      "language": "text",
+      "hash": "c11bb9b2fa26fd656ef2b4744771cc66634c69cd7cf16231e630a6d680d8eb2f"
+    },
+    {
+      "language": "text",
+      "hash": "6372ba0c109709e88ec65c36212ece8bf69e82cf93ff0c4472c6508164574402"
+    },
+    {
+      "language": "text",
+      "hash": "e052541dc92d3eb79226c85dfb605f149adaffbcdf5561e36e28e546c4afd0c9"
+    },
+    {
+      "language": "text",
+      "hash": "9c6f4b7b9dedfd818060de5d0bedd2460c4ee4b249d11e41ac625bc6b94dfa88"
+    },
+    {
+      "language": "text",
+      "hash": "541d59e4f379883fe2455947d79e5a22d56e8b54e4e0169ceafa3a4267ba2aab"
+    },
+    {
+      "language": "python",
+      "hash": "d32ffdd83d502cbfbbe9dc936a32fc2732ac4b11c96f9d29436079c35508de61"
+    },
+    {
+      "language": "python",
+      "hash": "724e13a20c381b03f4d0cde592c62bd1aee8f1a17f82d6c4bbe4de6f388d9c93"
+    },
+    {
+      "language": "python",
+      "hash": "37063c294b609701d254e0140e6d9389972be74ccc693266591730992c8b51f6"
+    },
+    {
+      "language": "python",
+      "hash": "52b4d15a189a0a72b16a6a05ed5c837f3b4bfc3177e8d5fdcbe37b1cbfbfd4a0"
+    },
+    {
+      "language": "python",
+      "hash": "85f6dd86c360bde766dd1cd3608aebb6708470506534894c2b07083d7071b347"
+    },
+    {
+      "language": "python",
+      "hash": "235c74734da41d47b2b25ce112bcad61dd0a732b4ff3230580d8d48e6797ea81"
+    },
+    {
+      "language": "python",
+      "hash": "b5dd535b819d5bae8a5e89c0fbcae0b9924e9c977febaeb815f4aba0d4540cda"
+    },
+    {
+      "language": "python",
+      "hash": "6851fb5da9f46a8c6e3b3d347e210108d8e7b62eb31bb2920ca419f4330c060a"
+    },
+    {
+      "language": "python",
+      "hash": "cad75b4718e0a56599f441d16a8db0c559de0434b30c1de3d80e30c841b575f2"
+    },
+    {
+      "language": "python",
+      "hash": "4f462f40502f894cc67c4730c7521a47ab2083f4d291484a74054251a71ffd68"
+    },
+    {
+      "language": "python",
+      "hash": "667ec7914a6fbca833b55c329cd7b376ef71a0432349f81d4ff859d84f120ceb"
+    },
+    {
+      "language": "python",
+      "hash": "4b50168c503f2591d46c8922e97254dfefe99b3401340caae983e17bb5681cf4"
+    },
+    {
+      "language": "python",
+      "hash": "131143c71d7e99fe6af172297b442be62e21c7ed8923b3f27c17846eef294c37"
+    },
+    {
+      "language": "python",
+      "hash": "7e2e5e0672e4058bb5a3da846c30b9699d4040b9d091252e055935a9039f0a08"
+    },
+    {
+      "language": "python",
+      "hash": "c36932c778b41894188ed62e512c0263aa42b84303e6adbbefa62af5bd20763c"
+    },
+    {
+      "language": "python",
+      "hash": "5df37df70b86dc951c13517763b2df0f01971f06b72116e69deef8cec28a9a06"
+    }
+  ],
+  "notes/security/python-tls": [
+    {
+      "language": "python",
+      "hash": "cb79beda4b7996edda2f58284d96d116a37ac9da9667984d243a497ed8cd1fc8"
+    },
+    {
+      "language": "python",
+      "hash": "64640ef640ab9399cb40ce8e7654dbbfccafb8e58f387a896c17c4ec5f93e204"
+    },
+    {
+      "language": "python",
+      "hash": "8598db05203b4705251f30f25ad448c0a7ef80ee02b92b03d9090ebcfb1883da"
+    },
+    {
+      "language": "python",
+      "hash": "f7051c0ef0050807ec92aa453ddb64c0ab2e8edae503b9eba345067c83e109a8"
+    },
+    {
+      "language": "python",
+      "hash": "cfd941cdf7d2187a5b386a6962b1ad60fc8a563060b45097b87975462e2bb0dc"
+    },
+    {
+      "language": "python",
+      "hash": "ee9267cfdcd96bce7fdd355412ea10ffd2e7e266f968e6732888434c6069f06e"
+    },
+    {
+      "language": "python",
+      "hash": "2a70fc9bb3f0809df65c64324b68905fe2d535e20058a056acf9925bfbdc1f97"
+    },
+    {
+      "language": "python",
+      "hash": "4206707c53508ce00244dff9b47d3044da61c94385811f219dbde1a2739c3b77"
+    }
+  ],
+  "notes/security/python-vulnerability": [
+    {
+      "language": "python",
+      "hash": "2fe70c36c1b03796d3fd1182c00694f863acbf3f80af6d926116de87b6752319"
+    },
+    {
+      "language": "python",
+      "hash": "c8f4a90a6428db85ff4a234a7c74302ca7375b72f500072d62bd727e2f4d09b3"
+    },
+    {
+      "language": "python",
+      "hash": "832ed84f7dd23c862381d42c1bac8229dd2f051155f22a7410bdf2323c66c06a"
+    },
+    {
+      "language": "python",
+      "hash": "8250b614578f2c21c0c04b0fbc921de25589d81029254a3cc369405949cb9842"
+    },
+    {
+      "language": "python",
+      "hash": "fc53b1017b919c7427dad7c6683ce61d509a037cd661b0396a1c30184e425f17"
+    },
+    {
+      "language": "python",
+      "hash": "aba78f4c2dc21ae4c6daab25a8fbd7396c311a0dc0f633cf2642c553297689ee"
+    },
+    {
+      "language": "python",
+      "hash": "187e0fccd5d4ce88a99d86d3fa46642468fdae9dec359440917f8613c4b3b9d6"
+    },
+    {
+      "language": "python",
+      "hash": "a479df245a7e925e9827afddefcbe7edd8bd7ac225692bd3d707666f5e9c8c12"
+    },
+    {
+      "language": "python",
+      "hash": "d53c65b410443606b6ed965a326a49ff7cb4ad33e92dde713f07c132d84445ca"
+    },
+    {
+      "language": "python",
+      "hash": "75a11da44c802486bc6f65640aa48a730f0f684c5c07a42ba3cd1735eb3fb070"
+    },
+    {
+      "language": "python",
+      "hash": "86e704b9513985210ac7a6102bc08f7015eeaa0ee6ea074ae605c2dcef3f6a4c"
+    },
+    {
+      "language": "python",
+      "hash": "0f3374f2356d8e719781c42a4952c8af6fc942a00b935ff229aef40586cb235b"
+    },
+    {
+      "language": "python",
+      "hash": "04f8a213fdc71835678964bc3221c1474120598dd2a0a4cc02ea1908d4e4fce2"
+    },
+    {
+      "language": "python",
+      "hash": "1937bdfd366e9f2430dee1fb8cddc83de002da1ffc2081fa86f4d3b8e4a43e6d"
+    },
+    {
+      "language": "python",
+      "hash": "3edf46b31c75e575b60ee6d4ccafdf67c4c7ab0026f5d1a36a9effc3bf882eff"
+    },
+    {
+      "language": "python",
+      "hash": "de2ef504c45813062f35c4e65da834b9ff1cf7c0f0147df94dd81f01fee4032d"
+    },
+    {
+      "language": "python",
+      "hash": "46bc5090d62fe1736dda96bd733b7e4dd4882c0033b1596c68b0bcf6ebb52e5b"
+    },
+    {
+      "language": "python",
+      "hash": "cd4730509bb8f2d2f93c152709d8293441cc139af009b4dfb2833c3d03045d4f"
+    },
+    {
+      "language": "python",
+      "hash": "8e204226a4c862135baeb561ee95d66ec54f35905400f17bcc545c516c5ebe8f"
+    }
+  ]
+}

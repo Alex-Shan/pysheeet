@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SGLang API test script
+# SGLang API 测试脚本
 
 set -uo pipefail
 
@@ -19,7 +19,7 @@ done
 
 BASE_URL="http://${HOST}:${PORT}"
 
-# Auto-detect model from server if not specified
+# 如果未指定，则从服务器自动检测模型
 if [[ -z "$MODEL" ]]; then
   MODEL=$(curl -sf "${BASE_URL}/v1/models" | python3 -c "import sys,json; print(json.load(sys.stdin)['data'][0]['id'])" 2>/dev/null)
   if [[ -z "$MODEL" ]]; then

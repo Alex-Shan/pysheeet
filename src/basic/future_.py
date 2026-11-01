@@ -9,7 +9,7 @@ import sys
 import pytest
 
 
-# List Future Features
+# List 未来特性
 def get_all_features() -> list[str]:
     """Get all available future features."""
     return __future__.all_feature_names
@@ -23,7 +23,7 @@ def get_feature_info(name: str) -> tuple:
     return None
 
 
-# Annotations Example
+# 注释示例
 class Node:
     """Example using forward reference with annotations."""
 
@@ -43,7 +43,7 @@ def get_annotations(func) -> dict:
     return func.__annotations__
 
 
-# Division
+# 分配
 def true_division(a: int, b: int) -> float:
     """True division (/)."""
     return a / b
@@ -54,7 +54,7 @@ def floor_division(a: int, b: int) -> int:
     return a // b
 
 
-# Version Check
+# 版本检查
 def check_version(major: int, minor: int) -> bool:
     """Check if Python version is at least major.minor."""
     return sys.version_info >= (major, minor)
@@ -65,7 +65,7 @@ def get_version_string() -> str:
     return f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
 
 
-# Tests
+# 测试
 class TestFutureFeatures:
     def test_get_all_features(self):
         features = get_all_features()
@@ -92,8 +92,8 @@ class TestAnnotations:
         assert node2.value == 2
 
     def test_annotations_are_strings(self):
-        # With from __future__ import annotations,
-        # annotations are stored as strings
+        # 通过 from __future__ 导入注释，
+        # 注释存储为 strings
         annotations = get_annotations(Node.__init__)
         assert "value" in annotations
         assert "next" in annotations
@@ -111,9 +111,9 @@ class TestDivision:
 
 class TestVersionCheck:
     def test_check_version(self):
-        # We're running Python 3.x
+        # 我们正在运行 Python 3.x
         assert check_version(3, 0)
-        # Future version should be False
+        # 未来版本应该是False
         assert not check_version(99, 0)
 
     def test_get_version_string(self):

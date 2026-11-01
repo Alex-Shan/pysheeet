@@ -1,42 +1,26 @@
 .. meta::
-    :description lang=en: Comprehensive SSH cheat sheet for Python developers covering Paramiko library, SSH tunneling (local, reverse, dynamic), port forwarding, SFTP file transfers, jump hosts, and key management with practical examples
+    :description lang=zh_CN: 面向 Python 开发人员的全面 SSH 速查表，涵盖 Paramiko library、SSH 隧道（本地、反向、动态）、端口转发、SFTP 文件传输、跳转主机和 key 管理以及实际示例
     :keywords: Python, Python3, SSH, Paramiko, SFTP, SSH Tunnel, Port Forwarding, Reverse Tunnel, Jump Host, ProxyJump, Bastion Host, SOCKS Proxy, SSH Agent, Key Authentication, Remote Execution
 
-======================
-SSH and Secure Tunnels
-======================
+==================================================================
+SSH 和安全隧道（SSH and Secure Tunnels）
+==================================================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-SSH (Secure Shell) is the standard protocol for secure remote access, providing
-encrypted communication between machines for command execution, file transfer,
-and network tunneling. Originally developed as a secure replacement for telnet
-and rsh, SSH has become essential infrastructure for system administration,
-deployment automation, and secure network access. Python's ``paramiko`` library
-provides a complete implementation of SSHv2 protocol, enabling programmatic SSH
-connections, SFTP file transfers, and sophisticated port forwarding scenarios.
-This cheat sheet covers the full spectrum of SSH operations—from basic password
-and key authentication to advanced tunneling techniques like reverse tunnels for
-NAT traversal, jump hosts for accessing isolated networks, and dynamic SOCKS
-proxies for routing arbitrary traffic through secure channels.
+SSH（安全Shell）是安全远程访问的标准协议，为机器之间的命令执行、文件传输和网络隧道提供加密通信。 SSH 最初是作为 telnet 和 rsh 的安全替代品而开发的，现已成为系统管理、部署自动化和安全网络访问的重要基础设施。 Python 的 ``paramiko`` library 提供了 SSHv2 协议的完整实现，支持编程 SSH 连接、SFTP 文件传输和复杂的端口转发场景。本速查表涵盖了 SSH 操作的全部范围，从基本密码和 key 身份验证到高级隧道技术，例如用于 NAT 遍历的反向隧道、用于访问隔离网络的跳转主机以及用于通过安全通道路由任意流量的动态 SOCKS 代理。
 
-Basic SSH Connection
---------------------
+SSH 基本连接（Basic SSH Connection）
+------------------------------------------------------------
 
-The foundation of SSH is establishing a secure, authenticated connection to a
-remote host. The ``SSHClient`` class in Paramiko manages the entire connection
-lifecycle including TCP connection, cryptographic handshake, host key verification,
-user authentication, and channel multiplexing. Once connected, you can execute
-commands, open interactive shells, or establish SFTP sessions. The context manager
-pattern (``with`` statement) ensures connections are properly closed even if
-exceptions occur, preventing resource leaks in long-running applications.
+SSH 的基础是与远程主机建立安全、经过身份验证的连接。 Paramiko 中的 ``SSHClient`` class 管理整个连接生命周期，包括 TCP 连接、加密握手、主机 key 验证、用户身份验证和通道复用。连接后，您可以执行命令、打开交互式 shell 或建立 SFTP 会话。 context manager 模式 ( ``with`` statement) 确保即使出现 exceptions 也能正确关闭连接，从而防止长时间运行的应用程序中的资源泄漏。
 
 .. code-block:: python
 
     from paramiko.client import SSHClient
 
-    # Basic password authentication
+    # 基本密码验证
     with SSHClient() as ssh:
         ssh.load_system_host_keys()
         ssh.connect("example.com", username="user", password="secret")
@@ -45,32 +29,24 @@ exceptions occur, preventing resource leaks in long-running applications.
 
 .. code-block:: python
 
-    # Connect on non-standard port
+    # 连接到非标准端口
     with SSHClient() as ssh:
         ssh.load_system_host_keys()
         ssh.connect("example.com", port=2222, username="user", password="secret")
         stdin, stdout, stderr = ssh.exec_command("hostname")
         print(stdout.read().decode())
 
-Host Key Verification
----------------------
+主机密钥验证（Host Key Verification）
+----------------------------------------------------------
 
-SSH's security model relies on verifying the server's identity before sending
-credentials. Each SSH server has a unique host key pair, and clients store known
-host public keys in ``~/.ssh/known_hosts``. On first connection, SSH warns about
-unknown hosts—this is the "fingerprint" prompt you see. Blindly accepting unknown
-keys defeats this protection and enables man-in-the-middle attacks where an
-attacker intercepts your connection. For automation, ``AutoAddPolicy`` is
-convenient but should only be used in trusted networks or with additional
-verification. In production, pre-populate known_hosts or use certificate-based
-host authentication.
+SSH 的安全模型依赖于在发送凭据之前验证服务器的身份。每个SSH服务器都有一个唯一的主机key对，客户端将已知主机公共keys存储在 ``~/.ssh/known_hosts`` 中。首次连接时，SSH 会警告未知主机 - 这是您看到的 "fingerprint" 提示。盲目接受未知的 keys 会破坏这种保护，并导致攻击者拦截您的连接，从而引发中间人攻击。对于自动化来说， ``AutoAddPolicy`` 很方便，但只能在可信网络中或需要额外验证的情况下使用。在生产中，预填充 known_hosts 或使用基于证书的主机身份验证。
 
 .. code-block:: python
 
     import paramiko
     from paramiko.client import SSHClient
 
-    # Auto-add unknown host keys (use cautiously)
+    # 自动添加未知主机keys（谨慎使用）
     # Equivalent to: ssh -o StrictHostKeyChecking=no
     with SSHClient() as ssh:
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -78,32 +54,24 @@ host authentication.
         stdin, stdout, stderr = ssh.exec_command("whoami")
         print(stdout.read().decode())
 
-    # Reject unknown hosts (default, most secure)
+    # 拒绝未知主机（默认，最安全）
     with SSHClient() as ssh:
         ssh.set_missing_host_key_policy(paramiko.RejectPolicy())
-        ssh.load_system_host_keys()  # Load ~/.ssh/known_hosts
+        ssh.load_system_host_keys()  # 加载~/.ssh/known_hosts
         ssh.connect("example.com", username="user", password="secret")
 
-Key-Based Authentication
-------------------------
+基于密钥的身份验证（Key-Based Authentication）
+----------------------------------------------------------------------
 
-SSH key pairs provide significantly stronger security than passwords while
-enabling passwordless automation. A key pair consists of a private key (kept
-secret on your machine) and a public key (copied to servers you want to access).
-Authentication works by proving you possess the private key without transmitting
-it. Modern best practice recommends Ed25519 keys for their security and performance,
-though RSA (4096-bit) remains widely compatible. Protect private keys with a
-passphrase for defense-in-depth—if the key file is stolen, the passphrase provides
-an additional barrier. Use ``ssh-agent`` to cache decrypted keys in memory,
-avoiding repeated passphrase entry.
+SSH key 对提供比密码更强的安全性，同时实现无密码自动化。 key 对由私有 key（在您的计算机上保密）和公共 key（复制到您要访问的服务器）组成。身份验证通过证明您拥有私有 key 而不传输它来进行。尽管 RSA (4096-bit) 仍然广泛兼容，但现代最佳实践建议使用 Ed25519 keys 的安全性和性能。使用密码短语保护私人 keys 进行深度防御 - 如果 key 文件被盗，密码短语将提供额外的屏障。使用 ``ssh-agent`` 到cache解密内存中的keys，避免重复输入密码。
 
 .. code-block:: python
 
     from paramiko.client import SSHClient
 
-    # Using private key file
+    # 使用私有 key 文件
     # ssh-keygen -t ed25519 -f mykey
-    # ssh-copy-id -i mykey.pub user@example.com
+    # ssh-copy-id -i mykey.pub 用户@example.com
     with SSHClient() as ssh:
         ssh.load_system_host_keys()
         ssh.connect("example.com", username="user", key_filename="mykey")
@@ -112,7 +80,7 @@ avoiding repeated passphrase entry.
 
 .. code-block:: python
 
-    # Key with passphrase
+    # Key 带密码
     with SSHClient() as ssh:
         ssh.load_system_host_keys()
         ssh.connect(
@@ -124,7 +92,7 @@ avoiding repeated passphrase entry.
 
 .. code-block:: python
 
-    # Using RSAKey object directly
+    # 直接使用RSAKey object
     from paramiko import RSAKey
 
     pkey = RSAKey.from_private_key_file("mykey", password="passphrase")
@@ -132,18 +100,10 @@ avoiding repeated passphrase entry.
         ssh.load_system_host_keys()
         ssh.connect("example.com", username="user", pkey=pkey)
 
-SFTP File Transfer
-------------------
+SFTP 文件传输（SFTP File Transfer）
+----------------------------------------------------------
 
-SFTP (SSH File Transfer Protocol) runs over an SSH connection, providing secure,
-encrypted file operations without requiring a separate service or port. Unlike
-FTP which sends credentials in plaintext and requires complex firewall rules for
-passive mode, SFTP tunnels everything through the existing SSH connection on port
-22. Paramiko's SFTP client supports the full range of file operations: uploading,
-downloading, directory listing, file metadata, permissions, and remote file
-manipulation. For large transfers, SFTP handles resume and provides progress
-callbacks. It's the standard choice for automated file transfers in deployment
-scripts, backup systems, and data pipelines where security is required.
+SFTP（SSH 文件传输协议）通过 SSH 连接运行，提供安全、加密的文件操作，无需单独的服务或端口。与 FTP 以明文发送凭证并需要 complex 被动模式防火墙规则不同，SFTP 通过端口 22 上的现有 SSH 连接来隧道传输所有内容。Paramiko 的 SFTP 客户端支持完整的 range 文件操作：上传、下载、目录列表、文件元数据、权限和远程文件操纵。对于大额传输，SFTP 处理恢复并提供进度 callbacks。它是需要安全性的部署脚本、备份系统和数据管道中自动文件传输的标准选择。
 
 .. code-block:: python
 
@@ -154,39 +114,31 @@ scripts, backup systems, and data pipelines where security is required.
         ssh.connect("example.com", username="user", key_filename="mykey")
         sftp = ssh.open_sftp()
 
-        # Upload file
+        # 上传文件
         sftp.put("local_file.txt", "/remote/path/file.txt")
 
-        # Download file
+        # 下载文件
         sftp.get("/remote/path/file.txt", "downloaded.txt")
 
-        # List directory
+        # List目录
         for entry in sftp.listdir("/remote/path"):
             print(entry)
 
-        # File operations
+        # 文件操作
         sftp.mkdir("/remote/newdir")
         sftp.rename("/remote/old.txt", "/remote/new.txt")
         sftp.remove("/remote/unwanted.txt")
 
-        # Get file stats
+        # 获取文件统计信息
         stat = sftp.stat("/remote/file.txt")
         print(f"Size: {stat.st_size}, Modified: {stat.st_mtime}")
 
         sftp.close()
 
-SSH Tunneling Overview
-----------------------
+SSH 隧道概述（SSH Tunneling Overview）
+----------------------------------------------------------------
 
-SSH tunneling (port forwarding) is one of SSH's most powerful features, allowing
-you to securely route network traffic through an encrypted SSH connection. This
-enables accessing services behind firewalls, encrypting otherwise insecure
-protocols, and bypassing network restrictions. There are three types: local
-forwarding brings a remote service to your machine, remote (reverse) forwarding
-exposes your local service to the remote network, and dynamic forwarding creates
-a SOCKS proxy for routing arbitrary traffic. Understanding these patterns is
-essential for secure access to databases, internal web applications, and services
-in private networks. The diagrams below illustrate the traffic flow for each type.
+SSH 隧道（端口转发）是 SSH 最强大的功能之一，允许您通过加密的 SSH 连接安全地路由网络流量。这使得能够访问防火墙后面的服务、加密其他不安全的协议以及绕过网络限制。 types 共有三种：本地转发为您的计算机带来远程服务，远程（反向）转发将您的本地服务暴露给远程网络，动态转发创建用于路由任意流量的 SOCKS 代理。了解这些模式对于安全访问专用网络中的数据库、内部 Web 应用程序和服务至关重要。下图说明了每个 type 的流量。
 
 ::
 
@@ -224,18 +176,10 @@ in private networks. The diagrams below illustrate the traffic flow for each typ
     │                                                                 │
     └─────────────────────────────────────────────────────────────────┘
 
-Local Port Forwarding
----------------------
+本地端口转发（Local Port Forwarding）
+----------------------------------------------------------
 
-Local forwarding (``-L``) is the most common tunnel type, binding a port on your
-local machine that forwards traffic through the SSH server to a destination host.
-This is invaluable for accessing services in private networks—databases, internal
-web applications, admin interfaces—that aren't exposed to the internet. The SSH
-server acts as a relay: your local application connects to ``localhost:port``,
-SSH encrypts and forwards the traffic to the server, which then connects to the
-final destination. The destination doesn't need to be the SSH server itself; it
-can be any host reachable from the server, making this perfect for bastion/jump
-host scenarios where you SSH to a gateway machine to reach internal resources.
+本地转发 ( ``-L`` ) 是最常见的隧道 type，绑定本地计算机上的端口，通过 SSH 服务器将流量转发到目标主机。这对于访问未暴露在互联网上的专用网络（数据库、内部 Web 应用程序、管理界面）中的服务非常宝贵。 SSH 服务器充当中继：您的本地应用程序连接到 ``localhost:port`` ，SSH 加密并将流量转发到服务器，然后服务器连接到最终目的地。目的地不必是 SSH 服务器本身；它可以是从服务器可访问的任何主机，这非常适合您通过 SSH 到网关计算机来访问内部资源的堡垒/跳转主机场景。
 
 ::
 
@@ -256,7 +200,7 @@ host scenarios where you SSH to a gateway machine to reach internal resources.
 
 .. code-block:: python
 
-    # Local port forwarding with Paramiko
+    # 使用 Paramiko 进行本地端口转发
     import paramiko
     from paramiko.client import SSHClient
     import socket
@@ -267,7 +211,7 @@ host scenarios where you SSH to a gateway machine to reach internal resources.
         """Forward local_port to remote_host:remote_port via SSH."""
         transport = ssh_client.get_transport()
 
-        # Create local listening socket
+        # 创建本地监听 socket
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server.bind(('127.0.0.1', local_port))
@@ -276,7 +220,7 @@ host scenarios where you SSH to a gateway machine to reach internal resources.
 
         while True:
             client, addr = server.accept()
-            # Open channel to remote destination
+            # 打开通往远程目的地的通道
             channel = transport.open_channel(
                 'direct-tcpip',
                 (remote_host, remote_port),
@@ -286,7 +230,7 @@ host scenarios where you SSH to a gateway machine to reach internal resources.
                 client.close()
                 continue
 
-            # Bidirectional forwarding in thread
+            # thread 中的双向转发
             threading.Thread(
                 target=_forward_data, args=(client, channel), daemon=True
             ).start()
@@ -308,26 +252,17 @@ host scenarios where you SSH to a gateway machine to reach internal resources.
         sock.close()
         channel.close()
 
-    # Usage
+    # 用法
     with SSHClient() as ssh:
         ssh.load_system_host_keys()
         ssh.connect("bastion.example.com", username="user", key_filename="mykey")
-        # Forward localhost:5432 to internal-db:5432
+        # 将 localhost:5432 转发到internal-db:5432
         forward_tunnel(5432, "internal-db.local", 5432, ssh)
 
-Reverse Port Forwarding
------------------------
+反向端口转发（Reverse Port Forwarding）
+--------------------------------------------------------------
 
-Reverse forwarding (``-R``) solves the opposite problem: exposing a service on
-your local machine to the remote server's network. This is essential when you're
-behind NAT, a corporate firewall, or any network that blocks incoming connections.
-You initiate an outbound SSH connection (which firewalls typically allow), and
-the SSH server opens a listening port that tunnels back to your machine. Common
-use cases include sharing a local development server with remote colleagues,
-providing temporary access to a local service for debugging, or creating a
-"callback" channel when direct inbound connections are impossible. Note that by
-default, the server only binds to ``127.0.0.1``; to allow external access, the
-server's ``sshd_config`` needs ``GatewayPorts yes``.
+反向转发 ( ``-R`` ) 解决相反的问题：将本地计算机上的服务公开到远程服务器的网络。当您位于 NAT、公司防火墙或任何阻止传入连接的网络后面时，这一点至关重要。您启动出站 SSH 连接（防火墙通常允许），SSH 服务器打开一个侦听端口，通过隧道返回到您的计算机。常见用例包括与远程同事共享本地开发服务器、为 debugging 提供对本地服务的临时访问，或者在无法直接入站连接时创建 "callback" 通道。注意，默认情况下，服务器只绑定 ``127.0.0.1`` ；为了允许外部访问，服务器的 ``sshd_config`` 需要 ``GatewayPorts yes`` 。
 
 ::
 
@@ -351,7 +286,7 @@ server's ``sshd_config`` needs ``GatewayPorts yes``.
 
 .. code-block:: python
 
-    # Reverse tunnel with Paramiko
+    # 与 Paramiko 反向隧道
     import paramiko
     from paramiko.client import SSHClient
     import socket
@@ -362,17 +297,17 @@ server's ``sshd_config`` needs ``GatewayPorts yes``.
         """Expose local_host:local_port on SSH server's server_port."""
         transport = ssh_client.get_transport()
 
-        # Request remote port forwarding
+        # 请求远程端口转发
         transport.request_port_forward('', server_port)
         print(f"Reverse tunnel: server:{server_port} -> {local_host}:{local_port}")
 
         while True:
-            # Accept forwarded connection from server
+            # 接受来自服务器的转发连接
             channel = transport.accept(1000)
             if channel is None:
                 continue
 
-            # Connect to local service
+            # 连接到本地服务
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             try:
                 sock.connect((local_host, local_port))
@@ -381,30 +316,21 @@ server's ``sshd_config`` needs ``GatewayPorts yes``.
                 channel.close()
                 continue
 
-            # Bidirectional forwarding
+            # 双向转发
             threading.Thread(
                 target=_forward_data, args=(sock, channel), daemon=True
             ).start()
 
-    # Usage: Expose local web server on remote port 9000
+    # 用法：在远程端口 9000 上公开本地 Web 服务器
     with SSHClient() as ssh:
         ssh.load_system_host_keys()
         ssh.connect("public-server.com", username="user", key_filename="mykey")
         reverse_tunnel(9000, "localhost", 3000, ssh)
 
-Dynamic Port Forwarding (SOCKS Proxy)
--------------------------------------
+动态端口转发（SOCKS 代理）（Dynamic Port Forwarding (SOCKS Proxy)）
+--------------------------------------------------------------------------------------------------------------
 
-Dynamic forwarding (``-D``) creates a local SOCKS proxy server that routes traffic
-through the SSH connection. Unlike local forwarding where you specify a fixed
-destination, dynamic forwarding lets applications connect to any host reachable
-from the SSH server—the destination is determined per-connection by the SOCKS
-protocol. This is incredibly versatile: configure your browser to use the SOCKS
-proxy and all web traffic flows through the SSH server, effectively browsing from
-that server's network location. Use cases include accessing geo-restricted content,
-browsing internal websites from outside the office, or encrypting traffic on
-untrusted networks (coffee shop WiFi). SOCKS5 supports both TCP and UDP, plus
-authentication, making it more capable than HTTP proxies.
+动态转发 ( ``-D`` ) 创建一个本地 SOCKS 代理服务器，该服务器通过 SSH 连接路由流量。与指定固定目标的本地转发不同，动态转发允许应用程序连接到可从 SSH 服务器访问的任何主机 - 目标由 SOCKS 协议根据每个连接确定。这是非常通用的：将您的浏览器配置为使用 SOCKS 代理，所有网络流量都流经 SSH 服务器，从而有效地从该服务器的网络位置进行浏览。使用案例包括访问地理限制内容、从办公室外部浏览内部网站或加密不受信任网络（咖啡店 WiFi）上的流量。 SOCKS5 支持 TCP 和 UDP 以及身份验证，使其比 HTTP 代理更强大。
 
 ::
 
@@ -424,29 +350,20 @@ authentication, making it more capable than HTTP proxies.
 
 .. code-block:: bash
 
-    # Command line usage
+    # Command line用途
     ssh -D 1080 -N -f user@server
 
-    # -D 1080: Dynamic forwarding on port 1080
-    # -N: No remote command (just forwarding)
-    # -f: Background after authentication
+    # -D 1080：1080端口动态转发
+    # -N：无远程命令（仅转发）
+    # -f：认证后后台
 
-    # Use with curl
+    # 与卷曲一起使用
     curl --socks5 localhost:1080 http://internal-site.local
 
-Jump Hosts (ProxyJump)
-----------------------
+跳板主机（ProxyJump）（Jump Hosts (ProxyJump)）
+------------------------------------------------------------------------------
 
-Jump hosts (also called bastion hosts or gateway servers) are hardened machines
-that provide the only entry point into a private network. Instead of exposing
-internal servers directly to the internet, organizations route all SSH access
-through a jump host that can be heavily monitored and secured. SSH's ``ProxyJump``
-(``-J``) option makes this seamless—you specify the jump host, and SSH automatically
-chains the connections, authenticating to each hop. The connection to the final
-destination is end-to-end encrypted; the jump host only sees encrypted traffic
-passing through. You can chain multiple jump hosts for deeply segmented networks.
-This pattern is fundamental to secure infrastructure access in cloud environments
-where production servers should never have public IP addresses.
+跳转主机（也称为堡垒主机或网关服务器）是强化机器，提供进入专用网络的唯一入口点。组织不是将内部服务器直接暴露到互联网，而是通过可受到严格监控和保护的跳转主机路由所有 SSH 访问。 SSH 的 ``ProxyJump`` ( ``-J`` ) 选项使这一过程变得无缝 — 您指定跳转主机，SSH 会自动链接连接，对每个跃点进行身份验证。与最终目的地的连接是端到端加密的；跳转主机只能看到经过的加密流量。您可以为深度分段的网络链接多个跳转主机。此模式对于云环境中的基础设施访问安全至关重要，在云环境中，生产服务器不应具有公共 IP 地址。
 
 ::
 
@@ -466,49 +383,41 @@ where production servers should never have public IP addresses.
 
 .. code-block:: python
 
-    # Jump host with Paramiko
+    # 与 Paramiko 一起跳跃主持人
     from paramiko.client import SSHClient
 
-    # Connect to bastion first
+    # 首先连接到堡垒
     bastion = SSHClient()
     bastion.load_system_host_keys()
     bastion.connect("bastion.example.com", username="user", key_filename="mykey")
 
-    # Get transport and open channel to internal host
+    # 获取传输并打开到内部主机的通道
     bastion_transport = bastion.get_transport()
     dest_addr = ("internal-server.local", 22)
     local_addr = ("127.0.0.1", 0)
     channel = bastion_transport.open_channel("direct-tcpip", dest_addr, local_addr)
 
-    # Connect to internal server through the channel
+    # 通过通道连接内部服务器
     internal = SSHClient()
     internal.load_system_host_keys()
     internal.connect(
         "internal-server.local",
         username="admin",
         key_filename="mykey",
-        sock=channel  # Use bastion channel as socket
+        sock=channel  # 使用堡垒通道为socket
     )
 
-    # Execute command on internal server
+    # 在内部服务器上执行命令
     stdin, stdout, stderr = internal.exec_command("hostname")
     print(stdout.read().decode())
 
     internal.close()
     bastion.close()
 
-SSH Config File
----------------
+SSH 配置文件（SSH Config File）
+--------------------------------------------------
 
-The SSH config file (``~/.ssh/config``) eliminates repetitive command-line options
-by defining per-host settings. Instead of typing ``ssh -i ~/.ssh/mykey -p 2222
-user@long.hostname.example.com``, you define a host alias and simply type
-``ssh myserver``. The config file supports wildcards, allowing you to set defaults
-for groups of hosts (all ``*.internal`` hosts use a specific jump server). You can
-also define automatic port forwarding, so connecting to a host automatically sets
-up your database tunnels. For teams, a shared config file ensures everyone uses
-consistent, secure settings. The config is processed top-to-bottom with first
-match winning, so put specific hosts before wildcards.
+SSH 配置文件 ( ``~/.ssh/config`` ) 通过定义每个主机设置消除了重复的 command-line 选项。您无需键入 ``ssh -i ~/.ssh/mykey -p 2222 user@long.hostname.example.com`` ，而是定义一个主机别名并简单地定义 type ``ssh myserver`` 。配置文件支持通配符，允许您为主机组设置 set 默认值（所有 ``*.internal`` 主机都使用特定的跳转服务器）。您还可以定义自动端口转发，以便自动通过数据库隧道连接到主机 sets。对于团队来说，共享配置文件可确保每个人都使用一致、安全的设置。配置是从上到下处理的，第一场比赛获胜，因此将特定主机放在通配符之前。
 
 .. code-block:: text
 
@@ -551,59 +460,42 @@ match winning, so put specific hosts before wildcards.
         LocalForward 5432 db.internal:5432
         LocalForward 6379 redis.internal:6379
 
-SSH Agent Forwarding
---------------------
+SSH 代理转发（SSH Agent Forwarding）
+------------------------------------------------------------
 
-SSH agent forwarding lets you use your local private keys on remote servers without
-copying the keys there. When you SSH to a server with agent forwarding enabled
-(``-A``), the remote server can request signatures from your local ssh-agent for
-subsequent SSH connections. This is essential for workflows like cloning private
-git repositories from a server or hopping through multiple machines. However, agent
-forwarding has security implications: anyone with root access on the remote server
-can use your forwarded agent to authenticate as you to other systems while you're
-connected. For sensitive environments, consider ``ProxyJump`` instead, which keeps
-your keys local, or use per-host deploy keys.
+SSH 代理转发允许您在远程服务器上使用本地专用 keys，而无需在那里复制 keys。当您 SSH 到启用了代理转发的服务器 ( ``-A`` ) 时，远程服务器可以为后续的 SSH 连接请求本地 ssh 代理的签名。这对于从服务器克隆私有 git 存储库或在多台计算机之间跳转等工作流程至关重要。但是，代理转发具有安全隐患：在远程服务器上具有 root 访问权限的任何人都可以使用您转发的代理在您连接时向其他系统进行身份验证。对于敏感环境，请考虑使用 ``ProxyJump`` ，这会将 keys 保留在本地，或使用每主机部署 keys。
 
 .. code-block:: bash
 
-    # Enable agent forwarding
+    # 启用代理转发
     ssh -A user@server
 
-    # On server, your local keys are available
+    # 在服务器上，您本地的 keys 可用
     git clone git@github.com:user/repo.git  # Uses forwarded key
 
 .. code-block:: python
 
-    # Agent forwarding with Paramiko
+    # 使用 Paramiko 进行代理转发
     from paramiko.client import SSHClient
     from paramiko.agent import Agent
 
-    # Get keys from local SSH agent
+    # 从当地SSH代理处获取keys
     agent = Agent()
     agent_keys = agent.get_keys()
 
     with SSHClient() as ssh:
         ssh.load_system_host_keys()
-        # Connect using agent key
+        # 使用代理 key 连接
         ssh.connect("server.example.com", username="user", pkey=agent_keys[0])
 
-        # Enable agent forwarding for this session
+        # 启用此会话的代理转发
         transport = ssh.get_transport()
         paramiko.agent.AgentRequestHandler(transport.open_session())
 
-Keepalive and Connection Stability
-----------------------------------
+Keepalive 和连接稳定性（Keepalive and Connection Stability）
+--------------------------------------------------------------------------------------------------------
 
-SSH connections can silently die due to network issues, NAT gateway timeouts, or
-stateful firewalls that drop idle connections. Without keepalives, you won't know
-the connection is dead until you try to use it—resulting in hung terminals or
-failed operations. SSH provides two keepalive mechanisms: ``TCPKeepAlive`` uses
-TCP-level keepalive packets (can be blocked by some firewalls), while
-``ServerAliveInterval`` sends SSH-protocol messages through the encrypted channel
-(more reliable). ``ServerAliveCountMax`` determines how many missed responses
-trigger disconnect. For reliable long-running connections—tunnels, interactive
-sessions, or automation—configure both client and server keepalives. A 30-60
-second interval works well for most NAT environments.
+由于网络问题、NAT 网关超时或状态防火墙丢弃空闲连接，SSH 连接可能会悄然终止。如果没有保活，您将不会知道连接已断开，直到您尝试使用它，从而导致终端挂起或操作失败。 SSH提供了两种保活机制： ``TCPKeepAlive`` 使用TCP级别的保活数据包（可以被某些防火墙阻止），而 ``ServerAliveInterval`` 通过加密通道发送SSH协议消息（更可靠）。 ``ServerAliveCountMax`` 确定有多少错过的响应触发断开连接。为了获得可靠的长期运行连接（隧道、交互式会话或自动化），请配置客户端和服务器保持活动。 30-60 秒的间隔适用于大多数 NAT 环境。
 
 .. code-block:: python
 
@@ -613,11 +505,11 @@ second interval works well for most NAT environments.
         ssh.load_system_host_keys()
         ssh.connect("server.example.com", username="user", key_filename="mykey")
 
-        # Configure keepalive
+        # 配置保活
         transport = ssh.get_transport()
-        transport.set_keepalive(30)  # Send keepalive every 30 seconds
+        transport.set_keepalive(30)  # 每 30 秒发送一次 keepalive
 
-        # Long-running operations...
+        # 长时间运行的操作...
 
 .. code-block:: text
 
@@ -627,46 +519,42 @@ second interval works well for most NAT environments.
         ServerAliveCountMax 3
         TCPKeepAlive yes
 
-Common SSH Commands Reference
------------------------------
+SSH常用命令参考（Common SSH Commands Reference）
+--------------------------------------------------------------------------------
 
-A quick reference for essential SSH commands covering connections, tunneling, key
-management, and file transfer. These commands form the foundation of secure remote
-administration and are worth committing to memory. The verbose flags (``-v`` to
-``-vvv``) are invaluable for debugging connection issues, showing the authentication
-methods tried, key exchanges, and where failures occur.
+基本 SSH 命令的快速参考，涵盖连接、隧道、key 管理和文件传输。这些命令构成了安全远程管理的基础，值得牢记。详细标志（ ``-v`` 到 ``-vvv`` ）对于 debugging 连接问题非常有用，可以显示 methods 尝试的身份验证、key 交换以及发生故障的位置。
 
 .. code-block:: bash
 
-    # Basic connection
+    # 基本连接
     ssh user@host
-    ssh -p 2222 user@host              # Custom port
-    ssh -i ~/.ssh/mykey user@host      # Specific key
+    ssh -p 2222 user@host              # 自定义端口
+    ssh -i ~/.ssh/mykey user@host      # 具体key
 
-    # Tunneling
-    ssh -L 8080:localhost:80 user@host # Local forward
-    ssh -R 9000:localhost:3000 user@host # Remote forward
-    ssh -D 1080 user@host              # SOCKS proxy
+    # 隧道技术
+    ssh -L 8080:localhost:80 user@host # 本地转发
+    ssh -R 9000:localhost:3000 user@host # 远程转发
+    ssh -D 1080 user@host              # SOCKS代理
 
-    # Jump hosts
-    ssh -J jump@bastion user@internal  # ProxyJump
+    # 跳转主机
+    ssh -J jump@bastion user@internal  # 代理跳转
     ssh -o ProxyCommand="ssh -W %h:%p jump@bastion" user@internal
 
-    # Background tunnels
-    ssh -N -f -L 5432:db:5432 user@host  # -N no command, -f background
+    # 背景隧道
+    ssh -N -f -L 5432:db:5432 user@host  # -N 无命令，-f 背景
 
-    # Key management
-    ssh-keygen -t ed25519 -C "comment"   # Generate key (ed25519 recommended)
+    # Key 管理
+    ssh-keygen -t ed25519 -C "comment"   # 生成key（推荐ed25519）
     ssh-keygen -t rsa -b 4096            # RSA 4096-bit
-    ssh-copy-id -i ~/.ssh/mykey user@host # Copy public key to server
-    ssh-add ~/.ssh/mykey                 # Add key to agent
+    ssh-copy-id -i ~/.ssh/mykey user@host # 将公共 key 复制到服务器
+    ssh-add ~/.ssh/mykey                 # 将 key 添加到代理
 
     # Debugging
-    ssh -v user@host                     # Verbose
-    ssh -vvv user@host                   # Very verbose
+    ssh -v user@host                     # 冗长
+    ssh -vvv user@host                   # 非常详细
 
-    # File transfer
-    scp local.txt user@host:/path/       # Copy to remote
-    scp user@host:/path/file.txt .       # Copy from remote
-    scp -r dir/ user@host:/path/         # Recursive copy
+    # 文件传输
+    scp local.txt user@host:/path/       # 复制到远程
+    scp user@host:/path/file.txt .       # 从远程复制
+    scp -r dir/ user@host:/path/         # Recursive 副本
     rsync -avz -e ssh dir/ user@host:/path/  # Efficient sync

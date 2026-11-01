@@ -1,38 +1,24 @@
 .. meta::
-    :description lang=en: Comprehensive Python C API tutorial covering native C extension development, module creation, argument parsing, reference counting, GIL management, exception handling, and Python type manipulation including lists, dictionaries, tuples, sets, and strings
+    :description lang=zh_CN: 全面的 Python C API 教程，涵盖本机 C 扩展开发、module 创建、argument 解析、reference counting、GIL 管理、exception 处理和 Python type 操作，包括lists、dictionaries、tuples、sets 和 strings
     :keywords: Python, C API, C Extension, PyObject, reference counting, GIL, module, CPython, native extension, PyList, PyDict, PyTuple, PySet, PyUnicode, memory management
 
-============
-Python C API
-============
+==========================================================
+Python C API 用法（Python C API）
+==========================================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-The Python C API is the traditional and most powerful way to write native extensions
-for CPython. It provides direct access to Python's internals, giving developers
-complete control over memory management, object creation, and interpreter interaction.
-While more verbose than modern alternatives like pybind11 or cffi, the C API remains
-essential for maintaining legacy extensions, understanding how Python works internally,
-implementing performance-critical code paths, or accessing low-level features not
-exposed by higher-level tools. The C API is also the foundation upon which tools like
-Cython and pybind11 are built.
+Python C API 是为 CPython 编写本机扩展的传统且最强大的方法。它提供对 Python 内部结构的直接访问，使开发人员能够完全控制内存管理、object 创建和 interpreter 交互。虽然比 pybind11 或 cffi 等现代替代方案更冗长，但 C API 对于维护遗留扩展、了解 Python 内部工作原理、实现性能关键代码路径或访问高级工具未公开的低级功能仍然至关重要。 C API 也是构建 Cython 和 pybind11 等工具的基础。
 
 .. warning::
 
-    The C extension interface is specific to CPython and may not work on alternative
-    Python implementations like PyPy, Jython, or GraalPython. Additionally, the API
-    can change between Python versions (especially between Python 2 and Python 3),
-    requiring careful version handling and conditional compilation for compatibility.
+    C 扩展接口特定于 CPython，可能不适用于 PyPy、Jython 或 GraalPython 等替代 Python 实现。此外，API 可以在 Python 版本之间（特别是在 Python 2 和 Python 3 之间）进行更改，需要仔细的版本处理和条件编译以实现兼容性。
 
-Simple setup.py
----------------
+简单setup.py（Simple setup.py）
+------------------------------------------------------
 
-Building C extensions requires a ``setup.py`` file that tells Python how to compile
-your C code. The ``distutils`` module (or its modern replacement ``setuptools``)
-handles cross-platform compilation, linking against the Python library, and generating
-the correct shared library format (.so on Linux, .dylib on macOS, .pyd on Windows).
-This minimal example compiles a single C file into a Python-importable module.
+构建 C 扩展需要一个 ``setup.py`` 文件，该文件告诉 Python 如何编译 C 代码。 ``distutils`` module（或其现代替代品 ``setuptools`` ）处理跨平台编译，链接到 Python library，并生成正确的共享 library 格式（Linux 上的 .so、macOS 上的 .dylib、 Windows 上的 .pyd）。这个最小的示例将单个 C 文件编译为 Python 可导入的 module。
 
 .. code-block:: python
 
@@ -41,21 +27,17 @@ This minimal example compiles a single C file into a Python-importable module.
     ext = Extension('foo', sources=['foo.c'])
     setup(name="Foo", version="1.0", ext_modules=[ext])
 
-Build and install:
+构建并安装：
 
 .. code-block:: bash
 
     $ python setup.py build
     $ python setup.py install
 
-Customize CFLAGS
-----------------
+定制CFLAGS（Customize CFLAGS）
+----------------------------------------------------
 
-For production-quality extensions, you'll want to customize compiler flags to enable
-warnings, optimizations, or debugging symbols. The ``extra_compile_args`` parameter
-passes flags directly to the C compiler (gcc, clang, or MSVC). Common flags include
-``-Wall`` and ``-Wextra`` for comprehensive warnings, ``-Werror`` to treat warnings
-as errors, ``-O3`` for aggressive optimization, and ``-g`` for debug symbols.
+对于生产质量的扩展，您需要自定义 compiler 标志以启用警告、优化或 debugging 符号。 ``extra_compile_args`` parameter 将标志直接传递给 C compiler（gcc、clang 或 MSVC）。常见标志包括用于全面警告的 ``-Wall`` 和 ``-Wextra`` 、用于将警告视为错误的 ``-Werror`` 、用于积极优化的 ``-O3`` 以及用于调试符号的 ``-g`` 。
 
 .. code-block:: python
 
@@ -73,17 +55,12 @@ as errors, ``-O3`` for aggressive optimization, and ``-g`` for debug symbols.
 
     setup(name="foo", version="1.0", ext_modules=[ext])
 
-Simple C Extension
-------------------
+简单的 C 扩展（Simple C Extension）
+--------------------------------------------------------
 
 :Source: `src/cext/capi/simple.c <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/capi/simple.c>`_
 
-Every Python C extension follows a standard structure with three essential components:
-a module definition (``PyModuleDef``) that describes the module's name and methods,
-a method table (``PyMethodDef``) that maps Python function names to C functions, and
-an initialization function (``PyInit_<modulename>``) that Python calls when importing
-the module. The ``PyDoc_STRVAR`` macro creates docstrings that appear in Python's
-``help()`` system. This example demonstrates a minimal working extension.
+每个 Python C 扩展都遵循包含三个基本组件的标准结构：描述 module 名称的 module 定义 ( ``PyModuleDef`` ) 和 methods、映射 Python 的 method 表 ( ``PyMethodDef`` ) function 命名为 C functions，以及 Python 在导入 module 时调用的初始化 function ( ``PyInit_<modulename>`` )。 ``PyDoc_STRVAR`` 宏创建出现在 Python 的 ``help()`` 系统中的文档字符串。此示例演示了最小的工作扩展。
 
 **foo.c:**
 
@@ -109,8 +86,8 @@ the module. The ``PyDoc_STRVAR`` macro creates docstrings that appear in Python'
 
     static struct PyModuleDef module = {
         PyModuleDef_HEAD_INIT,
-        "foo",      /* module name */
-        doc_mod,    /* docstring */
+        "foo",      /* module 名称 */
+        doc_mod,    /* 文档字符串 */
         -1,         /* size of per-interpreter state (-1 = global) */
         methods
     };
@@ -120,7 +97,7 @@ the module. The ``PyDoc_STRVAR`` macro creates docstrings that appear in Python'
         return PyModule_Create(&module);
     }
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -128,37 +105,32 @@ Output:
     $ python -c "import foo; foo.foo()"
     'foo'
 
-Parse Arguments
----------------
+解析参数（Parse Arguments）
+------------------------------------------
 
 :Source: `src/cext/capi/args.c <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/capi/args.c>`_
 
-C extension functions receive arguments as ``PyObject*`` pointers and must parse them
-into C types. The ``PyArg_ParseTuple()`` function handles positional arguments using
-format codes: ``i`` for int, ``l`` for long, ``d`` for double, ``s`` for string,
-``O`` for any Python object. For keyword arguments, use ``PyArg_ParseTupleAndKeywords()``.
-The method flags (``METH_NOARGS``, ``METH_O``, ``METH_VARARGS``, ``METH_KEYWORDS``)
-tell Python how to call your function and must match your implementation.
+C 扩展 functions 将 arguments 作为 ``PyObject*`` 指针接收，并且必须将它们解析为 C types。 ``PyArg_ParseTuple()`` function 使用格式代码处理 positional arguments： ``i`` 表示 int、 ``l`` 表示长、 ``d`` 表示双、 ``s`` 表示 string、 ``O`` 对于任何 Python object。对于 keyword arguments，请使用 ``PyArg_ParseTupleAndKeywords()`` 。 method 标志（ ``METH_NOARGS`` 、 ``METH_O`` 、 ``METH_VARARGS`` 、 ``METH_KEYWORDS`` ）告诉 Python 如何调用您的 function 并且必须与您的实现相匹配。
 
 .. code-block:: c
 
     #include <Python.h>
 
-    // No arguments: METH_NOARGS
+    // 否 arguments：METH_NOARGS
     static PyObject *
     foo(PyObject *self)
     {
         Py_RETURN_NONE;
     }
 
-    // Single object argument: METH_O
+    // 单object argument：METH_O
     static PyObject *
     bar(PyObject *self, PyObject *arg)
     {
         return Py_BuildValue("O", arg);
     }
 
-    // Multiple positional arguments: METH_VARARGS
+    // 多个 positional arguments：METH_VARARGS
     static PyObject *
     baz(PyObject *self, PyObject *args)
     {
@@ -195,7 +167,7 @@ tell Python how to call your function and must match your implementation.
         {NULL, NULL, 0, NULL}
     };
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -208,18 +180,12 @@ Output:
     >>> foo.qux(x=3, y=7)
     (3, 7)
 
-Release the GIL
----------------
+释放 GIL（Release the GIL）
+----------------------------------------------
 
 :Source: `src/cext/capi/gil.c <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/capi/gil.c>`_
 
-The Global Interpreter Lock (GIL) is a mutex that protects access to Python objects,
-preventing multiple native threads from executing Python bytecode simultaneously.
-While the GIL simplifies CPython's implementation, it can become a bottleneck for
-CPU-bound multi-threaded code. For long-running C operations that don't access Python
-objects (file I/O, network calls, heavy computation), release the GIL using
-``Py_BEGIN_ALLOW_THREADS`` and ``Py_END_ALLOW_THREADS`` macros. This allows other
-Python threads to run concurrently, dramatically improving multi-threaded performance.
+全局 Interpreter Lock (GIL) 是一个 mutex，可保护对 Python objects 的访问，防止多个本机 threads 同时执行 Python 字节码。虽然 GIL 简化了 CPython 的实现，但它可能成为 CPU 绑定的多线程代码的瓶颈。对于不访问 Python objects 的长时间运行的 C 操作（文件 I/O、网络调用、繁重计算），请使用 ``Py_BEGIN_ALLOW_THREADS`` 和 ``Py_END_ALLOW_THREADS`` 宏释放 GIL。这允许其他 Python threads 并发运行，从而显着提高多线程性能。
 
 .. code-block:: c
 
@@ -228,12 +194,12 @@ Python threads to run concurrently, dramatically improving multi-threaded perfor
     static PyObject* foo(PyObject* self)
     {
         Py_BEGIN_ALLOW_THREADS
-        sleep(3);  // Blocking operation - other threads can run
+        sleep(3);  // 阻塞操作-其他threads可以运行
         Py_END_ALLOW_THREADS
         Py_RETURN_NONE;
     }
 
-**With GIL released** (threads run concurrently):
+**与GIL发布** （threads并发运行）：
 
 .. code-block:: bash
 
@@ -245,33 +211,27 @@ Python threads to run concurrently, dramatically improving multi-threaded perfor
     >>> ts = [threading.Thread(target=f, args=(n,)) for n in range(3)]
     >>> [t.start() for t in ts]; [t.join() for t in ts]
     2018-11-04 20:15:34.860454: thread 0
-    2018-11-04 20:15:34.860592: thread 1  # Same time!
+    2018-11-04 20:15:34.860592: thread 1  # 同一时间！
     2018-11-04 20:15:34.860705: thread 2
 
-**Without GIL release** (threads run sequentially):
+**没有GIL释放** （threads顺序运行）：
 
 .. code-block:: bash
 
     2018-11-04 20:16:44.055932: thread 0
-    2018-11-04 20:16:47.059718: thread 1  # 3 seconds later
+    2018-11-04 20:16:47.059718: thread 1  # 3秒后
     2018-11-04 20:16:50.063579: thread 2  # 3 seconds later
 
 .. warning::
 
-    Never call Python C API functions between ``Py_BEGIN_ALLOW_THREADS`` and
-    ``Py_END_ALLOW_THREADS``. The GIL must be held to safely access Python objects.
+    切勿在 ``Py_BEGIN_ALLOW_THREADS`` 和 ``Py_END_ALLOW_THREADS`` 之间调用 Python C API functions。必须握住 GIL 才能安全访问 Python objects。
 
-Acquire the GIL
----------------
+获取 GIL（Acquire the GIL）
+----------------------------------------------
 
 :Source: `src/cext/capi/gil.c <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/capi/gil.c>`_
 
-When threads are created from C code (using pthreads or platform threading APIs),
-they don't automatically hold the GIL. Before these threads can safely call any
-Python C API function or access Python objects, they must acquire the GIL using
-``PyGILState_Ensure()``. After completing Python operations, release the GIL with
-``PyGILState_Release()`` to allow other threads to run. Failing to acquire the GIL
-before accessing Python objects leads to crashes, data corruption, or undefined behavior.
+当从 C 代码（使用 pthread 或平台线程 APIs）创建 threads 时，它们不会自动保存 GIL。在这些 threads 可以安全地调用任何 Python C API function 或访问 Python objects 之前，它们必须使用 ``PyGILState_Ensure()`` 获取 GIL。完成Python操作后，将GIL与 ``PyGILState_Release()`` 一起释放，以允许其他threads运行。在访问 Python objects 之前未能获取 GIL 会导致崩溃、数据损坏或未定义的行为。
 
 .. code-block:: c
 
@@ -280,31 +240,26 @@ before accessing Python objects leads to crashes, data corruption, or undefined 
         PyObject *result = NULL;
         PyObject *callback = (PyObject *)arg;
 
-        // Do C work here (no GIL needed)
+        // C 在这里工作吗（不需要 GIL）
         do_heavy_computation();
 
-        // Acquire GIL before calling Python
+        // 调用 Python 之前获取 GIL
         PyGILState_STATE state = PyGILState_Ensure();
 
         result = PyObject_CallFunction(callback, "s", "Done!");
         Py_XDECREF(result);
 
-        // Release GIL
+        // 发布GIL
         PyGILState_Release(state);
         return NULL;
     }
 
-Raise Exception
----------------
+引发异常（Raise Exception）
+------------------------------------------
 
 :Source: `src/cext/capi/errors.c <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/capi/errors.c>`_
 
-Error handling in C extensions follows a simple pattern: set an exception using
-``PyErr_SetString()`` or ``PyErr_Format()``, then return ``NULL`` to signal failure.
-Python provides built-in exception types as global variables: ``PyExc_ValueError``,
-``PyExc_TypeError``, ``PyExc_RuntimeError``, ``PyExc_KeyError``, ``PyExc_IndexError``,
-and many others. Always check return values from C API functions and propagate errors
-by returning ``NULL`` when an exception is already set.
+C 扩展中的错误处理遵循一个简单的模式：使用 ``PyErr_SetString()`` 或 ``PyErr_Format()`` 的 set 和 exception，然后返回 ``NULL`` 以表示失败。 Python 提供内置 exception types 作为全局 variables： ``PyExc_ValueError`` 、 ``PyExc_TypeError`` 、 ``PyExc_RuntimeError`` 、 ``PyExc_KeyError`` 、 ``PyExc_IndexError`` 等。始终从 C API functions 检查 return values，并在 exception 已经是 set 时通过返回 ``NULL`` 来传播错误。
 
 .. code-block:: c
 
@@ -315,7 +270,7 @@ by returning ``NULL`` when an exception is already set.
         return NULL;
     }
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -324,17 +279,12 @@ Output:
       File "<string>", line 1, in <module>
     NotImplementedError: Not implemented
 
-Custom Exception
-----------------
+自定义异常（Custom Exception）
+----------------------------------------------
 
 :Source: `src/cext/capi/errors.c <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/capi/errors.c>`_
 
-For domain-specific errors, create custom exception classes using ``PyErr_NewException()``.
-The first argument is the fully-qualified name (``"module.ExceptionName"``), the second
-is the base class (``NULL`` defaults to ``Exception``), and the third is an optional
-dictionary of class attributes. Register the exception as a module attribute so Python
-code can catch it with ``except module.ExceptionName``. Remember to ``Py_INCREF()`` the
-exception object before adding it to the module to prevent premature garbage collection.
+对于特定于域的错误，请使用 ``PyErr_NewException()`` 创建自定义 exception classes。第一个 argument 是完全限定名称 ( ``"module.ExceptionName"`` )，第二个是 base class（ ``NULL`` 默认为 ``Exception`` ），第三个是 class attributes 的可选 dictionary。将 exception 注册为 module attribute，以便 Python 代码可以使用 ``except module.ExceptionName`` 捕获它。请记住在将 ``Py_INCREF()`` exception object 添加到 module 之前，以防止过早 garbage collection。
 
 .. code-block:: c
 
@@ -358,7 +308,7 @@ exception object before adding it to the module to prevent premature garbage col
         return m;
     }
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -367,17 +317,10 @@ Output:
       File "<string>", line 1, in <module>
     foo.FooError: Something went wrong
 
-Reference Counting
-------------------
+引用计数（Reference Counting）
+------------------------------------------------
 
-Python uses reference counting as its primary memory management strategy. Every
-``PyObject*`` maintains a count of how many references point to it. When the count
-reaches zero, the object is deallocated. Use ``Py_INCREF()`` when storing a new
-reference to an object and ``Py_DECREF()`` when you're done with it. The variant
-``Py_XDECREF()`` safely handles ``NULL`` pointers. Understanding reference counting
-is crucial for avoiding memory leaks (forgetting to decref) and use-after-free bugs
-(decrefing too early). Functions that return "new references" transfer ownership to
-the caller, while "borrowed references" should not be decrefed.
+Python 使用 reference counting 作为其主要内存管理策略。每个 ``PyObject*`` 都会维护指向它的引用数量的计数。当计数达到零时，object 被释放。存储对 object 的新引用时使用 ``Py_INCREF()`` ，完成后使用 ``Py_DECREF()`` 。变体 ``Py_XDECREF()`` 可以安全地处理 ``NULL`` 指针。了解 reference counting 对于避免内存泄漏（忘记 decref）和释放后使用错误（过早 decref）至关重要。返回 "new references" 的 Functions 将所有权转移给调用者，而 "borrowed references" 不应被取消。
 
 .. code-block:: c
 
@@ -387,7 +330,7 @@ the caller, while "borrowed references" should not be decrefed.
         return PyLong_FromSsize_t(Py_REFCNT(a));
     }
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -397,22 +340,16 @@ Output:
     104
     >>> foo.getrefcount(l[0])
     104
-    >>> i = l[0]  # New reference
+    >>> i = l[0]  # 新参考
     >>> foo.getrefcount(l[0])
     105
 
-Iterate a List
---------------
+迭代列表（Iterate a List）
+----------------------------------------
 
 :Source: `src/cext/capi/types_demo.c <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/capi/types_demo.c>`_
 
-The Python C API provides two approaches for iterating over sequences. The generic
-iterator protocol using ``PyObject_GetIter()`` and ``PyIter_Next()`` works with any
-iterable object (lists, tuples, generators, custom iterables). For lists specifically,
-you can use ``PyList_Size()`` and ``PyList_GetItem()`` for direct indexed access,
-which is slightly faster but less flexible. Note that ``PyList_GetItem()`` returns
-a borrowed reference, while ``PyIter_Next()`` returns a new reference that must be
-decrefed after use.
+Python C API 提供了两种迭代序列的方法。使用 ``PyObject_GetIter()`` 和 ``PyIter_Next()`` 的通用 iterator 协议可与任何 iterable object（lists、tuples、generators、自定义 iterables）配合使用。具体对于lists，可以使用 ``PyList_Size()`` 和 ``PyList_GetItem()`` 进行直接索引访问，速度稍快但灵活性较差。请注意， ``PyList_GetItem()`` 返回借用的引用，而 ``PyIter_Next()`` 返回新的引用，在使用后必须将其取消引用。
 
 .. code-block:: c
 
@@ -435,7 +372,7 @@ decrefed after use.
         return result;
     }
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -443,18 +380,12 @@ Output:
     >>> types_demo.iter_list([1, 2, 3])
     [2, 4, 6]
 
-Iterate a Dictionary
---------------------
+迭代字典（Iterate a Dictionary）
+----------------------------------------------------
 
 :Source: `src/cext/capi/types_demo.c <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/capi/types_demo.c>`_
 
-Dictionary iteration in C uses ``PyDict_Next()`` with a position variable that tracks
-the iteration state. Initialize ``pos`` to 0 before the loop, and the function updates
-it automatically. The key and value pointers receive borrowed references to the current
-item on each iteration—do not decref them unless you incref first. This function is
-safe to use even if the dictionary is modified during iteration (though modifications
-may cause items to be skipped or visited twice). For read-only iteration, this is the
-most efficient approach.
+C 语言中的 Dictionary iteration 使用 ``PyDict_Next()`` 以及跟踪 iteration 状态的位置 variable。在loop之前将 ``pos`` 初始化为0，function会自动更新。 key 和 value 指针接收对每个 iteration 上当前 item 的借用引用，除非先递增，否则不要递减它们。即使在 iteration 期间修改了 dictionary（尽管修改可能会导致 items 被跳过或访问两次），此 function 也可以安全使用。对于只读 iteration，这是最有效的方法。
 
 .. code-block:: c
 
@@ -474,7 +405,7 @@ most efficient approach.
         return result;
     }
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -482,17 +413,12 @@ Output:
     >>> types_demo.iter_dict({"a": 1, "b": 2})
     [('a', 1), ('b', 2)]
 
-Create a List
--------------
+创建列表（Create a List）
+--------------------------------------
 
 :Source: `src/cext/capi/types_demo.c <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/capi/types_demo.c>`_
 
-Creating Python lists from C involves ``PyList_New()`` to allocate the list and
-``PyList_Append()`` or ``PyList_SetItem()`` to populate it. When using ``PyList_New(n)``
-with a non-zero size, you must initialize all slots with ``PyList_SetItem()`` before
-the list is used. ``PyList_SetItem()`` steals a reference to the item, while
-``PyList_Append()`` increments the reference count. For building lists dynamically,
-start with ``PyList_New(0)`` and use ``PyList_Append()``.
+从 C 创建 Python lists 涉及到 ``PyList_New()`` 来分配 list 和 ``PyList_Append()`` 或 ``PyList_SetItem()`` 来填充它。当使用非零大小的 ``PyList_New(n)`` 时，必须在使用 list 之前使用 ``PyList_SetItem()`` 初始化所有插槽。 ``PyList_SetItem()`` 窃取对 item 的引用，而 ``PyList_Append()`` 则递增 reference count。要动态构建 lists，请从 ``PyList_New(0)`` 开始并使用 ``PyList_Append()`` 。
 
 .. code-block:: c
 
@@ -504,7 +430,7 @@ start with ``PyList_New(0)`` and use ``PyList_Append()``.
         return list;
     }
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -512,17 +438,12 @@ Output:
     >>> types_demo.list_demo()
     [1, 2, 3]
 
-Create a Dictionary
--------------------
+创建字典（Create a Dictionary）
+--------------------------------------------------
 
 :Source: `src/cext/capi/types_demo.c <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/capi/types_demo.c>`_
 
-Python dictionaries are created with ``PyDict_New()`` and populated using
-``PyDict_SetItem()`` for PyObject keys or ``PyDict_SetItemString()`` for C string keys.
-Both functions increment the reference count of the value, so you may need to decref
-temporary objects after insertion. For retrieving values, ``PyDict_GetItem()`` and
-``PyDict_GetItemString()`` return borrowed references (or NULL if the key doesn't exist),
-while ``PyDict_GetItemWithError()`` distinguishes between missing keys and errors.
+Python dictionaries 使用 ``PyDict_New()`` 创建，并使用 ``PyDict_SetItem()`` （对于 PyObject）keys 或 ``PyDict_SetItemString()`` （对于 C string keys）进行填充。两个 functions 都会递增 value 的 reference count，因此插入后您可能需要临时递减 objects。为了检索 values， ``PyDict_GetItem()`` 和 ``PyDict_GetItemString()`` 返回借用的引用（如果 key 不存在，则返回 NULL），而 ``PyDict_GetItemWithError()`` 区分丢失的 keys 和错误。
 
 .. code-block:: c
 
@@ -533,7 +454,7 @@ while ``PyDict_GetItemWithError()`` distinguishes between missing keys and error
         return dict;
     }
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -541,17 +462,12 @@ Output:
     >>> types_demo.dict_demo()
     {'name': 'Python', 'version': 3}
 
-Create a Tuple
---------------
+创建一个元组（Create a Tuple）
+--------------------------------------------
 
 :Source: `src/cext/capi/types_demo.c <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/capi/types_demo.c>`_
 
-Tuples are immutable sequences, and the C API reflects this: once created and populated,
-tuple contents cannot be changed. Use ``PyTuple_New(n)`` to create a tuple of size n,
-then ``PyTuple_SetItem()`` to fill each slot (this steals a reference). Alternatively,
-``Py_BuildValue()`` with parentheses format creates tuples directly from C values:
-``"(isd)"`` creates a tuple of (int, string, double). ``PyTuple_Pack(n, ...)`` is
-another convenient way to create tuples from existing PyObject pointers.
+Tuples 是 immutable 序列，C API 反映了这一点：一旦创建并填充，tuple 内容就无法更改。使用 ``PyTuple_New(n)`` 创建大小为 n 的 tuple，然后使用 ``PyTuple_SetItem()`` 填充每个槽（这会窃取引用）。或者，带括号格式的 ``Py_BuildValue()`` 直接从 C values 创建 tuples： ``"(isd)"`` 创建 (int, string, double) 的 tuple。 ``PyTuple_Pack(n, ...)`` 是从现有 PyObject 指针创建 tuples 的另一种便捷方法。
 
 .. code-block:: c
 
@@ -559,7 +475,7 @@ another convenient way to create tuples from existing PyObject pointers.
         return Py_BuildValue("(isd)", 1, "hello", 3.14);
     }
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -567,17 +483,12 @@ Output:
     >>> types_demo.tuple_demo()
     (1, 'hello', 3.14)
 
-Create a Set
-------------
+创建一个集合（Create a Set）
+----------------------------------------
 
 :Source: `src/cext/capi/types_demo.c <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/capi/types_demo.c>`_
 
-Sets are unordered collections of unique hashable objects. Create an empty set with
-``PySet_New(NULL)`` or initialize from an iterable with ``PySet_New(iterable)``.
-Add elements with ``PySet_Add()``, which returns 0 on success or -1 on error (e.g.,
-if the object is unhashable). Check membership with ``PySet_Contains()``, remove
-elements with ``PySet_Discard()`` (no error if missing) or ``PySet_Pop()`` to remove
-and return an arbitrary element. Duplicate additions are silently ignored.
+Sets 是唯一的 hashable objects 的无序 collections。使用 ``PySet_New(NULL)`` 创建空 set 或使用 ``PySet_New(iterable)`` 从 iterable 进行初始化。将 elements 与 ``PySet_Add()`` 添加，成功时返回 0，错误时返回 -1（e.g.，如果 object 是 unhashable）。使用 ``PySet_Contains()`` 检查成员资格，使用 ``PySet_Discard()`` 删除 elements（如果丢失则不会出错）或 ``PySet_Pop()`` 删除并返回任意 element。重复的添加将被默默地忽略。
 
 .. code-block:: c
 
@@ -585,12 +496,12 @@ and return an arbitrary element. Duplicate additions are silently ignored.
         PyObject *set = PySet_New(NULL);
         PySet_Add(set, PyLong_FromLong(1));
         PySet_Add(set, PyLong_FromLong(2));
-        PySet_Add(set, PyLong_FromLong(2));  /* duplicate ignored */
+        PySet_Add(set, PyLong_FromLong(2));  /* 重复的被忽略 */
         PySet_Add(set, PyLong_FromLong(3));
         return set;
     }
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -598,18 +509,12 @@ Output:
     >>> types_demo.set_demo()
     {1, 2, 3}
 
-String Operations
------------------
+字符串操作（String Operations）
+------------------------------------------------
 
 :Source: `src/cext/capi/types_demo.c <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/capi/types_demo.c>`_
 
-Python 3 strings are Unicode objects, created with ``PyUnicode_FromString()`` for
-UTF-8 encoded C strings or ``PyUnicode_FromFormat()`` for printf-style formatting.
-Concatenate strings with ``PyUnicode_Concat()``, which returns a new string object.
-For extracting C strings, use ``PyUnicode_AsUTF8()`` (returns a borrowed pointer valid
-only while the object exists) or ``PyUnicode_AsUTF8AndSize()`` to also get the length.
-The format function supports ``%s`` for C strings, ``%S`` for Python objects (calls str()),
-``%R`` for repr(), and ``%d``, ``%u``, ``%ld`` for integers.
+Python 3 strings 是 Unicode objects，使用 ``PyUnicode_FromString()`` 创建，用于 UTF-8 编码的 C strings 或 ``PyUnicode_FromFormat()`` ，用于 printf 样式格式。将 strings 与 ``PyUnicode_Concat()`` 连接，返回新的 string object。要提取 C strings，请使用 ``PyUnicode_AsUTF8()`` （返回仅在 object 存在时有效的借用指针）或 ``PyUnicode_AsUTF8AndSize()`` 来获取长度。格式 function 支持 C strings 的 ``%s`` 、Python objects 的 ``%S`` （调用 str()）、repr() 的 ``%R`` 和 ``%d`` ， ``%u`` 、 ``%ld`` 为 integers。
 
 .. code-block:: c
 
@@ -631,7 +536,7 @@ The format function supports ``%s`` for C strings, ``%S`` for Python objects (ca
         return PyUnicode_FromFormat("%s is %d years old", name, age);
     }
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -641,18 +546,12 @@ Output:
     >>> types_demo.str_format("Alice", 30)
     'Alice is 30 years old'
 
-Bytes Operations
-----------------
+字节操作（Bytes Operations）
+--------------------------------------------
 
 :Source: `src/cext/capi/types_demo.c <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/capi/types_demo.c>`_
 
-Bytes objects represent immutable sequences of bytes, essential for binary data, file I/O,
-and network protocols. Create bytes from C strings with ``PyBytes_FromString()`` (copies
-until null terminator) or ``PyBytes_FromStringAndSize()`` for binary data with embedded
-nulls. Access the internal buffer with ``PyBytes_AsString()`` (borrowed pointer) and get
-the length with ``PyBytes_Size()``. For mutable byte sequences, use ``PyByteArray_*``
-functions instead. When parsing arguments, use format code ``s#`` for bytes with length
-or ``S`` to accept only bytes objects.
+Bytes objects 表示 bytes 的 immutable 序列，对于二进制数据、文件 I/O 和网络协议至关重要。从 C strings 和 ``PyBytes_FromString()`` 创建 bytes（复制到空终止符）或 ``PyBytes_FromStringAndSize()`` （用于嵌入空值的二进制数据）。用 ``PyBytes_AsString()`` （借用指针）访问内部buffer，用 ``PyBytes_Size()`` 获取长度。对于 mutable byte 序列，请改用 ``PyByteArray_*`` functions。解析 arguments 时，使用格式代码 ``s#`` 表示 bytes 的长度或 ``S`` 仅接受 bytes objects。
 
 .. code-block:: c
 
@@ -668,7 +567,7 @@ or ``S`` to accept only bytes objects.
         return PyLong_FromSsize_t(PyBytes_Size(bytes));
     }
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -678,15 +577,10 @@ Output:
     >>> types_demo.bytes_len(b"hello")
     5
 
-Simple Class
-------------
+简单类（Simple Class）
+----------------------------------
 
-Defining custom Python types in C requires creating a ``PyTypeObject`` structure that
-describes the type's behavior, memory layout, and methods. The minimal type needs
-``tp_name`` (fully qualified name like ``"module.ClassName"``), ``tp_basicsize`` (size
-of the instance struct), and ``tp_new`` (allocation function, often ``PyType_GenericNew``).
-Call ``PyType_Ready()`` to finalize the type before use, then add it to your module with
-``PyModule_AddObject()``. The ``Py_TPFLAGS_DEFAULT`` flag enables standard type features.
+用 C 语言定义自定义 Python types 需要创建一个 ``PyTypeObject`` 结构，用于描述 type 的行为、内存布局和 methods。最小的 type 需要 ``tp_name`` （完全限定名称，如 ``"module.ClassName"`` ）、 ``tp_basicsize`` （instance 结构的大小）和 ``tp_new`` （分配 function，通常为 ``PyType_GenericNew`` ）。使用前先调用 ``PyType_Ready()`` 来完成type，然后将其与 ``PyModule_AddObject()`` 一起添加到您的module中。 ``Py_TPFLAGS_DEFAULT`` 标志启用标准 type 功能。
 
 .. code-block:: c
 
@@ -716,15 +610,10 @@ Call ``PyType_Ready()`` to finalize the type before use, then add it to your mod
         return m;
     }
 
-Class with Members and Methods
-------------------------------
+具有成员和方法的类（Class with Members and Methods）
+----------------------------------------------------------------------------------
 
-Full-featured Python classes in C require implementing several type slots. Use
-``PyMemberDef`` to expose C struct fields as Python attributes (with automatic type
-conversion), and ``PyMethodDef`` for instance methods. Implement ``tp_new`` for memory
-allocation (called before ``__init__``), ``tp_init`` for initialization (the ``__init__``
-method), and ``tp_dealloc`` for cleanup (must decref all owned PyObject members and call
-``tp_free``). The ``Py_TPFLAGS_BASETYPE`` flag allows the type to be subclassed in Python.
+C 语言中的全功能 Python classes 需要实现多个 type 插槽。使用 ``PyMemberDef`` 将 C 结构体字段公开为 Python attributes（具有自动 type 转换），并将 ``PyMethodDef`` 公开为 instance methods。实现 ``tp_new`` 进行内存分配（在 ``__init__`` 之前调用），实现 ``tp_init`` 进行初始化（ ``__init__`` method），实现 ``tp_dealloc`` 进行清理（必须 decref 所有拥有的 PyObject 成员并调用 ``tp_free`` ）。 ``Py_TPFLAGS_BASETYPE`` 标志允许在 Python 中对 type 进行子类化。
 
 .. code-block:: c
 
@@ -776,7 +665,7 @@ method), and ``tp_dealloc`` for cleanup (must decref all owned PyObject members 
         {NULL}
     };
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -787,15 +676,10 @@ Output:
     >>> o.bar
     'world'
 
-Properties (Getter/Setter)
---------------------------
+属性（Getter/Setter）（Properties (Getter/Setter)）
+------------------------------------------------------------------------------------------
 
-For computed attributes or attributes requiring validation, use ``PyGetSetDef`` to define
-properties with custom getter and setter functions. The getter receives the instance and
-an optional closure pointer, returning a new reference to the attribute value. The setter
-receives the instance, new value (or NULL for deletion), and closure, returning 0 on
-success or -1 on error. This provides the same functionality as Python's ``@property``
-decorator but with C-level control over attribute access.
+对于需要验证的计算 attributes 或 attributes，请使用 ``PyGetSetDef`` 来定义带有自定义 getter 和 setter functions 的 properties。 getter 接收 instance 和可选的 closure 指针，返回对 attribute value 的新引用。 setter 接收 instance、新的 value（或删除时的 NULL）和 closure，成功时返回 0，错误时返回 -1。这提供了与 Python 的 ``@property`` decorator 相同的功能，但具有对 attribute 访问的 C 级控制。
 
 .. code-block:: c
 
@@ -824,15 +708,10 @@ decorator but with C-level control over attribute access.
         {NULL}
     };
 
-Calling Python from C
----------------------
+从 C 调用 Python（Calling Python from C）
+------------------------------------------------------------------------
 
-C extensions often need to call back into Python code—invoking callbacks, calling methods
-on objects, or using Python library functions. Use ``PyObject_CallFunction()`` for calling
-with C-style format arguments, ``PyObject_CallObject()`` with a tuple of arguments, or
-``PyObject_CallMethod()`` to call a method by name. Always check if the callable is valid
-with ``PyCallable_Check()`` before calling, and check the return value for NULL (indicating
-an exception was raised). The GIL must be held when calling Python functions.
+C 扩展通常需要回调 Python 代码 — 调用 callbacks、在 objects 上调用 methods 或使用 Python library functions。使用 ``PyObject_CallFunction()`` 以 C 风格格式 arguments、 ``PyObject_CallObject()`` 和 arguments 的 tuple 进行调用，或使用 ``PyObject_CallMethod()`` 按名称调用 method。在调用之前，请务必使用 ``PyCallable_Check()`` 检查可调用是否有效，并检查 NULL 的 return value（表示已引发 exception）。调用 Python functions 时必须持有 GIL。
 
 .. code-block:: c
 
@@ -855,7 +734,7 @@ an exception was raised). The GIL must be held when calling Python functions.
         return result;
     }
 
-Output:
+输出：
 
 .. code-block:: bash
 
@@ -863,19 +742,12 @@ Output:
     >>> foo.call_callback(print)
     Hello from C!
 
-Performance Comparison
-----------------------
+性能比较（Performance Comparison）
+--------------------------------------------------------
 
 :Source: `src/cext/capi/simple.c <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/capi/simple.c>`_
 
-C extensions provide dramatic speedups for CPU-bound operations by eliminating Python's
-interpreter overhead. This recursive Fibonacci benchmark demonstrates typical performance
-gains of 50-100x compared to pure Python. The speedup comes from avoiding Python object
-creation, method dispatch, and bytecode interpretation on each function call. For
-numerical code, the gains can be even larger when combined with SIMD instructions or
-multi-threading (with GIL released). However, the overhead of crossing the Python/C
-boundary means C extensions are most beneficial for compute-intensive inner loops rather
-than simple operations.
+C 扩展通过消除 Python 的 interpreter 开销，为 CPU 绑定操作提供显着的加速。与纯 Python 相比，recursive 斐波那契 benchmark 的典型性能提升了 50-100 倍。加速来自于避免每个 function 调用上的 Python object 创建、method 调度和字节码解释。对于数字代码，与SIMD指令或多线程（已发布GIL）结合使用时，增益会更大。然而，跨越 Python/C 边界的开销意味着 C 扩展对于计算密集型内部 loops 最有利，而不是简单的操作。
 
 .. code-block:: c
 

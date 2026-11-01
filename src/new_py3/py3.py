@@ -11,7 +11,7 @@ from dataclasses import dataclass, FrozenInstanceError
 PY_VERSION = sys.version_info[:2]
 
 
-# Python 3.9 - Dictionary Merge (PEP 584)
+# Python 3.9 - Dictionary 合并 (PEP 584)
 def dict_merge(a: dict, b: dict) -> dict:
     """Merge dicts with | operator."""
     return a | b
@@ -23,13 +23,13 @@ def dict_update(a: dict, b: dict) -> dict:
     return a
 
 
-# Python 3.8 - Positional-only parameters (PEP 570)
+# Python 3.8 - 仅位置 parameters (PEP 570)
 def positional_only(a, b, /, c, d):
     """a and b must be positional, c and d can be keyword."""
     return a + b + c + d
 
 
-# Python 3.8 - Walrus operator (PEP 572)
+# Python 3.8 - 海象 operator (PEP 572)
 def walrus_example(data: list):
     """Assignment expression in condition."""
     if (n := len(data)) > 3:
@@ -43,7 +43,7 @@ def walrus_fib(count: int) -> list:
     return [(f := (f[1], sum(f)))[0] for _ in range(count)]
 
 
-# Python 3.7 - Data Classes (PEP 557)
+# Python 3.7 - 数据 Classes (PEP 557)
 @dataclass
 class Point:
     """Mutable dataclass."""
@@ -71,20 +71,20 @@ def fstring_format(value: float) -> str:
     return f"{value:1.3}"
 
 
-# Python 3.5 - Async/Await (PEP 492)
+# Python 3.5 - 异步/等待 (PEP 492)
 async def async_greet() -> str:
     """Native coroutine syntax."""
     await asyncio.sleep(0.01)
     return "Hello"
 
 
-# Python 3.5 - General unpacking (PEP 448)
+# Python 3.5 - 一般拆箱 (PEP 448)
 def general_unpacking() -> list:
     """Multiple unpacking in literals."""
     return [*range(3), 3, *range(4, 6)]
 
 
-# Python 3.3 - yield from (PEP 380)
+# Python 3.3 - (PEP 380) 的产量
 def fib_gen(n: int):
     """Generator for fibonacci."""
     a, b = 0, 1
@@ -98,20 +98,20 @@ def delegate_fib(n: int):
     yield from fib_gen(n)
 
 
-# Python 3.0 - Extended unpacking (PEP 3132)
+# Python 3.0 - 扩展拆包 (PEP 3132)
 def extended_unpacking() -> tuple:
     """Star operator captures remaining items."""
     a, *b, c = range(5)
     return a, b, c
 
 
-# Python 3.0 - Keyword-only arguments (PEP 3102)
+# Python 3.0 - 仅关键字 arguments (PEP 3102)
 def keyword_only(a, b, *, kw):
     """kw must be passed as keyword argument."""
     return a, b, kw
 
 
-# Python 3.0 - nonlocal keyword (PEP 3104)
+# Python 3.0 - 非本地关键字 (PEP 3104)
 def nonlocal_example() -> str:
     """Modify variable in enclosing scope."""
     outer = "original"
@@ -124,7 +124,7 @@ def nonlocal_example() -> str:
     return outer
 
 
-# Tests
+# 测试
 @pytest.mark.skipif(PY_VERSION < (3, 12), reason="Requires Python 3.12+")
 class TestPython312:
     def test_box_int(self):

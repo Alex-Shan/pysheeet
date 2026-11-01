@@ -1,113 +1,109 @@
-=============
-SGLang Serving
-=============
+==================================================
+SGLang 服务（SGLang Serving）
+==================================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-This cheat sheet provides quick-reference commands for launching an SGLang server in
-both local (single-node) and SLURM (multi-node) environments. It covers building the
-Docker image, running with different parallelism strategies, and testing the server.
+此速查表提供了在本地（单节点）和 SLURM（多节点）环境中启动 SGLang 服务器的快速参考命令。它涵盖了构建 Docker 映像、使用不同的并行策略运行以及测试服务器。
 
-For more details, see the
-`SGLang documentation <https://docs.sglang.ai/>`_ and
-`GitHub repository <https://github.com/sgl-project/sglang>`_.
+有关更多详细信息，请参阅 `SGLang documentation <https://docs.sglang.ai/>`_ 和 `GitHub repository <https://github.com/sgl-project/sglang>`_ 。
 
-For parallelism strategies and benchmark methodology, see the
-`LLM Serving Guide <https://github.com/crazyguitar/pysheeet/blob/master/docs/notes/llm/llm-serving.rst>`_ and
-`LLM Benchmark Guide <https://github.com/crazyguitar/pysheeet/blob/master/docs/notes/llm/llm-bench.rst>`_.
+有关并行策略和 benchmark 方法，请参阅 `LLM Serving Guide <https://github.com/crazyguitar/pysheeet/blob/master/docs/notes/llm/llm-serving.rst>`_ 和 `LLM Benchmark Guide <https://github.com/crazyguitar/pysheeet/blob/master/docs/notes/llm/llm-bench.rst>`_ 。
 
-Build Docker Image
-------------------
+.. _build-docker-image:
 
-The Dockerfile bundles SGLang with EFA drivers, NCCL, and GDRCopy for high-performance
-multi-node inference on GPU clusters.
+构建 Docker 镜像（Build Docker Image）
+----------------------------------------------------------------
+
+Dockerfile 将 SGLang 与 EFA 驱动程序、NCCL 和 GDRCopy 捆绑在一起，以在 GPU 集群上进行高性能多节点推理。
 
 .. code-block:: bash
 
-    # Build the Docker image
+    # 构建 Docker 映像
     make docker
 
-    # Save as a compressed tarball for SLURM nodes
-    # Output: sglang-serve-latest.tar.gz
+    # 保存为 SLURM 节点的压缩 tarball
+    # 输出：sglang-服务-latest.tar.gz
     make save
 
-Local Serving (Single Node)
----------------------------
+.. _local-serving-single-node:
 
-For development or single-node deployments, SGLang can run directly on the host or
-inside a Docker container. The server exposes an OpenAI-compatible API on port 30000.
+本地服务（单节点）（Local Serving (Single Node)）
+----------------------------------------------------------------------------
 
-**Bare metal** — run SGLang directly without Docker:
+对于开发或单节点部署，SGLang 可以直接在主机上或 Docker 容器内运行。服务器在端口 30000 上公开 OpenAI 兼容的 API。
+
+**裸机** — 直接运行SGLang，无需Docker：
 
 .. code-block:: bash
 
-    # Single GPU
+    # 单GPU
     python -m sglang.launch_server --model-path Qwen/Qwen2.5-7B-Instruct --host 0.0.0.0 --port 30000
 
-    # Tensor parallel across 8 GPUs
+    # Tensor 跨 8 个 GPU 并行
     python -m sglang.launch_server --model-path Qwen/Qwen2.5-14B-Instruct --tp 8
 
-    # MoE model with expert parallelism (EP subdivides TP)
+    # 具有专家并行性的MoE模型（EP细分TP）
     python -m sglang.launch_server --model-path Qwen/Qwen1.5-MoE-A2.7B --tp 8 --ep 2
 
-**Using Docker (via Makefile)**:
+**使用 Docker（通过 Makefile）** ：
 
 .. code-block:: bash
 
-    # Single GPU with default model
+    # 单GPU 默认型号
     make serve MODEL=Qwen/Qwen2.5-7B-Instruct
 
-    # Tensor parallel across 8 GPUs
+    # Tensor 跨 8 个 GPU 并行
     make serve MODEL=Qwen/Qwen2.5-14B-Instruct TP=8
 
-**Using Docker directly**:
+**直接使用Docker** ：
 
 .. code-block:: bash
 
-    # Single GPU
+    # 单GPU
     docker run --gpus all --rm --net=host -v /fsx:/fsx \
       sglang-serve:latest \
       python3 -m sglang.launch_server --model-path Qwen/Qwen2.5-7B-Instruct --host 0.0.0.0 --port 30000
 
-    # Tensor parallel across 8 GPUs
+    # Tensor 跨 8 个 GPU 并行
     docker run --gpus all --rm --net=host -v /fsx:/fsx \
       sglang-serve:latest \
       python3 -m sglang.launch_server --model-path Qwen/Qwen2.5-14B-Instruct --tp 8 --host 0.0.0.0 --port 30000
 
-SLURM Serving (Multi-Node)
----------------------------
+.. _slurm-serving-multi-node:
 
-``run.sbatch`` orchestrates multi-node SGLang serving on SLURM clusters. It handles
-Docker image distribution, container launch with EFA/GPU passthrough, and health
-checking. The server runs until you stop it with ``Ctrl+C`` or ``scancel``.
+SLURM 服务（多节点）（SLURM Serving (Multi-Node)）
+----------------------------------------------------------------------------------
 
-**Script flags** — consumed by the script, not passed to SGLang:
+``run.sbatch`` 编排在 SLURM 集群上服务的多节点 SGLang。它处理 Docker 映像分发、使用 EFA/GPU 直通的容器启动以及运行状况检查。服务器会一直运行，直到您使用 ``Ctrl+C`` 或 ``scancel`` 停止它为止。
+
+**Script flags** — 由脚本使用，不传递给 SGLang：
 
 .. list-table::
    :widths: 30 70
    :header-rows: 1
 
-   * - Flag
-     - Description
+   * - 旗帜
+     - 描述
    * - ``--image PATH``
-     - Docker image tarball or registry path (default: ``$WORKSPACE/sglang-serve-latest.tar.gz``)
+     - Docker 映像 tarball 或注册表路径（默认值： ``$WORKSPACE/sglang-serve-latest.tar.gz`` ）
    * - ``--workspace, -w PATH``
-     - Base directory for default image and logs (default: ``$PWD``)
+     - 默认图像和日志的基目录（默认： ``$PWD`` ）
    * - ``--container-mount PATH``
-     - Host path to bind-mount into containers (default: ``/fsx``)
+     - 绑定挂载到容器中的主机路径（默认值： ``/fsx`` ）
    * - ``--force, -f``
-     - Force remove existing containers and images before loading
+     - 加载前强制删除现有容器和镜像
    * - ``--profile``
-     - Enable PyTorch profiler (writes to ``$PWD/sglang_profile``)
+     - 启用 PyTorch profiler（写入 ``$PWD/sglang_profile`` ）
 
-All other arguments are passed directly to ``python -m sglang.launch_server``.
+所有其他 arguments 都直接传递到 ``python -m sglang.launch_server`` 。
 
-**Basic usage**:
+**基本用法** ：
 
 .. code-block:: bash
 
-    # Allocate 2 nodes with 8 GPUs each
+    # 分配 2 个节点，每个节点 8 个 GPU
     salloc -N 2 --gpus-per-node=8 --exclusive
 
     # MoE with expert parallelism (TP=8, EP=2 across 2 nodes)
@@ -115,7 +111,7 @@ All other arguments are passed directly to ``python -m sglang.launch_server``.
       --model-path Qwen/Qwen1.5-MoE-A2.7B \
       --tp 8 --ep 2
 
-**Data parallelism** — requires ``--enable-dp-attention`` for multi-node:
+**数据并行性** — 多节点需要 ``--enable-dp-attention`` ：
 
 .. code-block:: bash
 
@@ -124,7 +120,7 @@ All other arguments are passed directly to ``python -m sglang.launch_server``.
       --model-path Qwen/Qwen2.5-14B-Instruct \
       --tp 8 --dp 2 --enable-dp-attention
 
-**Pipeline parallelism**:
+**管道并行度** ：
 
 .. code-block:: bash
 
@@ -133,7 +129,7 @@ All other arguments are passed directly to ``python -m sglang.launch_server``.
       --model-path deepseek-ai/DeepSeek-V2-Lite \
       --tp 8 --pp 2
 
-**Custom image**:
+**自定义图像** ：
 
 .. code-block:: bash
 
@@ -142,7 +138,7 @@ All other arguments are passed directly to ``python -m sglang.launch_server``.
       --model-path Qwen/Qwen2.5-72B-Instruct \
       --tp 8
 
-**Profiling**:
+**分析** ：
 
 .. code-block:: bash
 
@@ -151,20 +147,22 @@ All other arguments are passed directly to ``python -m sglang.launch_server``.
       --model-path Qwen/Qwen2.5-14B-Instruct \
       --tp 8
 
-Test the Server
----------------
+.. _test-the-server:
 
-SGLang serves on port 30000 by default:
+测试服务器（Test the Server）
+--------------------------------------------
+
+SGLang 默认服务于端口 30000：
 
 .. code-block:: bash
 
-    # Health check
+    # 健康检查
     curl http://<HEAD_IP>:30000/health
 
-    # List models
+    # List型号
     curl http://<HEAD_IP>:30000/v1/models
 
-    # Chat completion (OpenAI-compatible)
+    # 聊天完成（兼容 OpenAI）
     curl -X POST http://<HEAD_IP>:30000/v1/chat/completions \
       -H "Content-Type: application/json" \
       -d '{
@@ -173,100 +171,101 @@ SGLang serves on port 30000 by default:
         "max_tokens": 50
       }'
 
-    # SGLang native generate endpoint
+    # SGLang 本机生成端点
     curl -X POST http://<HEAD_IP>:30000/generate \
       -H "Content-Type: application/json" \
       -d '{"text": "Hello", "sampling_params": {"max_new_tokens": 50}}'
 
-    # Run the included test script
+    # 运行包含的测试脚本
     bash test.sh
 
-    # Test against a remote server
+    # 针对远程服务器进行测试
     bash test.sh -H 10.0.128.193 -p 30000
 
-Benchmark
----------
+.. _benchmark:
 
-``bench.sh`` measures serving performance (throughput, TTFT, ITL, latency) by sending
-requests to a running SGLang server. It handles Docker image loading and container
-management automatically.
+基准（Benchmark）
+--------------------------
+
+``bench.sh`` 通过向正在运行的 SGLang 服务器发送请求来测量服务性能（throughput、TTFT、ITL、latency）。它自动处理 Docker 图像加载和容器管理。
 
 .. code-block:: bash
 
-    # Run all benchmarks
+    # 运行所有基准测试
     bash bench.sh -H 10.0.128.193 -i sglang-serve:latest
 
-    # Run specific benchmarks
+    # 运行特定基准测试
     bash bench.sh -H 10.0.128.193 -i sglang-serve:latest --type throughput,prefill
 
-    # Via Makefile
+    # 通过生成文件
     make bench HOST=10.0.128.193
     make bench HOST=10.0.128.193 BENCH_TYPE=throughput,prefill
 
-Available benchmark types:
+可用 benchmark types：
 
-- **throughput** — peak output tokens/sec at max request rate
-- **prefill** — TTFT scaling with input length (128→16K tokens)
-- **decode** — ITL as output length grows (128→1024 tokens)
-- **latency** — end-to-end latency under minimal load
-- **concurrency** — throughput vs latency at different concurrency levels
-- **sharegpt** — realistic conversational workload
+- **吞吐量** — 最大请求速率下的峰值输出令牌/秒
+- **prefill** — TTFT 根据输入长度进行缩放（128→16K 令牌）
+- **decode** — ITL 随着输出长度的增长（128→1024 个令牌）
+- **latency** — 最小负载下的端到端 latency
+- **concurrency** — 不同并发级别下的 throughput 与 latency
+- **sharegpt** — 真实的对话工作负载
 
-Parallelism
------------
+.. _parallelism:
 
-SGLang's parallelism formula:
+并行性（Parallelism）
+--------------------------------
+
+SGLang的并行度公式：
 
 .. code-block:: text
 
     Total GPUs = TP × DP × PP
 
-**EP is a subdivision of TP**, not a separate multiplier. When using ``--ep N``,
-the TP GPUs are divided into N expert-parallel groups.
+**EP 是 TP** 的细分，而不是单独的乘法器。当使用 ``--ep N`` 时，TP GPU被分为N个专家并行组。
 
 .. list-table::
    :widths: 20 10 10 10 10 40
    :header-rows: 1
 
-   * - Config
+   * - 配置
      - TP
      - EP
      - DP
      - PP
-     - Use case
-   * - Dense, max throughput
+     - 使用案例
+   * - 密集，最大 throughput
      - 2
      - 1
      - 8
      - 1
-     - 8 replicas of TP=2
-   * - Dense, large model
+     - TP的8个副本=2
+   * - 密集、大模型
      - 8
      - 1
      - 2
      - 1
-     - 2 replicas of TP=8
-   * - Dense, very large
+     - TP=8 的 2 个副本
+   * - 密集，非常大
      - 8
      - 1
      - 1
      - 2
-     - Single replica, 2-stage pipeline
-   * - MoE model
+     - 单副本、2 级管道
+   * - MoE型号
      - 8
      - 2
      - 1
      - 1
-     - Experts split into 2 groups
-   * - MoE, more EP
+     - 专家分为2组
+   * - MoE, 更多EP
      - 8
      - 4
      - 1
      - 1
-     - Experts split into 4 groups
+     - 专家分为4组
 
-**Constraints:**
+**约束：**
 
-- Multi-node DP requires ``--enable-dp-attention``
-- EP only works with MoE models and requires ``--enable-ep``
-- ``TP`` must be divisible by ``nnodes`` for multi-node
+- 多节点DP需要 ``--enable-dp-attention``
+- EP 仅适用于 MoE 型号，并且需要 ``--enable-ep``
+- 对于多节点， ``TP`` 必须能被 ``nnodes`` 整除

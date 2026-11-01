@@ -41,7 +41,7 @@ run() {
     return 1
   fi
 
-  # split string
+  # 分体式string
   IFS=$'\n' read -d "" -ra arr <<<"${image//\//$'\n'}"
 
   url="${arr[0]}"

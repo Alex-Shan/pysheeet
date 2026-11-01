@@ -6,7 +6,7 @@ Source code for docs/notes/basic/python-set.rst
 import pytest
 
 
-# Create a Set
+# 创建 Set
 def create_set_literal():
     """Create set using literal syntax."""
     return {1, 2, 3}
@@ -38,7 +38,7 @@ def set_comprehension_squares(n: int) -> set:
     return {x**2 for x in range(n)}
 
 
-# Uniquify
+# 统一
 def uniquify_list(items: list) -> list:
     """Remove duplicates from list."""
     return list(set(items))
@@ -49,7 +49,7 @@ def uniquify_preserve_order(items: list) -> list:
     return list(dict.fromkeys(items))
 
 
-# Add Items
+# 添加Items
 def add_single(s: set, item) -> set:
     """Add single item to set."""
     s.add(item)
@@ -62,7 +62,7 @@ def add_multiple(s: set, items) -> set:
     return s
 
 
-# Remove Items
+# 删除 Items
 def remove_item(s: set, item) -> set:
     """Remove item from set (raises KeyError if missing)."""
     s.remove(item)
@@ -80,7 +80,7 @@ def pop_item(s: set):
     return s.pop()
 
 
-# Set Operations
+# Set 操作
 def union(a: set, b: set) -> set:
     """Union of two sets."""
     return a | b
@@ -121,7 +121,7 @@ def is_disjoint(a: set, b: set) -> bool:
     return a.isdisjoint(b)
 
 
-# Membership
+# 会员资格
 def membership_test(s: set, item) -> bool:
     """Test if item is in set."""
     return item in s
@@ -143,7 +143,7 @@ def frozenset_in_set():
     return {frozenset([1, 2]), frozenset([3, 4])}
 
 
-# Tests
+# 测试
 class TestSetCreation:
     def test_literal(self):
         assert create_set_literal() == {1, 2, 3}
@@ -197,7 +197,7 @@ class TestAddRemove:
     def test_discard(self):
         s = {1, 2, 3}
         assert discard_item(s, 2) == {1, 3}
-        assert discard_item(s, 10) == {1, 3}  # no error
+        assert discard_item(s, 10) == {1, 3}  # 没有错误
 
     def test_pop(self):
         s = {1, 2, 3}
@@ -221,12 +221,12 @@ class TestSetOperations:
 
     def test_subset(self):
         assert is_subset({1, 2}, {1, 2, 3})
-        assert is_subset({1, 2}, {1, 2})  # equal is subset
+        assert is_subset({1, 2}, {1, 2})  # 相等是子集
         assert not is_subset({1, 2, 3}, {1, 2})
 
     def test_proper_subset(self):
         assert is_proper_subset({1, 2}, {1, 2, 3})
-        assert not is_proper_subset({1, 2}, {1, 2})  # equal is not proper
+        assert not is_proper_subset({1, 2}, {1, 2})  # 平等是不恰当的
 
     def test_superset(self):
         assert is_superset({1, 2, 3}, {1, 2})

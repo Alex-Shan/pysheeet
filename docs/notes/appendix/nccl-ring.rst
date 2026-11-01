@@ -1,75 +1,53 @@
-NCCL Multi-Rail Broadcast with More GPU Ranks
-==================================================
+更多 GPU Ranks 下的 NCCL 多链路广播（NCCL Multi-Rail Broadcast with More GPU Ranks）
+==================================================================================================================================================
 
 
-Abstract
---------
+摘要（Abstract）
+------------------------
 
-NCCL broadcast is used to synchronize model weights between training workers
-and rollout engines in frameworks such as `Slime`_. However, having multiple
-RDMA NICs per node does not guarantee that a broadcast will use them all.
-In our single-sender setup, weight transfers use only the source GPU's local
-NIC pair, leaving most of the node's network capacity unused. This note
-compares one and eight participating GPUs on the source node, with eight
-receivers in both cases, to show how rank placement affects NIC utilization
-and weight-transfer throughput. On two Cambrian H100 nodes, expanding the
-source node from one to eight ranks increases median broadcast throughput
-from 47.86 to 290.17 GB/s, a 6.06x speedup within one process group.
+NCCL broadcast 用于在 `Slime`_ 等框架中同步训练工作器和 rollout 引擎之间的模型权重。但是，每个节点拥有多个 RDMA NIC 并不能保证 broadcast 会使用所有这些 NIC。在我们的单发送器设置中，权重传输仅使用源 GPU 的本地 NIC 对，从而使节点的大部分网络容量未使用。本说明比较了源节点上的 1 个和 8 个参与 GPU，两种情况下都有 8 个接收器，以显示rank 放置方式如何影响 NIC 利用率和权重转移 throughput。在两个 Cambrian H100 节点上，将源节点从 1 个 rank 扩展至 8 个 ranks，将 broadcast throughput 中位数从 47.86 增加到 290.17 GB/s，即一个 process 组内的 6.06x 加速。
 
-Introduction
-------------
+介绍（Introduction）
+--------------------------------
 
-When a node has multiple RDMA NICs, it is natural to expect a large broadcast
-to use their combined bandwidth. Reaching that bandwidth, however, requires
-traffic to flow through multiple NICs in parallel. In NCCL, those paths depend
-on the participating GPU ranks, the GPU-to-NIC topology, and the communication
-layout. The simplified diagram below illustrates a single sender GPU
-broadcasting through its local network connection. On the Cambrian nodes
-used in our experiments, that connection consists of two 200 Gb/s ports
-combined by NCCL into one 400 Gb/s virtual device. The question is how to
-involve the other GPUs and NICs to use more of the node's available bandwidth.
+当一个节点有多个 RDMA NIC 时，很自然地期望大型 broadcast 使用它们组合的 bandwidth。然而，要达到 bandwidth，流量需要并行流经多个 NIC。在 NCCL 中，这些路径取决于参与的 GPU ranks、GPU 到 NIC 拓扑以及通信布局。下面的简化图说明了通过其本地网络连接的单个发送者 GPU broadcasting。在我们实验中使用的 Cambrian 节点上，该连接由两个 200 Gb/s 端口组成，由 NCCL 组合成一个 400 Gb/s 虚拟设备。问题是如何让其他 GPU 和 NIC 参与以使用更多节点的可用 bandwidth。
 
-.. image:: https://raw.githubusercontent.com/crazyguitar/pysheeet/2aa75ef88604baba97a9fd193ea8820e4cb9ad02/docs/_static/appendix/nccl/nccl-broadcast-0.png
-   :alt: Broadcast from a single sender GPU through one NIC to the receiving node.
+.. image:: /_static/appendix/nccl/nccl-broadcast-0.png
+   :alt: 单个发送端 GPU 经由本地 NIC 向接收节点广播。
 
-NCCL's ring broadcast divides the buffer into chunks and pipelines them
-through the participating ranks. Within a node, these transfers can use
-fast GPU interconnects such as NVLink. Including more GPU ranks on the sender
-node gives NCCL additional paths through local GPUs and their nearby NICs.
-Our second configuration places all GPU ranks on both nodes in a single
-process group, as illustrated below. Whether traffic spreads across
-multiple NICs depends on the topology and the channel layout NCCL chooses;
-adding ranks alone does not guarantee it. This configuration is distinct from
-using multiple process groups to distribute transfers.
+.. admonition:: 图例
 
-.. image:: https://raw.githubusercontent.com/crazyguitar/pysheeet/2aa75ef88604baba97a9fd193ea8820e4cb9ad02/docs/_static/appendix/nccl/nccl-broadcast-8.png
-   :alt: Broadcast chunks transferred through multiple sender GPUs and NICs.
+   Node0 与 Node1 表示节点 0 和节点 1；GPU 与 NIC 后的数字为设备编号，A、B、C 为传输数据标识，箭头表示数据传输方向。
+
+NCCL 的环 broadcast 将 buffer 分成块，并通过参与的 ranks将它们管道化。在节点内，这些传输可以使用快速 GPU 互连，例如 NVLink。在发送方节点上包含更多 GPU ranks可以为 NCCL 提供通过本地 GPU 及其附近 NIC 的额外路径。我们的第二种配置将两个节点上的所有 GPU rank 放置方式在单个 process 组中，如下所示。流量是否分布在多个NIC上取决于NCCL选择的拓扑和通道布局；仅仅增加 ranks并不能保证这一点。此配置不同于使用多个 process 组来分发传输。
+
+.. image:: /_static/appendix/nccl/nccl-broadcast-8.png
+   :alt: 多个发送端 GPU 和 NIC 共同传输广播数据块。
+
+.. admonition:: 图例
+
+   Node0 与 Node1 表示节点 0 和节点 1；GPU 与 NIC 后的数字为设备编号，A、B、C 为传输数据标识，箭头表示数据传输方向。
 
 
-Experiment
-----------
+实验（Experiment）
+----------------------------
 
-Environment
-~~~~~~~~~~~
+环境（Environment）
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* **Hardware:** two Cambrian nodes, each with 8 × NVIDIA H100 80GB GPUs.
-* **Software:** PyTorch 2.11.0+cu130, CUDA 13.0, NCCL 2.28.9,
-  NVIDIA driver 570.172.08.
-* **Benchmark:** 1 GiB BF16 broadcast, 300 seconds per configuration.
-* **NCCL:** default settings, with ``NCCL_DEBUG=INFO``.
+* **硬件：** 两个Cambrian 节点，每个节点配备8×NVIDIA H100 80GB GPU。
+* **软件：** PyTorch 2.11.0+cu130、CUDA 13.0、NCCL 2.28.9、NVIDIA 驱动570.172.08。
+* **基准：** 1 GiB BF16 broadcast，每个配置 300 秒。
+* **NCCL：** 默认设置，与 ``NCCL_DEBUG=INFO`` 。
 
-Single-sender baseline
-~~~~~~~~~~~~~~~~~~~~~~
+单发送者基线（Single-sender baseline）
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Run these commands from the repository root on each node. They launch one
-sender process on node 0 and eight receiver processes on node 1. Set
-``MASTER_ADDR`` to the sender node's address on both nodes, then run the
-corresponding command on each node. Each command uses ``--seconds 300`` to set
-the experiment duration.
+从每个节点上的存储库根运行这些命令。他们在节点 0 上启动一个发送方 process，在节点 1 上启动八个接收方 processes。将 Set ``MASTER_ADDR`` 发送到两个节点上的发送方节点地址，然后在每个节点上运行相应的命令。每个命令使用 ``--seconds 300`` 到 set 实验持续时间。
 
 .. code-block:: bash
 
-    # First node (node rank 0)
+    # 第一个节点（节点等级 0）
     export OMP_NUM_THREADS=1
     torchrun --standalone \
       --nproc-per-node=1 src/nccl/broadcast.py \
@@ -78,7 +56,7 @@ the experiment duration.
       --master-addr ${MASTER_ADDR} \
       --seconds 300
 
-    # Second node (node rank 1)
+    # 第二个节点（节点等级 1）
     export OMP_NUM_THREADS=1
     torchrun --standalone --nproc-per-node=8 \
       src/nccl/broadcast.py \
@@ -87,28 +65,25 @@ the experiment duration.
       --master-addr ${MASTER_ADDR} \
       --seconds 300
 
-The baseline achieves a median of **47.86 GB/s**, close to the 50 GB/s raw
-line rate of a 400 Gb/s port pair. All ranks pass the payload check.
+基线实现的中位数为 **47.86 GB/s** ，接近 400 Gb/s 端口对的 50 GB/s 原始线路速率。所有等级均通过有效载荷检查。
 
-The figure below is an earlier `rdmatop`_ capture illustrating traffic
-concentrated near the source GPU. For the Cambrian run reported here, NCCL's
-logs identify the source's virtual device as ``mlx5_11``. RDMA counters
-show bulk traffic split across those two 200 Gb/s ports while the remaining
-source-node ports are effectively idle.
+下图是早期的 `rdmatop`_ 捕获，说明流量集中在源 GPU 附近。对于此处报告的 Cambrian 运行，NCCL 的日志将源的虚拟设备识别为 ``mlx5_11`` 。 RDMA 计数器显示大量流量分布在这两个 200 Gb/s 端口上，而其余源节点端口实际上处于空闲状态。
 
-.. image:: https://raw.githubusercontent.com/crazyguitar/pysheeet/f27b131543e06feddec1f4af518ca8cb0dbfbc74/docs/_static/appendix/nccl/nccl-broadcast-0.gif
+.. image:: /_static/appendix/nccl/nccl-broadcast-0.gif
    :alt: RDMA NIC traffic on node 0 during the single-sender broadcast experiment.
 
-Eight ranks on the source node
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. admonition:: 图例
 
-For the second configuration, launch eight processes on both nodes and set
-``--sender-ranks 8`` on both commands. The payload size, measurement duration,
-and broadcast source remain the same.
+   Node0 与 Node1 表示节点 0 和节点 1；GPU 与 NIC 后的数字为设备编号，A、B、C 为传输数据标识，箭头表示数据传输方向。
+
+源节点上的八个 Ranks（Eight ranks on the source node）
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+对于第二种配置，在两个节点上启动八个 processes，并在两个命令上启动 set ``--sender-ranks 8`` 。有效负载大小、测量持续时间和 broadcast 源保持不变。
 
 .. code-block:: bash
 
-    # First node (node rank 0)
+    # 第一个节点（节点等级 0）
     export OMP_NUM_THREADS=1
     torchrun --standalone --nproc-per-node=8 \
       src/nccl/broadcast.py \
@@ -117,7 +92,7 @@ and broadcast source remain the same.
       --master-addr ${MASTER_ADDR} \
       --seconds 300
 
-    # Second node (node rank 1)
+    # 第二个节点（节点等级 1）
     export OMP_NUM_THREADS=1
     torchrun --standalone --nproc-per-node=8 \
       src/nccl/broadcast.py \
@@ -126,33 +101,32 @@ and broadcast source remain the same.
       --master-addr ${MASTER_ADDR} \
       --seconds 300
 
-.. image:: https://raw.githubusercontent.com/crazyguitar/pysheeet/f27b131543e06feddec1f4af518ca8cb0dbfbc74/docs/_static/appendix/nccl/nccl-broadcast-8.gif
+.. image:: /_static/appendix/nccl/nccl-broadcast-8.gif
    :alt: RDMA NIC traffic with eight participating GPU ranks on the source node.
 
-Results
-~~~~~~~
+.. admonition:: 图例
 
-Both experiments use one NCCL process group:
+   Node0 与 Node1 表示节点 0 和节点 1；GPU 与 NIC 后的数字为设备编号，A、B、C 为传输数据标识，箭头表示数据传输方向。
 
-* **1 → 8:** one group containing 9 GPU ranks.
-* **8 → 8:** one group containing 16 GPU ranks.
+结果（Results）
+~~~~~~~~~~~~~~~~~~~~~~
 
-Adding source-node ranks increases median broadcast throughput from
-**47.86 GB/s to 290.17 GB/s**, a **6.06x speedup**. This may seem
-counterintuitive: passing data through more processes introduces additional
-transfers. In this setup, however, distributing data across local GPUs over
-NVLink allows NCCL to use more NICs in parallel. The gain in aggregate network
-bandwidth outweighs the cost of those transfers.
+两个实验均使用一个 NCCL process 组：
 
-.. list-table:: Broadcast throughput for a 1 GiB payload
+* **1 → 8：** 一组，包含 9 个 GPU ranks。
+* **8 → 8：** 一组，包含 16 个 GPU ranks。
+
+添加源节点排名将 broadcast throughput 中位数从 **47.86 GB/s 增加到 290.17 GB/s**，即**6.06x加速** 。这似乎违反直觉：通过更多 processes 传递数据会引入额外的传输。然而，在此设置中，通过 NVLink 在本地 GPU 之间分配数据允许 NCCL 并行使用更多 NIC。聚合网络 bandwidth 的收益超过了这些传输的成本。
+
+.. list-table:: 1 GiB 有效负载的广播吞吐量（Broadcast throughput for a 1 GiB payload）
    :header-rows: 1
    :widths: 24 12 18 22 12
 
-   * - Source-node ranks
-     - Receiver ranks
-     - Median (GB/s)
-     - Range (GB/s)
-     - Speedup
+   * - 源节点排名
+     - 接球手排名
+     - 中值（GB/秒）
+     - Range (GB/秒)
+     - 加速比
    * - 1
      - 8
      - 47.86
@@ -164,14 +138,10 @@ bandwidth outweighs the cost of those transfers.
      - 282.12–290.39
      - 6.06x
 
-Conclusion
-----------
+结论（Conclusion）
+----------------------------
 
-In our experiments, including more source-node GPUs in one process group
-allows NCCL to use more NICs in parallel. For large payloads, the additional
-network bandwidth outweighs the overhead of local GPU transfers. This makes
-the approach useful for bulk transfers such as synchronizing model weights
-between training workers and rollout engines during GRPO.
+在我们的实验中，在一个 process 组中包含更多源节点 GPU 允许 NCCL 并行使用更多 NIC。对于大负载，额外的网络 bandwidth 超过本地 GPU 传输的开销。这使得该方法对于批量传输非常有用，例如在 GRPO 期间同步训练工作人员和推出引擎之间的模型权重。
 
 
 .. _Slime: https://github.com/THUDM/slime/blob/4c193f1f37509cca70f0e88807a9305b70f63f4e/slime/backends/megatron_utils/update_weight/update_weight_from_distributed.py#L348-L352

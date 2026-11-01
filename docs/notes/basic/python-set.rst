@@ -1,33 +1,28 @@
 .. meta::
-    :description lang=en: Python set cheat sheet covering set comprehensions, set operations (union, intersection, difference), removing duplicates, subsets, supersets, and frozenset with code examples
+    :description lang=zh_CN: Python set 速查表涵盖 set comprehensions、set 操作（并、交、差），删除重复项、子集、超集和 frozenset 以及代码示例
     :keywords: Python, Python3, Python set, Python set cheat sheet, set comprehension, set operations, union, intersection, difference, symmetric difference, frozenset, subset, superset
 
-===
-Set
-===
+==============
+集合（Set）
+==============
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-Sets are unordered collections of unique elements in Python. They provide O(1)
-average time complexity for membership testing and support mathematical set
-operations like union, intersection, and difference. This cheat sheet covers
-set comprehensions, common set operations, uniquifying lists, and the immutable
-frozenset type.
+Sets是Python中唯一的elements的无序collections。它们为成员资格测试提供 O(1) 平均时间复杂度，并支持数学 set 运算，例如并集、交集和差集。本速查表涵盖了 set comprehensions、常见 set 操作、唯一 lists 和 immutable frozenset type。
 
-The source code is available on `GitHub <https://github.com/crazyguitar/pysheeet/blob/master/src/basic/set.py>`_.
+源代码可在 `GitHub <https://github.com/crazyguitar/pysheeet/blob/master/src/basic/set.py>`_ 上获取。
 
-References
-----------
+参考资料（References）
+--------------------------------
 
 - `Set Types — set, frozenset <https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset>`_
 - `Sets <https://docs.python.org/3/tutorial/datastructures.html#sets>`_
 
-Create a Set
-------------
+创建一个集合（Create a Set）
+----------------------------------------
 
-Create sets using curly braces ``{}`` or the ``set()`` constructor. Note that
-empty curly braces ``{}`` create a dict, not a set.
+使用大括号 ``{}`` 或 ``set()`` 构造函数创建 sets。请注意，空花括号 ``{}`` 创建 dict，而不是 set。
 
 .. code-block:: python
 
@@ -37,15 +32,14 @@ empty curly braces ``{}`` create a dict, not a set.
     >>> s = set([1, 2, 2, 3])
     >>> s
     {1, 2, 3}
-    >>> empty = set()  # not {}
+    >>> empty = set()  # 不是 {}
     >>> type(empty)
     <class 'set'>
 
-Create Sets with Set Comprehension
-----------------------------------
+使用集合推导式创建集合（Create Sets with Set Comprehension）
+----------------------------------------------------------------------------------------------
 
-Like list comprehensions, set comprehensions provide a concise way to create sets.
-The syntax uses curly braces ``{}`` instead of square brackets.
+与 list comprehensions 一样，set comprehensions 提供了创建 sets 的简洁方法。该语法使用大括号 ``{}`` 而不是方括号。
 
 .. code-block:: python
 
@@ -60,11 +54,10 @@ The syntax uses curly braces ``{}`` instead of square brackets.
     >>> s
     {0, 1, 4, 9, 16}
 
-Remove Duplicates from a List
------------------------------
+从列表中删除重复项（Remove Duplicates from a List）
+--------------------------------------------------------------------------------
 
-Converting a list to a set automatically removes duplicate elements. This is one
-of the most common use cases for sets.
+将 list 转换为 set 会自动删除重复的 elements。这是 sets 最常见的用例之一。
 
 .. code-block:: python
 
@@ -72,7 +65,7 @@ of the most common use cases for sets.
     >>> list(set(a))
     [1, 2, 3, 4, 5]
 
-To preserve the original order, use ``dict.fromkeys()`` (Python 3.7+):
+要保留原始顺序，请使用 ``dict.fromkeys()`` (Python 3.7+)：
 
 .. code-block:: python
 
@@ -80,10 +73,10 @@ To preserve the original order, use ``dict.fromkeys()`` (Python 3.7+):
     >>> list(dict.fromkeys(a))
     [3, 1, 2]
 
-Add Items to a Set
-------------------
+向集合添加元素（Add Items to a Set）
+------------------------------------------------------
 
-Use ``add()`` to add a single element, or ``update()`` to add multiple elements.
+使用 ``add()`` 添加单个 element，或使用 ``update()`` 添加多个 elements。
 
 .. code-block:: python
 
@@ -94,15 +87,14 @@ Use ``add()`` to add a single element, or ``update()`` to add multiple elements.
     >>> s.update([5, 6, 7])
     >>> s
     {1, 2, 3, 4, 5, 6, 7}
-    >>> s |= {8, 9}  # same as update
+    >>> s |= {8, 9}  # 与更新相同
     >>> s
     {1, 2, 3, 4, 5, 6, 7, 8, 9}
 
-Remove Items from a Set
------------------------
+从集合移除元素（Remove Items from a Set）
+----------------------------------------------------------------
 
-Use ``remove()`` to remove an element (raises KeyError if not found), or
-``discard()`` to remove without error. Use ``pop()`` to remove an arbitrary element.
+使用 ``remove()`` 删除 element（如果未找到，则引发 KeyError），或使用 ``discard()`` 删除而不会出现错误。使用 ``pop()`` 删除任意 element。
 
 .. code-block:: python
 
@@ -110,18 +102,17 @@ Use ``remove()`` to remove an element (raises KeyError if not found), or
     >>> s.remove(3)
     >>> s
     {1, 2, 4, 5}
-    >>> s.discard(10)  # no error if not found
-    >>> s.pop()  # remove arbitrary element
+    >>> s.discard(10)  # 如果没有找到则没有错误
+    >>> s.pop()  # 删除任意element
     1
-    >>> s.clear()  # remove all
+    >>> s.clear()  # 全部删除
     >>> s
     set()
 
-Union with ``|`` Operator
--------------------------
+使用 ``|`` 运算符求并集（Union with ``|`` Operator）
+------------------------------------------------------------------------------------
 
-The union of two sets contains all elements from both sets. Use the ``|`` operator
-or the ``union()`` method.
+两个 sets 的并集包含来自两个 sets 的所有 elements。使用 ``|`` operator 或 ``union()`` method。
 
 .. code-block:: python
 
@@ -131,14 +122,13 @@ or the ``union()`` method.
     {1, 2, 3, 4, 5}
     >>> a.union(b)
     {1, 2, 3, 4, 5}
-    >>> a | b | {6, 7}  # multiple sets
+    >>> a | b | {6, 7}  # 多个 sets
     {1, 2, 3, 4, 5, 6, 7}
 
-Intersection with ``&`` Operator
---------------------------------
+使用 ``&`` 运算符求交集（Intersection with ``&`` Operator）
+--------------------------------------------------------------------------------------------------
 
-The intersection of two sets contains only elements that exist in both sets.
-Use the ``&`` operator or the ``intersection()`` method.
+两个sets的交集仅包含两个sets中都存在的elements。使用 ``&`` operator 或 ``intersection()`` method。
 
 .. code-block:: python
 
@@ -149,11 +139,10 @@ Use the ``&`` operator or the ``intersection()`` method.
     >>> a.intersection(b)
     {3, 4}
 
-Find Common Elements Between Lists
-----------------------------------
+查找列表之间的共同元素（Find Common Elements Between Lists）
+----------------------------------------------------------------------------------------------
 
-Finding common items between two lists is a practical application of set
-intersection.
+寻找两个lists之间的公共items是set交集的实际应用。
 
 .. code-block:: python
 
@@ -162,11 +151,10 @@ intersection.
     >>> list(set(a) & set(b))
     [3]
 
-Difference with ``-`` Operator
-------------------------------
+使用 ``-`` 运算符求差集（Difference with ``-`` Operator）
+----------------------------------------------------------------------------------------------
 
-The difference of two sets contains elements that are in the first set but not
-in the second. Use the ``-`` operator or the ``difference()`` method.
+两个 sets 的 difference 包含存在于第一个 set、但不存在于第二个 set 的 elements。使用 ``-`` operator 或 ``difference()`` method。
 
 .. code-block:: python
 
@@ -177,11 +165,10 @@ in the second. Use the ``-`` operator or the ``difference()`` method.
     >>> b - a
     {5, 6}
 
-Symmetric Difference with ``^`` Operator
-----------------------------------------
+使用 ``^`` 运算符的对称差（Symmetric Difference with ``^`` Operator）
+--------------------------------------------------------------------------------------------------------------------
 
-The symmetric difference contains elements that are in either set, but not in
-both. Use the ``^`` operator or the ``symmetric_difference()`` method.
+对称差异包含位于任一 set 中的 elements，但不在两者中。使用 ``^`` operator 或 ``symmetric_difference()`` method。
 
 .. code-block:: python
 
@@ -190,44 +177,42 @@ both. Use the ``^`` operator or the ``symmetric_difference()`` method.
     >>> a ^ b
     {1, 2, 4, 5}
 
-Check Subset with ``<=`` Operator
----------------------------------
+使用 ``<=`` 运算符检查子集（Check Subset with ``<=`` Operator）
+--------------------------------------------------------------------------------------------------------
 
-Use ``<=`` or ``issubset()`` to check if all elements of one set are in another.
-Use ``<`` for proper subset (subset but not equal).
+使用 ``<=`` 或 ``issubset()`` 检查一个set的所有elements是否在另一个中。使用 ``<`` 为真子集（子集但不相等）。
 
 .. code-block:: python
 
     >>> a = {1, 2}
     >>> b = {1, 2, 3, 4}
-    >>> a <= b  # a is subset of b
+    >>> a <= b  # a 是 b 的子集
     True
-    >>> a < b   # a is proper subset
+    >>> a < b   # a 是真子集
     True
-    >>> a <= a  # equal sets
+    >>> a <= a  # 等于 sets
     True
-    >>> a < a   # not proper subset
+    >>> a < a   # 不是真子集
     False
 
-Check Superset with ``>=`` Operator
------------------------------------
+使用 ``>=`` 运算符检查超集（Check Superset with ``>=`` Operator）
+------------------------------------------------------------------------------------------------------------
 
-Use ``>=`` or ``issuperset()`` to check if a set contains all elements of another.
+使用 ``>=`` 或 ``issuperset()`` 检查一个 set 是否包含另一个 set 的全部 elements。
 
 .. code-block:: python
 
     >>> a = {1, 2, 3, 4}
     >>> b = {1, 2}
-    >>> a >= b  # a is superset of b
+    >>> a >= b  # a 是 b 的超集
     True
-    >>> a > b   # a is proper superset
+    >>> a > b   # a 是真超集
     True
 
-Check Disjoint Sets
--------------------
+检查不相交集（Check Disjoint Sets）
+------------------------------------------------------
 
-Two sets are disjoint if they have no elements in common. Use ``isdisjoint()``
-to check.
+如果两个 sets 没有共同的 elements，则它们是不相交的。使用 ``isdisjoint()`` 进行检查。
 
 .. code-block:: python
 
@@ -239,11 +224,10 @@ to check.
     >>> a.isdisjoint(c)
     False
 
-Membership Testing
-------------------
+成员关系测试（Membership Testing）
+----------------------------------------------------
 
-Sets provide O(1) average time complexity for membership testing, making them
-much faster than lists for this operation.
+Sets 为成员资格测试提供 O(1) 平均时间复杂度，使其比 lists 执行此操作要快得多。
 
 .. code-block:: python
 
@@ -255,21 +239,20 @@ much faster than lists for this operation.
     >>> 10 not in s
     True
 
-Frozenset - Immutable Set
--------------------------
+Frozenset - 不可变集（Frozenset - Immutable Set）
+--------------------------------------------------------------------------------------
 
-``frozenset`` is an immutable version of set. It can be used as a dictionary key
-or as an element of another set.
+``frozenset`` 是 set 的 immutable 版本。它可以用作 dictionary key 或用作另一个 set 的 element。
 
 .. code-block:: python
 
     >>> fs = frozenset([1, 2, 3])
     >>> fs
     frozenset({1, 2, 3})
-    >>> fs.add(4)  # raises AttributeError
+    >>> fs.add(4)  # 引发属性错误
     AttributeError: 'frozenset' object has no attribute 'add'
 
-Use frozenset as dictionary key:
+使用 frozenset 作为 dictionary key：
 
 .. code-block:: python
 
@@ -277,7 +260,7 @@ Use frozenset as dictionary key:
     >>> d[frozenset([1, 2])]
     'a'
 
-Use frozenset in a set:
+在 set 中使用 frozenset：
 
 .. code-block:: python
 
@@ -285,37 +268,37 @@ Use frozenset in a set:
     >>> frozenset([1, 2]) in s
     True
 
-Set Operations Summary
-----------------------
+集合操作总结（Set Operations Summary）
+------------------------------------------------------------
 
 .. code-block:: python
 
-    # Creation
+    # 创建
     s = {1, 2, 3}           # literal
-    s = set([1, 2, 3])      # from iterable
+    s = set([1, 2, 3])      # 来自 iterable
     s = {x for x in range(5)}  # comprehension
 
-    # Add/Remove
-    s.add(x)                # add single element
-    s.update([x, y])        # add multiple elements
-    s.remove(x)             # remove (KeyError if missing)
-    s.discard(x)            # remove (no error if missing)
-    s.pop()                 # remove arbitrary element
-    s.clear()               # remove all
+    # 添加/删除
+    s.add(x)                # 添加单个element
+    s.update([x, y])        # 添加多个elements
+    s.remove(x)             # 删除（如果丢失则出现KeyError）
+    s.discard(x)            # 删除（如果丢失则不会出错）
+    s.pop()                 # 删除任意element
+    s.clear()               # 全部删除
 
-    # Set Operations
-    a | b                   # union
-    a & b                   # intersection
-    a - b                   # difference
-    a ^ b                   # symmetric difference
+    # Set 操作
+    a | b                   # 联盟
+    a & b                   # 路口
+    a - b                   # 不同之处
+    a ^ b                   # 对称差异
 
-    # Comparisons
-    a <= b                  # subset
-    a < b                   # proper subset
-    a >= b                  # superset
-    a > b                   # proper superset
-    a.isdisjoint(b)         # no common elements
+    # 比较
+    a <= b                  # 子集
+    a < b                   # 真子集
+    a >= b                  # 超集
+    a > b                   # 真超集
+    a.isdisjoint(b)         # 不常见 elements
 
-    # Membership
-    x in s                  # O(1) lookup
+    # 会员资格
+    x in s                  # O(1) 查找
     x not in s

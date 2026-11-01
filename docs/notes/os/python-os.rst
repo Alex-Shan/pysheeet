@@ -1,244 +1,222 @@
 .. meta::
-    :description lang=en: Python operating system interface tutorial covering file operations, process management, environment variables, path manipulation, system information, and cross-platform OS interactions
+    :description lang=zh_CN: Python操作系统界面教程，涵盖文件操作、process管理、环境variables、路径操作、系统信息和跨平台OS交互
     :keywords: Python, os module, operating system, file system, process, environment variables, path, directory, subprocess, platform, system info, CPU, memory
 
-================
-Operating System
-================
+============================================
+操作系统（Operating System）
+============================================
 
 :Source: `src/basic/os_.py <https://github.com/crazyguitar/pysheeet/blob/master/src/basic/os_.py>`_
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-Python's ``os`` module provides a portable way to interact with the operating system,
-abstracting platform-specific details behind a consistent API. Whether you're managing
-files and directories, spawning processes, reading environment variables, or querying
-system information, the ``os`` module handles the differences between Windows, Linux,
-and macOS. For path manipulation, the ``os.path`` submodule (or the modern ``pathlib``)
-provides cross-platform path handling. This cheat sheet covers common OS operations
-with practical examples.
+Python 的 ``os`` module 提供了一种与操作系统交互的便携式方式，在一致的 API 后面抽象出平台特定的细节。无论您是管理文件和目录、生成 processes、读取环境 variables 还是查询系统信息， ``os`` module 都能处理 Windows、Linux 和 macOS 之间的差异。对于路径操作， ``os.path`` 子模块（或现代 ``pathlib`` ）提供跨平台路径处理。本速查表涵盖了常见的 OS 操作和实际示例。
 
-Get System Information
-----------------------
+获取系统信息（Get System Information）
+------------------------------------------------------------
 
-Retrieve basic information about the operating system, platform, and current process.
-These functions are useful for writing cross-platform code that adapts to the runtime
-environment.
+检索有关操作系统、平台和当前 process 的基本信息。这些 functions 对于编写适应运行时环境的跨平台代码很有用。
 
 .. code-block:: python
 
     import os
     import platform
 
-    # Operating system name
-    os.name                    # 'posix' (Linux/macOS) or 'nt' (Windows)
+    # 操作系统名称
+    os.name                    # 'posix' (Linux/macOS) 或 'nt' (Windows)
 
-    # Platform details
-    platform.system()          # 'Linux', 'Darwin', 'Windows'
-    platform.release()         # '5.15.0-generic', '22.1.0', '10'
-    platform.machine()         # 'x86_64', 'arm64', 'AMD64'
-    platform.processor()       # 'x86_64', 'arm', ''
+    # 平台详情
+    platform.system()          # 'Linux'、'Darwin'、'Windows'
+    platform.release()         # '5.15.0-generic'、'22.1.0'、'10'
+    platform.machine()         # 'x86_64'、'arm64'、'AMD64'
+    platform.processor()       # 'x86_64'，'arm'，''
     platform.python_version()  # '3.12.0'
 
-    # Current process
+    # 当前process
     os.getpid()               # Process ID
-    os.getppid()              # Parent process ID
-    os.getcwd()               # Current working directory
-    os.getlogin()             # Current username
+    os.getppid()              # 母体 process ID
+    os.getcwd()               # 当前工作目录
+    os.getlogin()             # 当前用户名
 
-Get Number of CPUs
-------------------
+获取CPU数量（Get Number of CPUs）
+------------------------------------------------------
 
-Determine the number of CPU cores available for parallel processing. This is essential
-for configuring thread pools, multiprocessing workers, or understanding system capacity.
-Note that ``cpu_count()`` returns logical cores (including hyperthreading), not physical
-cores.
+确定可用于并行处理的 CPU 内核的数量。这对于配置 thread pools、multiprocessing 工作线程或了解系统容量至关重要。请注意， ``cpu_count()`` 返回逻辑核心（包括超线程），而不是物理核心。
 
 .. code-block:: python
 
     import os
 
-    # Number of logical CPUs
+    # 逻辑CPU数量
     cpu_count = os.cpu_count()
-    print(f"CPUs: {cpu_count}")  # CPUs: 8
+    print(f"CPUs: {cpu_count}")  # CPU：8
 
-    # For physical cores (Linux only)
+    # 对于物理内核（仅限 Linux）
     # cat /proc/cpuinfo | grep "cpu cores" | uniq
 
-Set CPU Affinity
-----------------
+设置 CPU 亲和力（Set CPU Affinity）
+--------------------------------------------------------
 
-CPU affinity binds a process to specific CPU cores, useful for performance optimization,
-reducing cache misses, or isolating workloads. This feature is Linux-specific and not
-available on macOS or Windows through the ``os`` module.
+CPU 亲和力将 process 绑定到特定的 CPU 内核，可用于性能优化、减少 cache 缺失或隔离工作负载。此功能是 Linux 特定的，在 macOS 或 Windows 上通过 ``os`` module 不可用。
 
 .. code-block:: python
 
     import os
 
-    # Linux only - set process to run on specific CPUs
+    # 仅 Linux - set process 在特定 CPU 上运行
     pid = os.getpid()
-    affinity = {0, 1}  # Run on CPU 0 and 1 only
+    affinity = {0, 1}  # 仅在 CPU 0 和 1 上运行
     os.sched_setaffinity(pid, affinity)
 
-    # Get current affinity
+    # 获取当前亲和力
     current = os.sched_getaffinity(pid)
-    print(f"Running on CPUs: {current}")  # Running on CPUs: {0, 1}
+    print(f"Running on CPUs: {current}")  # 在 CPU 上运行：{0, 1}
 
-Environment Variables
----------------------
+环境变量（Environment Variables）
+------------------------------------------------------
 
-Environment variables store configuration that persists across process invocations.
-Use ``os.environ`` as a dictionary to read, set, or delete variables. Changes only
-affect the current process and its children, not the parent shell.
+环境 variables 存储在 process 调用期间持续存在的配置。使用 ``os.environ`` 作为dictionary来读取set或删除variables。更改仅影响当前 process 及其子项，而不影响父项 shell。
 
 .. code-block:: python
 
     import os
 
-    # Read environment variable
-    home = os.environ.get('HOME')           # Returns None if not set
-    path = os.environ['PATH']               # Raises KeyError if not set
-    debug = os.getenv('DEBUG', 'false')     # With default value
+    # 读取环境 variable
+    home = os.environ.get('HOME')           # 如果不是 set，则返回 None
+    path = os.environ['PATH']               # 如果不是 set，则引发 KeyError
+    debug = os.getenv('DEBUG', 'false')     # 默认为value
 
-    # Set environment variable
+    # Set 环境 variable
     os.environ['MY_VAR'] = 'my_value'
 
-    # Delete environment variable
+    # 删除环境variable
     del os.environ['MY_VAR']
-    os.unsetenv('MY_VAR')  # Alternative
+    os.unsetenv('MY_VAR')  # 选择
 
-    # List all environment variables
+    # List 全环境 variables
     for key, value in os.environ.items():
         print(f"{key}={value}")
 
-Path Operations
----------------
+路径操作（Path Operations）
+------------------------------------------
 
-Path manipulation is one of the most common OS tasks. The ``os.path`` module provides
-cross-platform functions that handle path separators (``/`` vs ``\``) automatically.
-For modern Python (3.4+), consider using ``pathlib`` for an object-oriented approach.
+路径操作是最常见的 OS 任务之一。 ``os.path`` module 提供跨平台 functions，可自动处理路径分隔符（ ``/`` 与 ``\`` ）。对于现代 Python (3.4+)，请考虑使用 ``pathlib`` 进行面向 object 的方法。
 
 .. code-block:: python
 
     import os
 
-    # Join paths (handles separators automatically)
+    # 连接路径（自动处理分隔符）
     path = os.path.join('/home', 'user', 'file.txt')
     # Linux: '/home/user/file.txt'
     # Windows: '\\home\\user\\file.txt'
 
-    # Split path components
+    # 分割路径组件
     dirname = os.path.dirname('/home/user/file.txt')   # '/home/user'
     basename = os.path.basename('/home/user/file.txt') # 'file.txt'
-    name, ext = os.path.splitext('file.txt')           # ('file', '.txt')
+    name, ext = os.path.splitext('file.txt')           # ('file'、'.txt')
 
-    # Absolute and relative paths
-    abs_path = os.path.abspath('.')           # Full path
-    rel_path = os.path.relpath('/home/user')  # Relative to cwd
-    real_path = os.path.realpath('link')      # Resolve symlinks
+    # 绝对路径和相对路径
+    abs_path = os.path.abspath('.')           # 完整路径
+    rel_path = os.path.relpath('/home/user')  # 相对于cwd
+    real_path = os.path.realpath('link')      # 解析符号链接
 
-    # Path checks
-    os.path.exists('/path/to/file')    # True if exists
-    os.path.isfile('/path/to/file')    # True if regular file
-    os.path.isdir('/path/to/dir')      # True if directory
-    os.path.islink('/path/to/link')    # True if symbolic link
+    # 路径检查
+    os.path.exists('/path/to/file')    # True 如果存在
+    os.path.isfile('/path/to/file')    # True 如果是常规文件
+    os.path.isdir('/path/to/dir')      # True 如果目录
+    os.path.islink('/path/to/link')    # True 如果是符号链接
 
-    # Path info
-    os.path.getsize('/path/to/file')   # Size in bytes
-    os.path.getmtime('/path/to/file')  # Modification time (timestamp)
+    # 路径信息
+    os.path.getsize('/path/to/file')   # 尺寸为 bytes
+    os.path.getmtime('/path/to/file')  # 修改时间（时间戳）
 
-Directory Operations
---------------------
+目录操作（Directory Operations）
+----------------------------------------------------
 
-Create, remove, and navigate directories. These operations are fundamental for file
-management, build systems, and data processing pipelines.
+创建、删除和导航目录。这些操作是文件管理、构建系统和数据处理管道的基础。
 
 .. code-block:: python
 
     import os
 
-    # Create directory
-    os.mkdir('new_dir')                    # Single directory
-    os.makedirs('path/to/new_dir')         # Create parent dirs too
-    os.makedirs('path/to/dir', exist_ok=True)  # Don't error if exists
+    # 创建目录
+    os.mkdir('new_dir')                    # 单一目录
+    os.makedirs('path/to/new_dir')         # 也创建父目录
+    os.makedirs('path/to/dir', exist_ok=True)  # 如果存在则不报错
 
-    # Remove directory
-    os.rmdir('empty_dir')                  # Must be empty
+    # 删除目录
+    os.rmdir('empty_dir')                  # 必须为空
     # For non-empty: use shutil.rmtree()
 
-    # Change directory
+    # 更改目录
     os.chdir('/path/to/dir')
-    print(os.getcwd())                     # Print current directory
+    print(os.getcwd())                     # 打印当前目录
 
-    # List directory contents
-    entries = os.listdir('.')              # List of names
+    # List 目录内容
+    entries = os.listdir('.')              # 名称 List
     for entry in entries:
         print(entry)
 
-    # Walk directory tree
+    # 遍历目录树
     for root, dirs, files in os.walk('.'):
         for file in files:
             path = os.path.join(root, file)
             print(path)
 
-File Operations
----------------
+文件操作（File Operations）
+------------------------------------------
 
-Low-level file operations using file descriptors. For most use cases, Python's built-in
-``open()`` function is preferred, but ``os`` functions are useful for special cases like
-non-blocking I/O or when you need precise control over file descriptors.
+使用 file descriptors 进行低级文件操作。对于大多数用例，Python 的内置 ``open()`` function 是首选，但 ``os`` functions 对于非阻塞 I/O 等特殊情况或需要精确控制 file descriptors 时非常有用。
 
 .. code-block:: python
 
     import os
 
-    # Rename/move file
+    # 重命名/移动文件
     os.rename('old_name.txt', 'new_name.txt')
-    os.replace('src.txt', 'dst.txt')  # Atomic, overwrites dst
+    os.replace('src.txt', 'dst.txt')  # 原子，覆盖 dst
 
-    # Remove file
+    # 删除文件
     os.remove('file.txt')
-    os.unlink('file.txt')  # Same as remove
+    os.unlink('file.txt')  # 与删除相同
 
-    # File permissions (Unix)
-    os.chmod('file.txt', 0o644)  # rw-r--r--
-    os.chown('file.txt', uid, gid)  # Change owner
+    # 文件权限（Unix）
+    os.chmod('file.txt', 0o644)  # RW-R--R--
+    os.chown('file.txt', uid, gid)  # 改变所有者
 
-    # Create symbolic link
+    # 创建符号链接
     os.symlink('target', 'link_name')
 
-    # Low-level file operations
+    # 低级文件操作
     fd = os.open('file.txt', os.O_RDONLY)
-    data = os.read(fd, 1024)  # Read up to 1024 bytes
+    data = os.read(fd, 1024)  # 最多读取 1024 bytes
     os.close(fd)
 
-Execute Commands
-----------------
+执行命令（Execute Commands）
+--------------------------------------------
 
-Run external commands and programs. For simple cases, ``os.system()`` works, but
-``subprocess`` module is recommended for more control over input/output and error
-handling.
+运行外部命令和程序。对于简单情况， ``os.system()`` 可以工作，但建议使用 ``subprocess`` module 来更好地控制输入/输出和错误处理。
 
 .. code-block:: python
 
     import os
     import subprocess
 
-    # Simple command (returns exit code)
+    # 简单命令（返回exit code）
     exit_code = os.system('ls -la')
 
-    # Better: use subprocess
+    # 更好：使用子流程
     result = subprocess.run(['ls', '-la'], capture_output=True, text=True)
     print(result.stdout)
     print(result.returncode)
 
-    # Run and capture output
+    # 运行并捕获输出
     output = subprocess.check_output(['date'], text=True)
     print(output.strip())
 
-    # Run with input
+    # 带输入运行
     result = subprocess.run(
         ['grep', 'pattern'],
         input='line1\npattern here\nline3',
@@ -246,147 +224,141 @@ handling.
         text=True
     )
 
-Process Management
-------------------
+进程管理（Process Management）
+------------------------------------------------
 
-Create and manage child processes. The ``os.fork()`` function is Unix-specific; for
-cross-platform process creation, use the ``multiprocessing`` module instead.
+创建并管理子 processes。 ``os.fork()`` function 是 Unix 特定的；对于跨平台 process 创建，请改用 ``multiprocessing`` module。
 
 .. code-block:: python
 
     import os
 
-    # Fork process (Unix only)
+    # Fork process（仅限 Unix）
     pid = os.fork()
     if pid == 0:
-        # Child process
+        # 儿童 process
         print(f"Child PID: {os.getpid()}")
         os._exit(0)
     else:
-        # Parent process
+        # 母体 process
         print(f"Parent PID: {os.getpid()}, Child PID: {pid}")
-        os.waitpid(pid, 0)  # Wait for child
+        os.waitpid(pid, 0)  # 等孩子
 
-    # Execute new program (replaces current process)
+    # 执行新程序（替换当前的process）
     # os.execv('/bin/ls', ['ls', '-la'])
 
-    # Send signal to process
+    # 发送信号至process
     os.kill(pid, signal.SIGTERM)
 
-Temporary Files
----------------
+临时文件（Temporary Files）
+------------------------------------------
 
-Create temporary files and directories that are automatically cleaned up. The
-``tempfile`` module provides secure, cross-platform temporary file handling.
+创建自动清理的临时文件和目录。 ``tempfile`` module 提供安全、跨平台的临时文件处理。
 
 .. code-block:: python
 
     import tempfile
     import os
 
-    # Temporary file (auto-deleted when closed)
+    # 临时文件（关闭时自动删除）
     with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
         f.write('temporary data')
         temp_path = f.name
     print(f"Temp file: {temp_path}")
     os.unlink(temp_path)  # Manual cleanup if delete=False
 
-    # Temporary directory
+    # 临时目录
     with tempfile.TemporaryDirectory() as tmpdir:
         temp_file = os.path.join(tmpdir, 'file.txt')
         with open(temp_file, 'w') as f:
             f.write('data')
-        # Directory and contents deleted after with block
+        # 使用块后删除的目录和内容
 
-    # Get temp directory path
-    print(tempfile.gettempdir())  # /tmp or C:\Users\...\Temp
+    # 获取临时目录路径
+    print(tempfile.gettempdir())  # /tmp 或 C:\Users\...\Temp
 
-Using pathlib (Modern Alternative)
-----------------------------------
+使用pathlib（现代替代方案）（Using pathlib (Modern Alternative)）
+----------------------------------------------------------------------------------------------------------
 
-The ``pathlib`` module (Python 3.4+) provides an object-oriented interface to paths,
-making code more readable and less error-prone than string-based ``os.path`` operations.
+``pathlib`` module (Python 3.4+) 提供面向 object 的路径接口，使代码比基于 string 的 ``os.path`` 操作更具可读性且不易出错。
 
 .. code-block:: python
 
     from pathlib import Path
 
-    # Create path objects
+    # 创建路径 objects
     p = Path('/home/user/file.txt')
-    p = Path.home() / 'documents' / 'file.txt'  # Use / operator
+    p = Path.home() / 'documents' / 'file.txt'  # 使用/operator
 
-    # Path components
+    # 路径组件
     p.name          # 'file.txt'
     p.stem          # 'file'
     p.suffix        # '.txt'
     p.parent        # Path('/home/user')
-    p.parts         # ('/', 'home', 'user', 'file.txt')
+    p.parts         # （'/'、'home'、'user'、'file.txt'）
 
-    # Path checks
+    # 路径检查
     p.exists()
     p.is_file()
     p.is_dir()
 
-    # Read/write files
+    # 读/写文件
     content = p.read_text()
     p.write_text('new content')
     data = p.read_bytes()
 
-    # Directory operations
+    # 目录操作
     Path('new_dir').mkdir(parents=True, exist_ok=True)
     for child in Path('.').iterdir():
         print(child)
 
-    # Glob patterns
+    # 全局模式
     for py_file in Path('.').glob('**/*.py'):
         print(py_file)
 
 
-System Monitoring with psutil
------------------------------
+使用 psutil 进行系统监控（System Monitoring with psutil）
+----------------------------------------------------------------------------------------------
 
-The ``psutil`` (process and system utilities) library provides cross-platform access
-to system monitoring data that isn't available through the standard ``os`` module.
-It covers CPU, memory, disk, network, and process information. Install with
-``pip install psutil``.
+``psutil`` （process 和系统实用程序）library 提供对系统监控数据的跨平台访问，这是通过标准 ``os`` module 无法获得的。它涵盖了 CPU、内存、磁盘、网络和 process 信息。使用 ``pip install psutil`` 安装。
 
 .. code-block:: python
 
     import psutil
 
-    # CPU information
-    psutil.cpu_count()                    # Logical CPUs
-    psutil.cpu_count(logical=False)       # Physical cores
-    psutil.cpu_percent(interval=1)        # CPU usage %
-    psutil.cpu_percent(percpu=True)       # Per-CPU usage
-    psutil.cpu_freq()                     # CPU frequency
+    # CPU信息
+    psutil.cpu_count()                    # 逻辑CPU
+    psutil.cpu_count(logical=False)       # 物理核心
+    psutil.cpu_percent(interval=1)        # CPU 使用率%
+    psutil.cpu_percent(percpu=True)       # 每个 CPU 的使用情况
+    psutil.cpu_freq()                     # CPU频率
 
-    # Memory information
+    # 内存信息
     mem = psutil.virtual_memory()
-    mem.total                             # Total RAM in bytes
-    mem.available                         # Available RAM
-    mem.percent                           # Usage percentage
-    mem.used                              # Used RAM
+    mem.total                             # bytes 中的总计 RAM
+    mem.available                         # 可用 RAM
+    mem.percent                           # 使用百分比
+    mem.used                              # 二手 RAM
 
-    # Swap memory
+    # 交换内存
     swap = psutil.swap_memory()
     swap.total, swap.used, swap.percent
 
-    # Disk information
-    psutil.disk_partitions()              # List partitions
+    # 磁盘信息
+    psutil.disk_partitions()              # List 分区
     usage = psutil.disk_usage('/')
     usage.total, usage.used, usage.percent
 
-    # Network information
-    psutil.net_io_counters()              # Bytes sent/received
-    psutil.net_connections()              # Active connections
-    psutil.net_if_addrs()                 # Interface addresses
+    # 网络信息
+    psutil.net_io_counters()              # Bytes 发送/接收
+    psutil.net_connections()              # 活跃连接数
+    psutil.net_if_addrs()                 # 接口地址
 
-    # Process information
+    # Process信息
     for proc in psutil.process_iter(['pid', 'name', 'cpu_percent']):
         print(proc.info)
 
-    # Current process
+    # 当前process
     p = psutil.Process()
     p.pid
     p.name()
@@ -394,6 +366,6 @@ It covers CPU, memory, disk, network, and process information. Install with
     p.memory_info()
     p.num_threads()
 
-    # System boot time
+    # 系统启动时间
     import datetime
     boot = datetime.datetime.fromtimestamp(psutil.boot_time())

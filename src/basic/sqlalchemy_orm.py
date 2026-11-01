@@ -25,7 +25,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from datetime import datetime
 
 # ============================================================================
-# SQLAlchemy ORM Tests
+# SQLAlchemy ORM 测试
 # ============================================================================
 
 

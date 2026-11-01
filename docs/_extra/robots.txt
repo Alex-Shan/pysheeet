@@ -1,7 +1,7 @@
 User-agent: *
-Disallow: /_sources/
-Disallow: /search.html
-Disallow: /genindex.html
-Disallow: /404.html
-Allow: /
-Sitemap: https://www.pythonsheets.com/sitemap.xml
+Disallow: /pysheeet/_sources/
+Disallow: /pysheeet/search.html
+Disallow: /pysheeet/genindex.html
+Disallow: /pysheeet/404.html
+Allow: /pysheeet/
+Sitemap: https://alex-shan.github.io/pysheeet/sitemap.xml

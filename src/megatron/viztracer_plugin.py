@@ -20,18 +20,18 @@ import torch
 from megatron.bridge.training import profiling as _profiling
 from megatron.bridge.training.config import ProfilingConfig
 
-# Store original functions
+# 专卖店原装functions
 _orig_handle_step = _profiling.handle_profiling_step
 _orig_handle_stop = _profiling.handle_profiling_stop
 
-# Global viztracer instance per rank
+# 每个等级的全球 viztracer instance
 _viztracer_instance: Optional[object] = None
 
 
 def _patched_handle_step(config, iteration, rank, pytorch_prof):
     global _viztracer_instance
 
-    # Delegate to original for nsys/pytorch
+    # 委托给 nsys/pytorch 的原件
     result = _orig_handle_step(config, iteration, rank, pytorch_prof)
     if result is not None:
         return result
@@ -83,14 +83,14 @@ def install():
     """Monkey-patch profiling hooks and extend ProfilingConfig."""
     import dataclasses
 
-    # Register use_viztracer as a real dataclass field so OmegaConf recognizes it
+    # 将 use_viztracer 注册为真实的数据类字段，以便 OmegaConf 识别它
     f = dataclasses.field(default=False)
     f.name = "use_viztracer"
     f._field_type = dataclasses._FIELD
     ProfilingConfig.__dataclass_fields__["use_viztracer"] = f
     ProfilingConfig.use_viztracer = False
 
-    # Patch the original finalize to accept viztracer
+    # 修补原始定稿以接受 viztracer
     _orig_finalize = ProfilingConfig.finalize
 
     def _patched_finalize(self):
@@ -103,6 +103,6 @@ def install():
 
     ProfilingConfig.finalize = _patched_finalize
 
-    # Patch profiling hooks
+    # 贴片 profiling 挂钩
     _profiling.handle_profiling_step = _patched_handle_step
     _profiling.handle_profiling_stop = _patched_handle_stop

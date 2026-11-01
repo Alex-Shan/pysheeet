@@ -1,6 +1,6 @@
 #!/bin/bash
-# Launch Megatron Bridge recipe inside enroot container via srun + pyxis
-# Usage: salloc -N 2 ./srun.sh recipes/deepseek_v2_lite_pretrain.py [overrides...]
+# 通过 srun + pyxis 在 enroot 容器内启动 Megatron Bridge 配方
+# 用法： salloc -N 2 ./srun.sh Recipes/deepseek_v2_lite_pretrain.py [覆盖...]
 # Example: salloc -N 2 ./srun.sh recipes/deepseek_v2_lite_pretrain.py model.tensor_model_parallel_size=4
 
 set -exo pipefail
@@ -11,7 +11,7 @@ MOUNT="${MOUNT:-${DIR}:/workspace/megatron,/fsx:/fsx}"
 GPUS_PER_NODE="${GPUS_PER_NODE:-8}"
 ENABLE_NSYS=false
 
-# Parse flags before recipe arg
+# 在配方参数之前解析标志
 while [[ "${1:-}" == --* ]]; do
   case "$1" in
   --nsys)

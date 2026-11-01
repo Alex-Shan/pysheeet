@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- 编码：utf-8 -*-
 """This is a simple cheatsheet webapp."""
 
 import os
@@ -21,16 +21,16 @@ from werkzeug.utils import safe_join
 DIR = os.path.dirname(os.path.realpath(__file__))
 ROOT = os.path.join(DIR, "docs", "_build", "html")
 
-# Pysheeet was historically hosted on Read the Docs, which uses
-# /en/<slug>/<path> URLs (latest, stable, vX.Y.Z, master). The current flat
-# Heroku origin 404s those. Redirect them to the canonical flat URL so Google
-# can drop them from the index cleanly instead of 404-churning.
+# Pysheeet 历史上托管在 Read the Docs 上，它使用
+# /en/<slug>/<path> URLs（最新、稳定、vX.Y.Z、主版）。目前的单位
+# Heroku 起源 404s 那些。将它们重定向到规范平面 URL，以便 Google
+# 可以干净地从 index 上删除它们，而不是 404 搅动。
 _LEGACY_RTD_PATH = re.compile(r"^en/[^/]+/(.+)$")
 
-# Pre-restructure docs lived at flat paths like /notes/python-typing.html or
-# /appendix/python-walrus.html. The 2024-2026 reorg moved them under section
-# subdirectories (e.g. /notes/basic/python-typing.html), but Google still
-# indexes the legacy URLs. Map them explicitly to the current location.
+# 预重组文档位于 /notes/python-typing.html 等平坦路径或
+# /附录/python-walrus.html。 2024-2026 年重组将其移至部分
+# 子目录（e.g./notes/basic/python-typing.html），但Google仍然
+# indexes 旧版 URLs。将它们显式映射到当前位置。
 _LEGACY_FLAT_REDIRECTS = {
     "notes/python-basic.html": "notes/basic/python-basic.html",
     "notes/python-dict.html": "notes/basic/python-dict.html",
@@ -76,8 +76,8 @@ _LEGACY_FLAT_REDIRECTS = {
     "notes/pytorch/distributed.html": "notes/llm/pytorch.html",
     "notes/pytorch/index.html": "notes/llm/index.html",
     "notes/pytorch/slurm.html": "notes/hpc/slurm.html",
-    # Intermediate restructuring steps (container/ iteration/ string/ →
-    # basic/, cryptography/ → security/, io/ → os/ or network/).
+    # 中间重组步骤（容器/ iteration/ string/ →
+    # 基本/、密码学/ → 安全/、io/ → 操作系统/ 或网络/）。
     "notes/container/index.html": "notes/basic/index.html",
     "notes/container/python-dict.html": "notes/basic/python-dict.html",
     "notes/container/python-heap.html": "notes/basic/python-heap.html",
@@ -98,29 +98,29 @@ _LEGACY_FLAT_REDIRECTS = {
     "notes/io/index.html": "notes/os/index.html",
     "notes/io/python-io.html": "notes/os/python-io.html",
     "notes/io/python-socket.html": "notes/network/python-socket.html",
-    # python-socket lived briefly under os/ before moving to network/.
+    # python-socket 在移动到 network/ 之前曾在 os/ 下短暂生活过。
     "notes/os/python-socket.html": "notes/network/python-socket.html",
-    # python-ssh lived briefly under security/ before moving to network/.
+    # python-ssh 在转移到网络/之前在安全/下短暂生活。
     "notes/security/python-ssh.html": "notes/network/python-ssh.html",
-    # vllm/sglang split was later consolidated into generic llm-bench/serving.
+    # vllm/sglang 拆分后来合并为通用 llm 工作台/服务。
     "notes/llm/distributed.html": "notes/llm/pytorch.html",
     "notes/llm/sglang-bench.html": "notes/llm/llm-bench.html",
     "notes/llm/sglang-serving.html": "notes/llm/llm-serving.html",
     "notes/llm/vllm-bench.html": "notes/llm/llm-bench.html",
     "notes/llm/vllm-serving.html": "notes/llm/llm-serving.html",
-    # Nested appendix paths (the unprefixed appendix/* keys above cover the
-    # original RTD-flat form; these handle the post-rename location).
+    # 嵌套附录路径（上面无前缀的附录/* keys 覆盖了
+    # 原装RTD-扁平形式；这些处理重命名后的位置）。
     "notes/appendix/python-asyncio.html": (
         "notes/asyncio/python-asyncio-guide.html"
     ),
     "notes/appendix/python-concurrent.html": ("notes/concurrency/index.html"),
     "notes/appendix/python-decorator.html": "index.html",
-    # c-extensions was renamed to cext-modern.
+    # c-extensions 更名为 cext-modern。
     "notes/extension/python-c-extensions.html": (
         "notes/extension/python-cext-modern.html"
     ),
-    # Pages deleted without a direct replacement go to the root index so
-    # Google drops them via a 301 chain instead of holding the 404s.
+    # 没有直接替换而删除的页面转到根 index 所以
+    # Google 通过 301 链丢弃它们，而不是保留 404。
     "notes/python-aws.html": "index.html",
     "notes/python-cstyle.html": "index.html",
     "notes/python-code-style.html": "index.html",
@@ -241,7 +241,7 @@ def static_proxy(path):
     try:
         return send_from_directory(ROOT, path)
     except NotFound:
-        # Handle file not found or directory errors
+        # 处理未找到文件或目录错误
         return render_template("404.html"), 404
 
 
@@ -262,5 +262,5 @@ def acme(token):
 
 
 if __name__ == "__main__":
-    # Only run the app in debug mode during development
+    # 开发期间仅在调试模式下运行应用程序
     app.run(debug=os.environ.get("FLASK_ENV") == "development")

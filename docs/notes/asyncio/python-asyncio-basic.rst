@@ -1,39 +1,32 @@
 .. meta::
-    :description lang=en: Python asyncio basics - coroutines, tasks, event loop, async/await syntax
+    :description lang=zh_CN: Python asyncio 基础知识 - coroutines、任务、event loop、异步/等待语法
     :keywords: Python, Python3, Asyncio, Coroutines, Event Loop, async await, Asynchronous Programming
 
-================
-Asyncio Basics
-================
+============================================
+异步基础知识（Asyncio Basics）
+============================================
 
 :Source: `src/basic/asyncio_.py <https://github.com/crazyguitar/pysheeet/blob/master/src/basic/asyncio_.py>`_
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-Introduction
-------------
+介绍（Introduction）
+--------------------------------
 
-The ``asyncio`` module, introduced in Python 3.4 and significantly improved in
-Python 3.5+ with ``async/await`` syntax, provides a foundation for writing
-asynchronous code. Unlike threads which use preemptive multitasking (the OS
-decides when to switch), asyncio uses cooperative multitasking where coroutines
-explicitly yield control using ``await``. This eliminates race conditions common
-in threaded code and makes reasoning about program flow much easier.
+``asyncio`` module 在 Python 3.4 中引入，并在 Python 3.5+ 中使用 ``async/await`` 语法进行了显着改进，为编写 asynchronous 代码提供了基础。与使用抢占式多任务处理（OS 决定何时切换）的 threads 不同，asyncio 使用协作式多任务处理，其中 coroutines 使用 ``await`` 显式让出控制权。这消除了线程代码中常见的 race conditions，并使程序流的推理变得更加容易。
 
-Key concepts:
+Key概念：
 
-- **Coroutine**: A function defined with ``async def`` that can be paused and resumed
-- **Event Loop**: The central scheduler that runs coroutines and handles I/O events
-- **Task**: A wrapper around a coroutine that schedules it for execution
-- **Future**: A placeholder for a result that will be available later
+- **Coroutine** ：用​​ ``async def`` 定义的function，可以暂停和恢复
+- **Event Loop** ：运行coroutines并处理I/O事件的中央调度程序
+- **Task** ：coroutine 的包装器，安排其执行
+- **Future** ：稍后可用的结果的占位符
 
-Running Coroutines with asyncio.run
------------------------------------
+使用 asyncio.run 运行协程（Running Coroutines with asyncio.run）
+----------------------------------------------------------------------------------------------------------------
 
-The simplest way to run async code is ``asyncio.run()``, introduced in Python 3.7.
-It creates an event loop, runs the coroutine until completion, and cleans up
-automatically. This is the recommended entry point for asyncio programs.
+运行异步代码的最简单方法是 ``asyncio.run()`` ，在 Python 3.7 中介绍。它创建一个 event loop，运行 coroutine 直到完成，然后自动清理。这是 asyncio 程序的推荐入口点。
 
 .. code-block:: python
 
@@ -47,8 +40,7 @@ automatically. This is the recommended entry point for asyncio programs.
     # Python 3.7+
     asyncio.run(hello())
 
-For file I/O or other blocking operations, use ``run_in_executor`` to avoid
-blocking the event loop:
+对于文件 I/O 或其他阻塞操作，请使用 ``run_in_executor`` 以避免阻塞 event loop：
 
 .. code-block:: python
 
@@ -63,12 +55,10 @@ blocking the event loop:
 
     content = asyncio.run(read_file('/etc/hosts'))
 
-Creating and Managing Tasks
----------------------------
+创建和管理任务（Creating and Managing Tasks）
+------------------------------------------------------------------------
 
-Tasks allow multiple coroutines to run concurrently. When you create a task,
-it's scheduled to run on the event loop immediately. Use ``asyncio.create_task()``
-(Python 3.7+) or ``loop.create_task()`` to create tasks.
+任务允许多个coroutines同时运行。当您创建任务时，它会立即在 event loop 上运行。使用 ``asyncio.create_task()`` （Python 3.7+）或 ``loop.create_task()`` 创建任务。
 
 .. code-block:: python
 
@@ -79,23 +69,21 @@ it's scheduled to run on the event loop immediately. Use ``asyncio.create_task()
         return f"{name} done"
 
     async def main():
-        # Create tasks - they start running immediately
+        # 创建任务 - 它们立即开始运行
         task1 = asyncio.create_task(fetch("A", 2))
         task2 = asyncio.create_task(fetch("B", 1))
 
-        # Wait for both to complete
+        # 等待两者都完成
         result1 = await task1
         result2 = await task2
         print(result1, result2)
 
     asyncio.run(main())
 
-Gathering Multiple Coroutines
------------------------------
+收集多个协程（Gathering Multiple Coroutines）
+--------------------------------------------------------------------------
 
-``asyncio.gather()`` runs multiple coroutines concurrently and collects their
-results in order. This is the most common way to run multiple async operations
-in parallel and wait for all of them to complete.
+``asyncio.gather()`` 同时运行多个 coroutines 并按顺序收集它们的结果。这是并行运行多个异步操作并等待所有异步操作完成的最常见方法。
 
 .. code-block:: python
 
@@ -109,19 +97,17 @@ in parallel and wait for all of them to complete.
         urls = ["site1.com", "site2.com", "site3.com"]
         coros = [fetch(url, i * 0.5) for i, url in enumerate(urls)]
 
-        # Run all concurrently, results in same order as input
+        # 同时运行所有内容，结果与输入的顺序相同
         results = await asyncio.gather(*coros)
         for r in results:
             print(r)
 
     asyncio.run(main())
 
-Waiting with Timeout
---------------------
+带超时限制的等待（Waiting with Timeout）
+------------------------------------------------------------
 
-Use ``asyncio.wait_for()`` to set a timeout on async operations. This is
-essential for network operations where you don't want to wait indefinitely
-for a response that may never come.
+使用 ``asyncio.wait_for()`` 到 set 异步操作超时。这对于网络操作来说至关重要，因为您不想无限期地等待可能永远不会到来的响应。
 
 .. code-block:: python
 
@@ -139,12 +125,10 @@ for a response that may never come.
 
     asyncio.run(main())
 
-Waiting for First Completed
----------------------------
+等待首个任务完成（Waiting for First Completed）
+--------------------------------------------------------------------------
 
-``asyncio.wait()`` provides more control than ``gather()``. You can wait for
-the first task to complete, first exception, or all tasks. This is useful
-when you want to process results as they become available.
+``asyncio.wait()`` 比 ``gather()`` 提供更多控制。您可以等待第一个任务（第一个 exception）或所有任务完成。当您想要 process 结果可用时，这非常有用。
 
 .. code-block:: python
 
@@ -160,7 +144,7 @@ when you want to process results as they become available.
             asyncio.create_task(fetch("slow", 3)),
         ]
 
-        # Wait for first to complete
+        # 等待第一个完成
         done, pending = await asyncio.wait(
             tasks, return_when=asyncio.FIRST_COMPLETED
         )
@@ -169,18 +153,16 @@ when you want to process results as they become available.
             print(f"Completed: {task.result()}")
         print(f"Still pending: {len(pending)}")
 
-        # Cancel pending tasks
+        # 取消待处理的任务
         for task in pending:
             task.cancel()
 
     asyncio.run(main())
 
-Asynchronous Iteration
-----------------------
+异步迭代（Asynchronous Iteration）
+--------------------------------------------------------
 
-Async iterators allow you to iterate over data that arrives asynchronously,
-such as streaming responses or database cursors. Implement ``__aiter__`` and
-``__anext__`` methods to create custom async iterators.
+异步 iterators 允许您迭代异步到达的数据，例如流响应或数据库游标。实现 ``__aiter__`` 和 ``__anext__`` methods 以创建自定义异步 iterators。
 
 .. code-block:: python
 
@@ -210,12 +192,10 @@ such as streaming responses or database cursors. Implement ``__aiter__`` and
 
     asyncio.run(main())
 
-Asynchronous Context Managers
------------------------------
+异步上下文管理器（Asynchronous Context Managers）
+------------------------------------------------------------------------------
 
-Async context managers are essential for managing resources that require
-async setup or cleanup, such as database connections, file handles, or
-network sessions. Use ``async with`` to ensure proper resource management.
+异步 context managers 对于管理需要异步设置或清理的资源（例如数据库连接、文件句柄或网络会话）至关重要。使用 ``async with`` 确保正确的资源管理。
 
 .. code-block:: python
 
@@ -246,12 +226,10 @@ network sessions. Use ``async with`` to ensure proper resource management.
 
     asyncio.run(main())
 
-Using @asynccontextmanager
---------------------------
+使用 @asynccontextmanager（Using @asynccontextmanager）
+------------------------------------------------------------------------------------------------------
 
-The ``@asynccontextmanager`` decorator (Python 3.7+) provides a simpler way
-to create async context managers using generator syntax, similar to the
-synchronous ``@contextmanager`` decorator.
+``@asynccontextmanager`` decorator (Python 3.7+) 提供了一种使用 generator 语法创建异步 context managers 的更简单方法，类似于 synchronous ``@contextmanager`` decorator。
 
 .. code-block:: python
 
@@ -274,12 +252,10 @@ synchronous ``@contextmanager`` decorator.
 
     asyncio.run(main())
 
-Running Blocking Code in Executor
----------------------------------
+在执行器中运行阻塞代码（Running Blocking Code in Executor）
+--------------------------------------------------------------------------------------------
 
-When you need to call blocking code (file I/O, CPU-intensive operations,
-or libraries without async support), use ``run_in_executor()`` to run it
-in a thread pool without blocking the event loop.
+当您需要调用阻塞代码（文件I/O、CPU密集型操作或不支持异步的libraries）时，使用 ``run_in_executor()`` 在thread pool中运行它，而不阻塞event loop。
 
 .. code-block:: python
 
@@ -299,23 +275,21 @@ in a thread pool without blocking the event loop.
     async def main():
         loop = asyncio.get_event_loop()
 
-        # Run in default executor (ThreadPoolExecutor)
+        # 在默认执行器（ThreadPoolExecutor）中运行
         result1 = await loop.run_in_executor(None, blocking_io)
         print(result1)
 
-        # Run in custom executor
+        # 在自定义执行器中运行
         with ThreadPoolExecutor(max_workers=4) as pool:
             result2 = await loop.run_in_executor(pool, cpu_bound)
             print(result2)
 
     asyncio.run(main())
 
-Async Generators
-----------------
+异步生成器（Async Generators）
+----------------------------------------------
 
-Async generators (Python 3.6+) combine generators with async/await, allowing
-you to yield values asynchronously. They're useful for streaming data or
-implementing async iterators more concisely.
+Async generators (Python 3.6+) 将 generators 与 async/await 结合起来，允许您异步生成 values。它们对于流数据或更简洁地实现异步 iterators 非常有用。
 
 .. code-block:: python
 
@@ -331,18 +305,16 @@ implementing async iterators more concisely.
         async for num in async_range(0, 5):
             print(num)
 
-        # Async comprehension
+        # 异步 comprehension
         results = [x async for x in async_range(0, 3)]
         print(results)
 
     asyncio.run(main())
 
-Exception Handling in Tasks
----------------------------
+任务中的异常处理（Exception Handling in Tasks）
+--------------------------------------------------------------------------
 
-Exceptions in tasks are stored and re-raised when you await the task or
-call ``result()``. Unhandled exceptions in tasks that are never awaited
-will be logged but may be silently ignored, so always await your tasks.
+当您等待任务或调用 ``result()`` 时，任务中的 Exceptions 会被存储并重新引发。从未等待的任务中未处理的 exceptions 将被记录，但可能会被默默忽略，因此请始终等待您的任务。
 
 .. code-block:: python
 
@@ -360,7 +332,7 @@ will be logged but may be silently ignored, so always await your tasks.
         except ValueError as e:
             print(f"Caught exception: {e}")
 
-        # Using gather with return_exceptions
+        # 将聚集与 return_exceptions 一起使用
         tasks = [
             asyncio.create_task(asyncio.sleep(1)),
             asyncio.create_task(failing_task()),
@@ -374,12 +346,10 @@ will be logged but may be silently ignored, so always await your tasks.
 
     asyncio.run(main())
 
-Cancelling Tasks
-----------------
+取消任务（Cancelling Tasks）
+--------------------------------------------
 
-Tasks can be cancelled using ``task.cancel()``. The cancelled task will
-raise ``asyncio.CancelledError`` at the next await point. Handle this
-exception to perform cleanup when a task is cancelled.
+可以使用 ``task.cancel()`` 取消任务。取消的任务将在下一个等待点引发 ``asyncio.CancelledError`` 。处理此 exception 以在任务取消时执行清理。
 
 .. code-block:: python
 
@@ -392,7 +362,7 @@ exception to perform cleanup when a task is cancelled.
                 await asyncio.sleep(1)
         except asyncio.CancelledError:
             print("Task was cancelled, cleaning up...")
-            raise  # Re-raise to mark task as cancelled
+            raise  # 重新加注以将任务标记为已取消
 
     async def main():
         task = asyncio.create_task(long_running())

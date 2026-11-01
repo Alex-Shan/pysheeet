@@ -1,7 +1,7 @@
-/* Demonstrate Python types manipulation in C API. */
+/* 演示 C API 中的 Python types 操作。 */
 #include <Python.h>
 
-/* List operations */
+/* List 操作 */
 static PyObject* list_demo(PyObject* self) {
   PyObject* list = PyList_New(0);
   PyList_Append(list, PyLong_FromLong(1));
@@ -18,13 +18,13 @@ static PyObject* list_sum(PyObject* self, PyObject* args) {
   long sum = 0;
   Py_ssize_t len = PyList_Size(list);
   for (Py_ssize_t i = 0; i < len; i++) {
-    PyObject* item = PyList_GetItem(list, i); /* borrowed ref */
+    PyObject* item = PyList_GetItem(list, i); /* 借用的参考文献 */
     sum += PyLong_AsLong(item);
   }
   return PyLong_FromLong(sum);
 }
 
-/* Iterate list with iterator protocol */
+/* 使用 iterator 协议迭代 list */
 static PyObject* iter_list(PyObject* self, PyObject* args) {
   PyObject *list, *iter, *item;
   if (!PyArg_ParseTuple(args, "O", &list)) {
@@ -44,7 +44,7 @@ static PyObject* iter_list(PyObject* self, PyObject* args) {
   return result;
 }
 
-/* Dict operations */
+/* Dict 操作 */
 static PyObject* dict_demo(PyObject* self) {
   PyObject* dict = PyDict_New();
   PyDict_SetItemString(dict, "name", PyUnicode_FromString("Python"));
@@ -58,7 +58,7 @@ static PyObject* dict_get(PyObject* self, PyObject* args) {
   if (!PyArg_ParseTuple(args, "O!s", &PyDict_Type, &dict, &key)) {
     return NULL;
   }
-  PyObject* value = PyDict_GetItemString(dict, key); /* borrowed ref */
+  PyObject* value = PyDict_GetItemString(dict, key); /* 借用的参考文献 */
   if (!value) {
     Py_RETURN_NONE;
   }
@@ -66,7 +66,7 @@ static PyObject* dict_get(PyObject* self, PyObject* args) {
   return value;
 }
 
-/* Iterate dict */
+/* 迭代dict */
 static PyObject* iter_dict(PyObject* self, PyObject* args) {
   PyObject* dict;
   if (!PyArg_ParseTuple(args, "O!", &PyDict_Type, &dict)) {
@@ -83,7 +83,7 @@ static PyObject* iter_dict(PyObject* self, PyObject* args) {
   return result;
 }
 
-/* Tuple operations */
+/* Tuple 操作 */
 static PyObject* tuple_demo(PyObject* self) { return Py_BuildValue("(isd)", 1, "hello", 3.14); }
 
 static PyObject* tuple_unpack(PyObject* self, PyObject* args) {
@@ -96,12 +96,12 @@ static PyObject* tuple_unpack(PyObject* self, PyObject* args) {
   return Py_BuildValue("{s:i,s:s,s:d}", "int", a, "str", b, "float", c);
 }
 
-/* Set operations */
+/* Set 操作 */
 static PyObject* set_demo(PyObject* self) {
   PyObject* set = PySet_New(NULL);
   PySet_Add(set, PyLong_FromLong(1));
   PySet_Add(set, PyLong_FromLong(2));
-  PySet_Add(set, PyLong_FromLong(2)); /* duplicate ignored */
+  PySet_Add(set, PyLong_FromLong(2)); /* 重复的被忽略 */
   PySet_Add(set, PyLong_FromLong(3));
   return set;
 }
@@ -116,7 +116,7 @@ static PyObject* set_contains(PyObject* self, PyObject* args) {
   return PyBool_FromLong(result);
 }
 
-/* String operations */
+/* String 操作 */
 static PyObject* str_demo(PyObject* self) {
   PyObject* s1 = PyUnicode_FromString("Hello");
   PyObject* s2 = PyUnicode_FromString(" World");
@@ -135,7 +135,7 @@ static PyObject* str_format(PyObject* self, PyObject* args) {
   return PyUnicode_FromFormat("%s is %d years old", name, age);
 }
 
-/* Bytes operations */
+/* Bytes 操作 */
 static PyObject* bytes_demo(PyObject* self) { return PyBytes_FromString("hello bytes"); }
 
 static PyObject* bytes_len(PyObject* self, PyObject* args) {

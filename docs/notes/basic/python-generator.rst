@@ -1,27 +1,20 @@
 .. meta::
-    :description lang=en: Python generator cheat sheet covering generator functions, generator expressions, yield, yield from, send, async generators, and coroutines with code examples
+    :description lang=zh_CN: Python generator 速查表涵盖 generator functions、generator expressions、yield、yield from、send、async generators 和 coroutines 以及代码示例
     :keywords: Python, Python3, Python generator, Python generator cheat sheet, yield, yield from, generator expression, async generator, iterator, coroutine, contextmanager
 
-=========
-Generator
-=========
+============================
+生成器（Generator）
+============================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-Generators are a powerful feature in Python for creating iterators. They allow
-you to iterate over data without storing the entire sequence in memory, making
-them ideal for processing large datasets or infinite sequences. This cheat sheet
-covers generator functions, generator expressions, ``yield``, ``yield from``,
-sending values to generators, and async generators.
+Generators 是 Python 中用于创建 iterators 的强大功能。它们允许您迭代数据，而无需将整个序列存储在内存中，这使得它们非常适合处理大型数据集或无限序列。本速查表涵盖了 generator、functions、generator expressions、 ``yield`` 、 ``yield from`` 、发送 values 到 generators 以及异步 generators。
 
-Generator Function vs Generator Expression
-------------------------------------------
+生成器函数与生成器表达式（Generator Function vs Generator Expression）
+----------------------------------------------------------------------------------------------------------------
 
-A generator function is defined like a normal function but uses ``yield`` to
-produce a sequence of values. When called, it returns a generator object that
-can be iterated over. A generator expression is a compact syntax similar to
-list comprehensions but produces values lazily on demand.
+generator function 的定义与普通 function 类似，但使用 ``yield`` 生成 values 序列。调用时，它返回可迭代的 generator object。 generator expression 是类似于 list comprehensions 的紧凑语法，但根据需要延迟生成 values。
 
 .. code-block:: python
 
@@ -42,12 +35,10 @@ list comprehensions but produces values lazily on demand.
     >>> next(g)
     1
 
-Yield Values from Generator
----------------------------
+从生成器产出值（Yield Values from Generator）
+------------------------------------------------------------------------
 
-The ``yield`` statement produces a value and suspends the generator's execution.
-When ``next()`` is called again, execution resumes from where it left off. This
-example generates prime numbers by checking divisibility for each candidate.
+``yield`` statement 生成 value 并暂停 generator 的执行。当再次调用 ``next()`` 时，将从中断处恢复执行。此示例通过检查每个候选数的整除性来生成素数。
 
 .. code-block:: python
 
@@ -65,33 +56,31 @@ example generates prime numbers by checking divisibility for each candidate.
     >>> list(prime(5))
     [2, 3, 5, 7, 11]
 
-Unpack Generators
------------------
+解包生成器（Unpack Generators）
+------------------------------------------------
 
-Python 3.5+ (PEP 448) allows unpacking generators directly into lists, sets,
-function arguments, and variables using the ``*`` operator. This provides a
-convenient way to consume generator values without explicit iteration.
+Python 3.5+ (PEP 448) 允许使用以下命令将 generators 直接解包为 lists、sets、function、arguments 和 variables ``*`` operator。这提供了一种方便的方式来使用 generator values，而无需显式 iteration。
 
 .. code-block:: python
 
-    # PEP 448 - unpacking inside a list
+    # PEP 448 - 在 list 内拆包
     >>> g1 = (x for x in range(3))
     >>> g2 = (x**2 for x in range(2))
     >>> [1, *g1, 2, *g2]
     [1, 0, 1, 2, 2, 0, 1]
 
-    # unpacking inside a set
+    # 在 set 内拆箱
     >>> g = (x for x in [5, 5, 6, 6])
     >>> {*g}
     {5, 6}
 
-    # unpacking to variables
+    # 拆包至 variables
     >>> g = (x for x in range(3))
     >>> a, b, c = g
     >>> a, b, c
     (0, 1, 2)
 
-    # extended unpacking
+    # 扩展拆包
     >>> g = (x for x in range(6))
     >>> a, b, *c, d = g
     >>> a, b, d
@@ -99,17 +88,14 @@ convenient way to consume generator values without explicit iteration.
     >>> c
     [2, 3, 4]
 
-    # unpacking inside a function
+    # 在 function 内拆箱
     >>> print(*(x for x in range(3)))
     0 1 2
 
-Iterable Class via Generator
-----------------------------
+通过生成器的可迭代类（Iterable Class via Generator）
+--------------------------------------------------------------------------------
 
-You can make a class iterable by implementing ``__iter__`` as a generator method.
-This approach is cleaner than implementing a separate iterator class. The
-``__reversed__`` method can also be implemented as a generator to support the
-built-in ``reversed()`` function.
+您可以通过将 ``__iter__`` 实现为 generator method 来制作 class iterable。这种方法比实现单独的 iterator class 更干净。 ``__reversed__`` method 也可以实现为 generator，以支持内置 ``reversed()`` function。
 
 .. code-block:: python
 
@@ -132,13 +118,10 @@ built-in ``reversed()`` function.
     >>> list(reversed(Count(5)))
     [1, 2, 3, 4, 5]
 
-Send Values to Generator
-------------------------
+将值发送到生成器（Send Values to Generator）
+--------------------------------------------------------------------
 
-Generators can receive values through the ``send()`` method. The sent value
-becomes the result of the ``yield`` expression inside the generator. Before
-sending values, you must start the generator by calling ``next()`` or
-``send(None)`` to advance it to the first ``yield``.
+Generators 可以通过 ``send()`` method 接收 values。传入的 value 会成为 generator 内部 ``yield`` expression 的结果。在发送 values 之前，必须先调用 ``next()`` 或 ``send(None)`` ，将 generator 推进到第一个 ``yield`` 。
 
 .. code-block:: python
 
@@ -147,20 +130,17 @@ sending values, you must start the generator by calling ``next()`` or
     ...     print("Message:", msg)
     ...
     >>> g = spam()
-    >>> next(g)  # start generator
+    >>> next(g)  # 启动 generator
     >>> try:
     ...     g.send("Hello World!")
     ... except StopIteration:
     ...     pass
     Message: Hello World!
 
-yield from Expression
----------------------
+yield from 表达式（yield from Expression）
+--------------------------------------------------------------------------
 
-The ``yield from`` expression delegates iteration to another generator or
-iterable. It automatically handles forwarding ``send()``, ``throw()``, and
-``close()`` calls to the subgenerator, making it ideal for creating generator
-pipelines and recursive generators.
+``yield from`` expression 将 iteration 委托给另一个 generator 或 iterable。它自动处理将 ``send()`` 、 ``throw()`` 和 ``close()`` 调用转发到子生成器，使其成为创建 generator 管道和 recursive generators 的理想选择。
 
 .. code-block:: python
 
@@ -182,13 +162,11 @@ pipelines and recursive generators.
     ...     pass
     got ValueError
 
-You can chain multiple ``yield from`` expressions together. The
-``inspect.getgeneratorstate()`` function helps track the generator's lifecycle
-through its states: GEN_CREATED, GEN_RUNNING, GEN_SUSPENDED, and GEN_CLOSED.
+您可以将多个 ``yield from`` expressions 链接在一起。 ``inspect.getgeneratorstate()`` function 通过以下状态帮助跟踪 generator 的生命周期：GEN_CREATED、GEN_RUNNING、GEN_SUSPENDED 和 GEN_CLOSED。
 
 .. code-block:: python
 
-    # yield from + yield from
+    # 产量 + 产量
     >>> import inspect
     >>> def subgen():
     ...     yield from range(3)
@@ -207,13 +185,10 @@ through its states: GEN_CREATED, GEN_RUNNING, GEN_SUSPENDED, and GEN_CLOSED.
     >>> inspect.getgeneratorstate(g)
     'GEN_CLOSED'
 
-yield from with Return
-----------------------
+带返回值的 yield from（yield from with Return）
+--------------------------------------------------------------------------------
 
-Generators can return a value using the ``return`` statement. The returned value
-is accessible through the ``value`` attribute of the ``StopIteration`` exception.
-When using ``yield from``, the return value of the subgenerator becomes the value
-of the ``yield from`` expression.
+Generators 可以使用 ``return`` statement 返回 value。返回的 value 可通过 ``StopIteration`` exception 的 ``value`` attribute 访问。当使用 ``yield from`` 时，副发电机的return value变为 ``yield from`` expression的value。
 
 .. code-block:: python
 
@@ -256,12 +231,10 @@ of the ``yield from`` expression.
     ...     print(e.value)
     5566
 
-Generate Sequences
-------------------
+生成序列（Generate Sequences）
+------------------------------------------------
 
-The ``yield from`` expression provides a concise way to yield all values from
-an iterable. This is particularly useful for chaining multiple sequences together
-or flattening nested structures.
+``yield from`` expression 提供了一种从 iterable 生成所有 values 的简洁方法。这对于将多个序列链接在一​​起或展平嵌套结构特别有用。
 
 .. code-block:: python
 
@@ -272,16 +245,14 @@ or flattening nested structures.
     >>> list(chain())
     ['a', 'b', 0, 1, 2]
 
-What ``RES = yield from EXP`` Does
-----------------------------------
+``RES = yield from EXP`` 的作用（What ``RES = yield from EXP`` Does）
+--------------------------------------------------------------------------------------------------------------------------------
 
-This snippet shows the simplified equivalent of what ``yield from`` does
-internally, as described in PEP 380. It handles iteration, value passing via
-``send()``, and captures the return value from the subgenerator.
+此代码片段显示了 ``yield from`` 内部执行的简化等效项，如 PEP 380 中所述。它处理通过 ``send()`` 传递的 iteration、value，并从子生成器捕获 return value。
 
 .. code-block:: python
 
-    # Simplified version (ref: PEP 380)
+    # 简化版（参考：PEP 380）
     >>> def subgen():
     ...     for x in range(3):
     ...         yield x
@@ -304,12 +275,10 @@ internally, as described in PEP 380. It handles iteration, value passing via
     >>> list(delegating_gen())
     [0, 1, 2]
 
-Check Generator Type
---------------------
+检查生成器类型（Check Generator Type）
+----------------------------------------------------------
 
-Use ``types.GeneratorType`` to check if an object is a generator. This is useful
-for writing functions that need to handle generators differently from other
-iterables.
+使用 ``types.GeneratorType`` 检查 object 是否为 generator。这对于编写需要以不同于其他 iterables 的方式处理 generators 的 functions 非常有用。
 
 .. code-block:: python
 
@@ -320,13 +289,10 @@ iterables.
     >>> isinstance(gen_func(), GeneratorType)
     True
 
-Check Generator State
----------------------
+检查生成器状态（Check Generator State）
+------------------------------------------------------------
 
-The ``inspect.getgeneratorstate()`` function returns the current state of a
-generator. This is helpful for debugging and understanding the generator lifecycle.
-The four possible states are: GEN_CREATED (not started), GEN_RUNNING (currently
-executing), GEN_SUSPENDED (paused at yield), and GEN_CLOSED (completed or closed).
+``inspect.getgeneratorstate()`` function 返回 generator 的当前状态。这对于 debugging 和理解 generator 生命周期很有帮助。四种可能的状态是：GEN_CREATED（未开始）、GEN_RUNNING（当前正在执行）、GEN_SUSPENDED（在屈服时暂停）和GEN_CLOSED（已完成或关闭）。
 
 .. code-block:: python
 
@@ -345,13 +311,10 @@ executing), GEN_SUSPENDED (paused at yield), and GEN_CLOSED (completed or closed
     >>> inspect.getgeneratorstate(g)
     'GEN_CLOSED'
 
-Context Manager via Generator
------------------------------
+通过生成器进行上下文管理（Context Manager via Generator）
+--------------------------------------------------------------------------------------
 
-The ``@contextlib.contextmanager`` decorator transforms a generator function into
-a context manager. Code before ``yield`` runs on entering the ``with`` block,
-and code after ``yield`` (typically in ``finally``) runs on exit. The yielded
-value is bound to the variable after ``as``.
+``@contextlib.contextmanager`` decorator 将 generator function 转换为 context manager。 ``yield`` 之前的代码在进入 ``with`` 块时运行， ``yield`` 之后的代码（通常在 ``finally`` 中）在退出时运行。生成的value在 ``as`` 之后绑定到variable。
 
 .. code-block:: python
 
@@ -369,13 +332,10 @@ value is bound to the variable after ``as``.
     [1, 2, 3, 4, 5]
     exit scope
 
-What ``@contextmanager`` Does
------------------------------
+``@contextmanager`` 的作用（What ``@contextmanager`` Does）
+------------------------------------------------------------------------------------------------------------
 
-This snippet shows a simplified implementation of how ``@contextmanager`` works
-internally. It wraps a generator in a class that implements the context manager
-protocol (``__enter__`` and ``__exit__``), handling both normal exit and
-exception propagation.
+此代码片段显示了 ``@contextmanager`` 内部工作原理的简化实现。它将 generator 包装在实现 context manager 协议（ ``__enter__`` 和 ``__exit__`` ）的 class 中，处理正常退出和 exception 传播。
 
 .. code-block:: python
 
@@ -401,12 +361,10 @@ exception propagation.
             return GeneratorCM(func(*a, **k))
         return run
 
-Profile Code Block
-------------------
+分析代码块性能（Profile Code Block）
+------------------------------------------------------
 
-A practical example of using generator-based context managers to measure
-execution time of code blocks. The ``yield`` statement marks the boundary
-between setup (recording start time) and teardown (calculating elapsed time).
+使用基于generator的context managers测量代码块执行时间的实际示例。 ``yield`` statement 标记了设置（记录开始时间）和拆卸（计算经过时间）之间的边界。
 
 .. code-block:: python
 
@@ -424,13 +382,10 @@ between setup (recording start time) and teardown (calculating elapsed time).
     ...     time.sleep(0.1)
     block cost: 0.10s
 
-``yield from`` and ``__iter__``
--------------------------------
+``yield from`` 和 ``__iter__`` （ ``yield from`` and ``__iter__`` ）
+----------------------------------------------------------------------------------------------------------------------------------
 
-When using ``yield from`` with a class instance, Python calls the object's
-``__iter__`` method to get an iterator. This allows custom classes to work
-seamlessly with ``yield from`` delegation, enabling elegant composition of
-iterables.
+当 ``yield from`` 与 class instance 一起使用时，Python 调用 object 的 ``__iter__`` method 来获取 iterator。这使得定制的 classes 能够与 ``yield from`` 委派无缝协作，从而实现 iterables 的优雅组合。
 
 .. code-block:: python
 
@@ -454,17 +409,14 @@ iterables.
     >>> list(reversed(FakeGen()))
     [2, 1, 0]
 
-Closure Using Generator
------------------------
+使用生成器实现闭包（Closure Using Generator）
+--------------------------------------------------------------------
 
-Generators provide an elegant way to implement closures that maintain state
-between calls. Each call to ``next()`` resumes execution and can access and
-modify the enclosed variables. This is often cleaner than using ``nonlocal``
-or class-based approaches.
+Generators 提供了一种优雅的方式来实现 closures 来维护调用之间的状态。每次调用 ``next()`` 都会恢复执行，并且可以访问和修改随附的 variables。这通常比使用基于 ``nonlocal`` 或 class 的方法更干净。
 
 .. code-block:: python
 
-    # generator version
+    # generator版本
     >>> def closure_gen():
     ...     x = 5566
     ...     while True:
@@ -477,13 +429,10 @@ or class-based approaches.
     >>> next(g)
     5568
 
-Simple Scheduler
-----------------
+简单的调度程序（Simple Scheduler）
+--------------------------------------------------
 
-This example demonstrates how generators can be used to implement cooperative
-multitasking. Each generator represents a task that yields control back to the
-scheduler. The scheduler uses a deque to round-robin between tasks, advancing
-each one step at a time.
+此示例演示了如何使用 generators 来实现协作多任务处理。每个 generator 代表一个将控制权交还给调度程序的任务。调度程序使用 deque 在任务之间进行循环，一次推进每一步。
 
 .. code-block:: python
 
@@ -518,13 +467,10 @@ each one step at a time.
     5
     Task done
 
-Simple Round-Robin with Blocking
---------------------------------
+带阻塞操作的简单 Round-Robin 调度（Simple Round-Robin with Blocking）
+------------------------------------------------------------------------------------------------------------------
 
-A more advanced scheduler that handles I/O blocking using ``select()``. Tasks
-yield tuples indicating what operation they're waiting for ('recv' or 'send')
-and which socket. The scheduler moves blocked tasks to wait queues and only
-runs them when their I/O is ready. This is the foundation of async I/O frameworks.
+更高级的调度程序，使用 ``select()`` 处理 I/O 阻塞。任务产生 tuples，指示它们正在等待什么操作（'recv' 或 'send'）以及哪个 socket。调度程序将阻塞的任务移至等待 queues，并且仅在 I/O 准备就绪时才运行它们。这是异步 I/O 框架的基础。
 
 .. code-block:: python
 
@@ -576,13 +522,10 @@ runs them when their I/O is ready. This is the foundation of async I/O framework
     tasks.append(server())
     run()
 
-Async Generator (Python 3.6+)
------------------------------
+异步生成器 (Python 3.6+)（Async Generator (Python 3.6+)）
+----------------------------------------------------------------------------------------------------
 
-Async generators combine ``async def`` with ``yield`` to create asynchronous
-iterators. They can use ``await`` to pause for async operations between yields.
-Use ``async for`` to iterate over async generators. This is essential for
-streaming data from async sources like network connections or databases.
+异步 generators 将 ``async def`` 与 ``yield`` 组合起来创建 asynchronous iterators。他们可以使用 ``await`` 在收益率之间暂停异步操作。使用 ``async for`` 迭代异步 generators。这对于来自网络连接或数据库等异步源的流数据至关重要。
 
 .. code-block:: python
 
@@ -601,13 +544,10 @@ streaming data from async sources like network connections or databases.
     1
     2
 
-Async Generator with try..finally
----------------------------------
+带有 try..finally 的异步生成器（Async Generator with try..finally）
+------------------------------------------------------------------------------------------------------------------
 
-Async generators support ``try..finally`` blocks for cleanup, just like regular
-generators. The ``finally`` block executes when the generator is closed or
-garbage collected, ensuring resources are properly released even if an exception
-occurs during iteration.
+异步 generators 支持 ``try..finally`` 块进行清理，就像常规 generators 一样。 ``finally`` 块在 generator 关闭或垃圾收集时执行，确保即使在 iteration 期间发生 exception 时也能正确释放资源。
 
 .. code-block:: python
 
@@ -630,13 +570,10 @@ occurs during iteration.
     finally
     ZeroDivisionError('division by zero')
 
-Send and Throw to Async Generator
----------------------------------
+发送并抛出到异步生成器（Send and Throw to Async Generator）
+--------------------------------------------------------------------------------------------
 
-Async generators support ``asend()`` to send values and ``athrow()`` to throw
-exceptions, similar to regular generators. These methods are coroutines that
-must be awaited. This enables two-way communication with async generators for
-building complex async data pipelines.
+异步generators支持 ``asend()`` 发送values和 ``athrow()`` 抛出exceptions，与常规generators类似。这些methods是必须等待的coroutines。这可以实现与异步 generators 的双向通信，以构建 complex 异步数据管道。
 
 .. code-block:: python
 
@@ -662,13 +599,10 @@ building complex async data pipelines.
     1
     RuntimeError('error')
 
-Async Comprehension (Python 3.6+)
----------------------------------
+异步推导式（Python 3.6+）（Async Comprehension (Python 3.6+)）
+----------------------------------------------------------------------------------------------------------
 
-PEP 530 introduced async comprehensions, allowing ``async for`` in list, set,
-and dict comprehensions. This provides a concise way to collect values from
-async generators. You can also use ``if`` clauses to filter values and
-conditional expressions for transformations.
+PEP 530引入了异步comprehensions，允许list、set和dict comprehensions中的 ``async for`` 。这提供了一种从异步 generators 收集 values 的简洁方法。您还可以使用 ``if`` 子句来过滤 values 和条件 expressions 进行转换。
 
 .. code-block:: python
 
@@ -691,13 +625,10 @@ conditional expressions for transformations.
     [0, 1, 2]
     {'0': 0, '1': 1, '2': 2}
 
-Simple Async Round-Robin
-------------------------
+简单异步循环（Simple Async Round-Robin）
+----------------------------------------------------------------
 
-This example shows cooperative multitasking with async generators. Multiple
-async generators are scheduled in a deque, and the scheduler awaits each one
-in turn using ``__anext__()``. This pattern is useful for interleaving multiple
-async data streams fairly.
+此示例展示了异步 generators 的协作多任务处理。 多个异步generators被调度在一个deque中， 调度程序使用 ``__anext__()`` 依次等待每一个。 此模式对于公平地交错多个异步数据 streams 很有用。
 
 .. code-block:: python
 
@@ -728,12 +659,10 @@ async data streams fairly.
     3
     4
 
-Async Generator vs Async Iterator Performance
-----------------------------------------------
+异步生成器与异步迭代器性能（Async Generator vs Async Iterator Performance）
+------------------------------------------------------------------------------------------------------------------------
 
-Async generators have better performance than manually implemented async iterators
-because they are optimized at the C level in CPython. This benchmark shows that
-async generators can be significantly faster for iteration-heavy workloads.
+Async generators 比手动实现的 async iterators 具有更好的性能，因为它们在 CPython 中在 C 级别进行了优化。此 benchmark 表明，对于 iteration 繁重的工作负载，异步 generators 的速度可以显着加快。
 
 .. code-block:: python
 
@@ -773,13 +702,10 @@ async generators can be significantly faster for iteration-heavy workloads.
     >>> asyncio.run(task_aiter(n))
     aiter cost time: 4.168368101119995
 
-``yield from == await`` Expression
-----------------------------------
+``yield from == await`` 表达式（ ``yield from == await`` Expression）
+--------------------------------------------------------------------------------------------------------------------------------
 
-Before Python 3.5 introduced ``async``/``await`` syntax, coroutines were
-implemented using generators with ``@asyncio.coroutine`` decorator and
-``yield from``. The ``await`` keyword is essentially equivalent to ``yield from``
-for coroutines. This example shows both the old and new syntax for an echo server.
+在 Python 3.5 引入 ``async`` / ``await`` 语法之前，coroutines 是使用 generators 与 ``@asyncio.coroutine`` decorator 和 ``yield from`` 实现的。 ``await`` 关键字本质上等同于 coroutines 的 ``yield from`` 。此示例显示了 echo 服务器的旧语法和新语法。
 
 .. code-block:: python
 
@@ -795,7 +721,7 @@ for coroutines. This example shows both the old and new syntax for an echo serve
     sock.bind((host, port))
     sock.listen(10)
 
-    # old syntax (Python 3.4)
+    # 旧语法（Python 3.4）
     @asyncio.coroutine
     def echo_server():
         while True:
@@ -811,7 +737,7 @@ for coroutines. This example shows both the old and new syntax for an echo serve
             yield from loop.sock_sendall(conn, msg)
         conn.close()
 
-    # new syntax (Python 3.5+)
+    # 新语法（Python 3.5+）
     async def echo_server():
         while True:
             conn, addr = await loop.sock_accept(sock)
@@ -828,12 +754,10 @@ for coroutines. This example shows both the old and new syntax for an echo serve
     loop.create_task(echo_server())
     loop.run_forever()
 
-Simple Compiler Using Generators
---------------------------------
+使用生成器的简单编译器（Simple Compiler Using Generators）
+------------------------------------------------------------------------------------------
 
-This advanced example from David Beazley demonstrates using generators to
-implement a simple expression compiler. It includes a tokenizer, parser, and
-evaluator using the visitor pattern with generators for stack-based evaluation.
+David Beazley 的这个高级示例演示了如何使用 generators 实现简单的 expression compiler。它包括一个分词器、解析器和评估器，使用 generators 的访问者模式进行基于 stack 的评估。
 
 .. code-block:: python
 

@@ -1,49 +1,43 @@
 .. meta::
-    :description lang=en: Python class cheat sheet covering magic methods, property decorators, inheritance, context managers, and OOP design patterns with code examples
+    :description lang=zh_CN: Python class 速查表涵盖了魔法 methods、property decorators、inheritance、context managers 和 OOP 设计模式以及代码示例
     :keywords: Python, Python3, Python class, Python OOP cheat sheet, magic methods, property decorator, context manager, singleton, abstract class, descriptor, inheritance
 
-=====
-Class
-=====
+================
+类（Class）
+================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-Python is an object-oriented programming language. This cheat sheet covers
-class definitions, inheritance, magic methods, property decorators, context
-managers, and common design patterns. Understanding these concepts is essential
-for writing clean, maintainable Python code.
+Python 是一种面向 object 的编程语言。本速查表涵盖了 class 定义、inheritance、魔术 methods、property、decorators、context managers 和常见设计模式。理解这些概念对于编写干净、可维护的 Python 代码至关重要。
 
-List Attributes with dir()
---------------------------
+使用 dir() 列出属性（List Attributes with dir()）
+----------------------------------------------------------------------------------
 
-The ``dir()`` function returns a list of all attributes and methods of an object.
-This is useful for introspection and discovering what operations are available.
+``dir()`` function 返回 object 的所有 attributes 和 methods 的 list。这对于内省和发现可用的操作很有用。
 
 .. code-block:: python
 
-    >>> dir(list)  # check all attr of list
+    >>> dir(list)  # 检查list的所有属性
     ['__add__', '__class__', ...]
 
-Check Type with isinstance()
-----------------------------
+使用 isinstance() 检查类型（Check Type with isinstance()）
+----------------------------------------------------------------------------------------------------
 
-Use ``isinstance()`` to check if an object is an instance of a class or its
-subclasses. This is preferred over ``type()`` comparison because it supports
-inheritance.
+使用 ``isinstance()`` 检查 object 是否是 class 或其 subclasses 的 instance。这优于 ``type()`` 比较，因为它支持 inheritance。
 
 .. code-block:: python
 
     >>> ex = 10
     >>> isinstance(ex, int)
     True
-    >>> isinstance(ex, (int, float))  # check multiple types
+    >>> isinstance(ex, (int, float))  # 检查多个types
     True
 
-Check Inheritance with issubclass()
------------------------------------
+使用 issubclass() 检查继承（Check Inheritance with issubclass()）
+------------------------------------------------------------------------------------------------------------------
 
-Use ``issubclass()`` to check if a class is a subclass of another class.
+使用 ``issubclass()`` 检查 class 是否是另一个 class 的 subclass。
 
 .. code-block:: python
 
@@ -54,10 +48,10 @@ Use ``issubclass()`` to check if a class is a subclass of another class.
     >>> issubclass(Dog, object)
     True
 
-Get Class Name
---------------
+获取类名（Get Class Name）
+----------------------------------------
 
-Access the class name through the ``__class__.__name__`` attribute.
+通过 ``__class__.__name__`` attribute 访问 class 名称。
 
 .. code-block:: python
 
@@ -68,11 +62,10 @@ Access the class name through the ``__class__.__name__`` attribute.
     >>> ex.__class__.__name__
     'ExampleClass'
 
-Has / Get / Set Attributes
---------------------------
+检查、获取和设置属性（Has / Get / Set Attributes）
+----------------------------------------------------------------------------
 
-Python provides built-in functions to dynamically access and modify object
-attributes at runtime.
+Python 提供内置的 functions 来在运行时动态访问和修改 object attributes。
 
 .. code-block:: python
 
@@ -88,14 +81,13 @@ attributes at runtime.
     >>> setattr(ex, 'name', 'example')
     >>> ex.name
     'example'
-    >>> getattr(ex, 'missing', 'default')  # with default
+    >>> getattr(ex, 'missing', 'default')  # 默认情况下
     'default'
 
-Declare Class with type()
--------------------------
+使用 type() 声明类（Declare Class with type()）
+--------------------------------------------------------------------------------
 
-Classes can be created dynamically using ``type()``. This is useful for
-metaprogramming and creating classes at runtime.
+可以使用 ``type()`` 动态创建 Classes。这对于元编程和在运行时创建 classes 非常有用。
 
 .. code-block:: python
 
@@ -110,7 +102,7 @@ metaprogramming and creating classes at runtime.
     >>> p.greet()
     "Hello, I'm Anonymous"
 
-This is equivalent to:
+这相当于：
 
 .. code-block:: python
 
@@ -119,11 +111,10 @@ This is equivalent to:
     ...     def greet(self):
     ...         return f"Hello, I'm {self.name}"
 
-__new__ vs __init__
--------------------
+__new__ 与 __init__ 对比（__new__ vs __init__）
+------------------------------------------------------------------------------------
 
-``__new__`` creates the instance, ``__init__`` initializes it. ``__init__`` is
-only called if ``__new__`` returns an instance of the class.
+``__new__`` 创建 instance， ``__init__`` 初始化它。仅当 ``__new__`` 返回 class 的 instance 时，才调用 ``__init__`` 。
 
 .. code-block:: python
 
@@ -138,11 +129,10 @@ only called if ``__new__`` returns an instance of the class.
     __new__ Hello
     __init__ Hello
 
-__str__ and __repr__
---------------------
+__str__ 和 __repr__（__str__ and __repr__）
+--------------------------------------------------------------------------------
 
-``__str__`` returns a human-readable string, ``__repr__`` returns an unambiguous
-representation for debugging. When ``__str__`` is not defined, ``__repr__`` is used.
+``__str__`` 返回人类可读的 string， ``__repr__`` 返回 debugging 的明确表示。当未定义 ``__str__`` 时，使用 ``__repr__`` 。
 
 .. code-block:: python
 
@@ -162,11 +152,10 @@ representation for debugging. When ``__str__`` is not defined, ``__repr__`` is u
     >>> print(v)
     (1, 2)
 
-Comparison Magic Methods
-------------------------
+比较魔术方法（Comparison Magic Methods）
+----------------------------------------------------------------
 
-Implement comparison operators by defining magic methods. Use
-``functools.total_ordering`` to generate all comparisons from ``__eq__`` and one other.
+通过定义magic methods来实现比较operators。使用 ``functools.total_ordering`` 生成 ``__eq__`` 与另一个的所有比较。
 
 .. code-block:: python
 
@@ -185,10 +174,10 @@ Implement comparison operators by defining magic methods. Use
     >>> Number(2) >= Number(1)
     True
 
-Arithmetic Magic Methods
-------------------------
+算术魔术方法（Arithmetic Magic Methods）
+----------------------------------------------------------------
 
-Implement arithmetic operators to make objects work with ``+``, ``-``, ``*``, etc.
+实现算法operators，使objects与 ``+`` 、 ``-`` 、 ``*`` 等一起工作。
 
 .. code-block:: python
 
@@ -207,11 +196,10 @@ Implement arithmetic operators to make objects work with ``+``, ``-``, ``*``, et
     >>> Vector(1, 2) * 3
     Vector(3, 6)
 
-Callable with __call__
-----------------------
+可使用 __call__ 调用（Callable with __call__）
+------------------------------------------------------------------------------
 
-Implement ``__call__`` to make instances callable like functions. This is useful
-for creating function-like objects that maintain state.
+实现 ``__call__`` 以使 instances 像 functions 一样可调用。这对于创建类似于 objects 的维护状态的 function 非常有用。
 
 .. code-block:: python
 
@@ -227,11 +215,10 @@ for creating function-like objects that maintain state.
     >>> callable(double)
     True
 
-@property Decorator
--------------------
+@property 装饰器（@property Decorator）
+--------------------------------------------------------------------
 
-Use ``@property`` to define getters, setters, and deleters for managed attributes.
-This allows attribute access syntax while running custom code.
+使用 ``@property`` 为托管 attributes 定义 getter、setter 和 deleters。这允许 attribute 在运行自定义代码时访问语法。
 
 .. code-block:: python
 
@@ -257,11 +244,10 @@ This allows attribute access syntax while running custom code.
     >>> c.radius
     10
 
-Descriptor Protocol
--------------------
+描述符协议（Descriptor Protocol）
+----------------------------------------------------
 
-Descriptors control attribute access at the class level. They implement
-``__get__``, ``__set__``, and/or ``__delete__`` methods.
+描述符控制 class 级别的 attribute 访问。它们实现了 ``__get__`` 、 ``__set__`` 和/或 ``__delete__`` methods。
 
 .. code-block:: python
 
@@ -284,11 +270,10 @@ Descriptors control attribute access at the class level. They implement
     >>> ex.x
     10
 
-Context Manager Protocol
-------------------------
+上下文管理器协议（Context Manager Protocol）
+--------------------------------------------------------------------
 
-Context managers implement ``__enter__`` and ``__exit__`` to manage resources
-with the ``with`` statement. This ensures proper cleanup even if exceptions occur.
+Context managers 实现 ``__enter__`` 和 ``__exit__`` 与 ``with`` statement 一起管理资源。即使出现 exceptions，这也能确保正确的清理。
 
 .. code-block:: python
 
@@ -302,16 +287,15 @@ with the ``with`` statement. This ensures proper cleanup even if exceptions occu
 
         def __exit__(self, exc_type, exc_val, exc_tb):
             self.file.close()
-            return False  # don't suppress exceptions
+            return False  # 不要压制exceptions
 
     with ManagedFile('example.txt') as f:
         content = f.read()
 
-Using contextlib
-----------------
+使用 contextlib（Using contextlib）
+--------------------------------------------------------------
 
-The ``contextlib`` module provides utilities for creating context managers
-without writing a full class.
+``contextlib`` module 提供了用于创建 context managers 的实用程序，而无需编写完整的 class。
 
 .. code-block:: python
 
@@ -328,12 +312,10 @@ without writing a full class.
     with managed_file('example.txt') as f:
         content = f.read()
 
-@staticmethod and @classmethod
-------------------------------
+@staticmethod 和 @classmethod（@staticmethod and @classmethod）
+------------------------------------------------------------------------------------------------------------------------
 
-``@staticmethod`` defines a method that doesn't access instance or class.
-``@classmethod`` receives the class as the first argument, useful for
-alternative constructors.
+``@staticmethod`` 定义了不访问 instance 或 class 的 method。 ``@classmethod`` 接收 class 作为第一个 argument，对于替代构造函数很有用。
 
 .. code-block:: python
 
@@ -358,11 +340,10 @@ alternative constructors.
     >>> Date.is_valid('2024-13-01')
     False
 
-Abstract Base Classes with abc
-------------------------------
+带有 abc 的抽象基类（Abstract Base Classes with abc）
+----------------------------------------------------------------------------------------
 
-Use ``abc`` module to define abstract base classes that cannot be instantiated
-and require subclasses to implement certain methods.
+使用 ``abc`` module定义无法实例化的abstract base classes，并要求subclasses实现某些methods。
 
 .. code-block:: python
 
@@ -381,13 +362,12 @@ and require subclasses to implement certain methods.
     >>> r = Rectangle(3, 4)
     >>> r.area()
     12
-    >>> Shape()  # raises TypeError
+    >>> Shape()  # 引发类型错误
 
-The Diamond Problem (MRO)
--------------------------
+菱形继承问题（MRO）（The Diamond Problem (MRO)）
+----------------------------------------------------------------------------
 
-Python uses Method Resolution Order (MRO) to resolve the diamond problem in
-multiple inheritance. Use ``ClassName.mro()`` to see the resolution order.
+Python使用Method解析顺序（MRO）来解决多个inheritance中的菱形问题。使用 ``ClassName.mro()`` 查看解析顺序。
 
 .. code-block:: python
 
@@ -411,11 +391,10 @@ multiple inheritance. Use ``ClassName.mro()`` to see the resolution order.
     >>> D.mro()
     [<class 'D'>, <class 'B'>, <class 'C'>, <class 'A'>, <class 'object'>]
 
-Singleton Pattern
------------------
+单例模式（Singleton Pattern）
+----------------------------------------------
 
-Singleton ensures only one instance of a class exists. Implement using
-``__new__`` or a decorator.
+Singleton 确保 class 中仅存在一个 instance。使用 ``__new__`` 或 decorator 实施。
 
 .. code-block:: python
 
@@ -431,11 +410,10 @@ Singleton ensures only one instance of a class exists. Implement using
     b = Singleton()
     print(a is b)  # True
 
-Using __slots__
----------------
+使用__slots__（Using __slots__）
+--------------------------------------------------------
 
-``__slots__`` restricts instance attributes and reduces memory usage by avoiding
-``__dict__`` per instance.
+``__slots__`` 限制 instance attributes 并通过避免每个 instance 出现 ``__dict__`` 来减少内存使用量。
 
 .. code-block:: python
 
@@ -447,21 +425,21 @@ Using __slots__
     >>> p = Point(1, 2)
     >>> p.x
     1
-    >>> p.z = 3  # raises AttributeError
+    >>> p.z = 3  # 引发属性错误
 
-Common Magic Methods Reference
-------------------------------
+常用魔术方法参考（Common Magic Methods Reference）
+--------------------------------------------------------------------------------
 
 .. code-block:: python
 
-    # Object Creation and Representation
-    __new__(cls, ...)        # create instance
-    __init__(self, ...)      # initialize instance
-    __del__(self)            # destructor
+    # Object 的创作与表现
+    __new__(cls, ...)        # 创建instance
+    __init__(self, ...)      # 初始化instance
+    __del__(self)            # 析构函数
     __repr__(self)           # repr(obj)
     __str__(self)            # str(obj)
 
-    # Comparison
+    # 比较
     __eq__(self, other)      # ==
     __ne__(self, other)      # !=
     __lt__(self, other)      # <
@@ -469,7 +447,7 @@ Common Magic Methods Reference
     __gt__(self, other)      # >
     __ge__(self, other)      # >=
 
-    # Arithmetic
+    # 算术
     __add__(self, other)     # +
     __sub__(self, other)     # -
     __mul__(self, other)     # *
@@ -478,27 +456,27 @@ Common Magic Methods Reference
     __mod__(self, other)     # %
     __pow__(self, other)     # **
 
-    # Container
+    # 容器
     __len__(self)            # len(obj)
-    __getitem__(self, key)   # obj[key]
+    __getitem__(self, key)   # 对象[key]
     __setitem__(self, k, v)  # obj[key] = value
-    __delitem__(self, key)   # del obj[key]
-    __contains__(self, item) # item in obj
+    __delitem__(self, key)   # 删除 obj[key]
+    __contains__(self, item) # item 在 obj 中
     __iter__(self)           # iter(obj)
 
-    # Attribute Access
-    __getattr__(self, name)  # obj.name (when not found)
+    # Attribute 访问
+    __getattr__(self, name)  # obj.name（未找到时）
     __setattr__(self, n, v)  # obj.name = value
-    __delattr__(self, name)  # del obj.name
+    __delattr__(self, name)  # 删除obj.name
 
-    # Callable
+    # 可调用
     __call__(self, ...)      # obj()
 
     # Context Manager
-    __enter__(self)          # with obj
-    __exit__(self, ...)      # exit with block
+    __enter__(self)          # 与对象
+    __exit__(self, ...)      # 退出并阻止
 
-    # Descriptor
-    __get__(self, obj, type) # descriptor access
-    __set__(self, obj, val)  # descriptor assignment
-    __delete__(self, obj)    # descriptor deletion
+    # 描述符
+    __get__(self, obj, type) # 描述符访问
+    __set__(self, obj, val)  # 描述符分配
+    __delete__(self, obj)    # 描述符删除

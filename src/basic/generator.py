@@ -47,7 +47,7 @@ def gen_expr_sum(n: int) -> int:
     return sum(x**2 for x in range(n))
 
 
-# Send Values
+# 发送 Values
 def accumulator():
     """Accumulator that receives values via send."""
     total = 0
@@ -57,7 +57,7 @@ def accumulator():
             total += value
 
 
-# Generator with Return
+# Generator 带返回
 def average():
     """Calculate average, return via StopIteration."""
     total = 0.0
@@ -71,7 +71,7 @@ def average():
     return total / count if count else 0
 
 
-# yield from
+# 产量来自
 def chain(*iterables):
     """Chain multiple iterables."""
     for it in iterables:
@@ -108,7 +108,7 @@ class Range:
             n -= 1
 
 
-# Pipeline
+# 管道
 def filter_positive(nums):
     """Filter positive numbers."""
     for n in nums:
@@ -135,7 +135,7 @@ def filter_comments(lines):
             yield line
 
 
-# Throw and Close
+# 抛出并关闭
 def gen_with_exception():
     """Generator that handles exceptions."""
     try:
@@ -151,7 +151,7 @@ def gen_with_cleanup():
         yield 1
         yield 2
     finally:
-        pass  # cleanup would go here
+        pass  # 清理工作会在这里进行
 
 
 # Context Manager
@@ -162,7 +162,7 @@ def capture_output():
     yield output
 
 
-# Tests
+# 测试
 class TestGeneratorBasics:
     def test_simple_gen(self):
         assert list(simple_gen()) == [1, 2, 3]
@@ -253,7 +253,7 @@ class TestThrowClose:
     def test_close(self):
         g = gen_with_cleanup()
         assert next(g) == 1
-        g.close()  # should not raise
+        g.close()  # 不应该提高
 
 
 class TestGeneratorState:
@@ -288,7 +288,7 @@ class TestContextManager:
         assert out == ["test"]
 
 
-# Prime Generator
+# 总理 Generator
 def prime(n: int):
     """Generate n prime numbers."""
     p = 2
@@ -302,7 +302,7 @@ def prime(n: int):
         p += 1
 
 
-# Closure using Generator
+# Closure 使用 Generator
 def closure_gen(start: int = 0):
     """Closure implemented as generator."""
     x = start
@@ -311,7 +311,7 @@ def closure_gen(start: int = 0):
         yield x
 
 
-# Simple Scheduler
+# 简单的调度程序
 def fib(n: int) -> int:
     """Fibonacci for scheduler example."""
     if n <= 2:
@@ -341,7 +341,7 @@ def run_scheduler(tasks: list) -> list:
     return results
 
 
-# Compiler Components
+# Compiler 组件
 import re
 from collections import namedtuple
 
@@ -466,7 +466,7 @@ def evaluate(exp: str):
     return Evaluator().visit(tree)
 
 
-# Async Iterator for comparison
+# 用于比较的异步 Iterator
 class AsyncIter:
     """Async iterator for performance comparison."""
 
@@ -489,7 +489,7 @@ async def agen(n: int):
         yield i
 
 
-# Additional Tests
+# 附加测试
 class TestPrime:
     def test_prime(self):
         assert list(prime(5)) == [2, 3, 5, 7, 11]

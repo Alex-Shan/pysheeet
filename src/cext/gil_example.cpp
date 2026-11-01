@@ -1,12 +1,12 @@
 /**
- * gil_example.cpp - GIL release example
+ * gil_example.cpp - GIL 发布示例
  *
- * Demonstrates:
- *   - Releasing GIL for CPU-intensive work
- *   - Allowing Python threads to run in parallel
- *   - Re-acquiring GIL when needed
+ * 演示：
+ *   - 为 CPU 密集型工作发布 GIL
+ *   - 允许Python threads并行运行
+ *   - 需要时重新获取GIL
  *
- * Usage:
+ * 用法：
  *   >>> from gil_example import slow_operation, fib_nogil
  *   >>> import threading
  *   >>> # These run in parallel because GIL is released
@@ -20,16 +20,16 @@
 
 namespace py = pybind11;
 
-// Slow operation that releases GIL
+// 释放GIL的缓慢操作
 void slow_operation(int seconds) {
-  // Release GIL while sleeping
+  // 睡觉时释放GIL
   py::gil_scoped_release release;
   std::this_thread::sleep_for(std::chrono::seconds(seconds));
 }
 
-// CPU-intensive Fibonacci without GIL
+// CPU 密集斐波那契，无 GIL
 unsigned long fib_nogil(unsigned long n) {
-  // Release GIL for CPU work
+  // 发布GIL用于CPU工作
   py::gil_scoped_release release;
 
   std::function<unsigned long(unsigned long)> fib_impl;
@@ -40,15 +40,15 @@ unsigned long fib_nogil(unsigned long n) {
   return fib_impl(n);
 }
 
-// Example showing GIL re-acquisition
+// 显示 GIL 重新获取的示例
 void call_python_callback(py::function callback, const std::string& msg) {
-  // Release GIL for some work
+  // 发布 GIL 进行一些工作
   {
     py::gil_scoped_release release;
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
-  // GIL automatically re-acquired here
-  // Now safe to call Python
+  // GIL在这里自动重新获取
+  // 现在可以安全拨打 Python
   callback(msg);
 }
 

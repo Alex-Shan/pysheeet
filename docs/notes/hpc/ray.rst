@@ -1,58 +1,51 @@
 .. meta::
-    :description lang=en: Ray cluster cheat sheet for HPC environments covering cluster setup on Slurm, Docker-based deployment, monitoring with raytop, and distributed workloads
+    :description lang=zh_CN: 适用于 HPC 环境的 Ray 集群速查表，涵盖 Slurm 上的集群设置、基于 Docker 的部署、使用 raytop 进行监控以及分布式工作负载
     :keywords: Ray, Ray cluster, HPC, Slurm, distributed computing, GPU cluster, raytop, monitoring, Docker, sbatch, machine learning, distributed training
 
-===========
-Ray Cluster
-===========
+======================================
+Ray 集群（Ray Cluster）
+======================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-`Ray <https://docs.ray.io/>`_ is an open-source framework for scaling Python applications
-across clusters. It provides a simple API for distributed computing and is widely used for
-distributed machine learning training, reinforcement learning, hyperparameter tuning, and
-serving. In HPC environments, Ray clusters are typically launched on top of Slurm-managed
-nodes using Docker containers, combining the resource management capabilities of Slurm with
-Ray's flexible distributed runtime.
+`Ray <https://docs.ray.io/>`_ 是一个开源框架，用于跨集群扩展 Python 应用程序。它为分布式计算提供了简单的API，广泛用于分布式机器学习训练、强化学习、超参数调整和服务。在 HPC 环境中，Ray 集群通常使用 Docker 容器在 Slurm 托管节点之上启动，将 Slurm 的资源管理功能与 Ray 灵活的分布式运行时相结合。
 
-This cheat sheet covers the Ray Python API, launching Ray clusters on Slurm, cluster
-monitoring, and real-world deployment examples for distributed GPU workloads.
+本速查表涵盖了 Ray Python API、在 Slurm 上启动 Ray 集群、集群监控以及分布式 GPU 工作负载的实际部署示例。
 
-Connect to a Ray Cluster
--------------------------
+连接到 Ray 集群（Connect to a Ray Cluster）
+------------------------------------------------------------------------
 
-Ray uses three default ports:
+Ray 使用三个默认端口：
 
-- ``6379`` — GCS (Global Control Store), the main cluster coordination port
-- ``8265`` — Dashboard and REST API (used by ``ray job submit`` and ``raytop``)
-- ``10001`` — Ray Client server (used by ``ray.init(address="ray://...")``)
+- ``6379`` — GCS（全局控制存储），主集群协调端口
+- ``8265`` — 仪表板和 REST API（由 ``ray job submit`` 和 ``raytop`` 使用）
+- ``10001`` — Ray 客户端服务器（由 ``ray.init(address="ray://...")`` 使用）
 
 .. code-block:: python
 
     import ray
 
-    # auto-detect (inside a Ray container or submitted via ray job submit)
+    # 自动检测（在 Ray 容器内或通过 ray 作业提交提交）
     ray.init()
 
-    # connect via GCS directly (port 6379)
+    # 直接通过GCS连接（端口6379）
     ray.init(address="<HEAD_IP>:6379")
 
-    # connect via Ray Client (port 10001)
+    # 通过Ray客户端连接（端口10001）
     ray.init(address="ray://<HEAD_IP>:10001")
 
     # or set RAY_ADDRESS env var and just call ray.init()
     # export RAY_ADDRESS=<HEAD_IP>:6379
 
-    # check available resources
+    # 检查可用资源
     print(ray.cluster_resources())
-    # {'CPU': 192.0, 'GPU': 16.0, ...}
+    # {'CPU'：192.0，'GPU'：16.0，...}
 
-Remote Functions
-----------------
+远程函数（Remote Functions）
+--------------------------------------------
 
-``@ray.remote`` turns a function into a distributed task. Use ``.remote()`` to
-submit and ``ray.get()`` to collect results.
+``@ray.remote`` 将 function 转变为分布式任务。使用 ``.remote()`` 提交并使用 ``ray.get()`` 收集结果。
 
 .. code-block:: python
 
@@ -62,51 +55,49 @@ submit and ``ray.get()`` to collect results.
     def add(a, b):
         return a + b
 
-    # submit tasks in parallel
+    # 并行提交任务
     futures = [add.remote(i, i) for i in range(4)]
     print(ray.get(futures))  # [0, 2, 4, 6]
 
-    # request specific resources
+    # 请求特定资源
     @ray.remote(num_gpus=1)
     def train_on_gpu(data):
         import torch
         device = torch.device("cuda")
         # ...
 
-    # request multiple GPUs
+    # 请求多个 GPU
     @ray.remote(num_gpus=4, num_cpus=8)
     def train_large_model(config):
         ...
 
-Object Store
-------------
+对象存储（Object Store）
+------------------------------------
 
-``ray.put()`` places objects in the shared object store so multiple tasks can
-access them without re-serializing. This is useful for large models or datasets.
+``ray.put()`` 将 objects 放置在共享 object 存储中，以便多个任务可以访问它们而无需重新序列化。这对于大型模型或数据集很有用。
 
 .. code-block:: python
 
     import ray
     import numpy as np
 
-    # put a large array into the object store (returns an ObjectRef)
+    # 将一个大的 array 放入 object 存储中（返回一个 ObjectRef）
     data = np.random.rand(10000, 10000)
     data_ref = ray.put(data)
 
     @ray.remote
     def process(data_ref):
-        data = ray.get(data_ref)  # zero-copy read on same node
+        data = ray.get(data_ref)  # 同一节点上的零拷贝读取
         return data.sum()
 
-    # all tasks share the same copy — no re-serialization
+    # 所有任务共享相同的副本 - 无需重新 serialization
     futures = [process.remote(data_ref) for _ in range(4)]
     print(ray.get(futures))
 
-``ray.wait()``
---------------
+``ray.wait()`` 用法（ ``ray.wait()`` ）
+----------------------------------------------------------------------
 
-``ray.wait()`` returns completed futures without blocking on all of them.
-Useful for processing results as they arrive.
+``ray.wait()`` 返回已完成的期货，且不会阻止所有期货。对于在结果到达时对其进行处理很有用。
 
 .. code-block:: python
 
@@ -120,45 +111,43 @@ Useful for processing results as they arrive.
 
     futures = [slow_task.remote(i) for i in range(5)]
 
-    # wait for at least 2 results, timeout after 3 seconds
+    # 等待至少2个结果，3秒后超时
     ready, not_ready = ray.wait(futures, num_returns=2, timeout=3.0)
     print(ray.get(ready))
 
-    # process results as they complete
+    # process 完成后的结果
     while futures:
         ready, futures = ray.wait(futures, num_returns=1)
         print(f"Got: {ray.get(ready[0])}")
 
-Resource Management
--------------------
+资源管理（Resource Management）
+--------------------------------------------------
 
-Ray exposes cluster resource information and supports fractional GPU allocation
-and custom resource types for fine-grained scheduling control.
+Ray公开集群资源信息，并支持部分GPU分配和自定义资源types以进行细粒度的调度控制。
 
 .. code-block:: python
 
     import ray
 
-    # check cluster resources
-    print(ray.cluster_resources())    # total
-    print(ray.available_resources())  # currently free
+    # 检查集群资源
+    print(ray.cluster_resources())    # 全部的
+    print(ray.available_resources())  # 目前免费
 
-    # fractional GPUs (e.g., 2 tasks share 1 GPU)
+    # 部分 GPU（e.g.，2 个任务共享 1 GPU）
     @ray.remote(num_gpus=0.5)
     def light_inference(batch):
         ...
 
-Fault Tolerance
----------------
+容错能力（Fault Tolerance）
+------------------------------------------
 
-For long-running distributed training, Ray can automatically restart crashed actors
-and retry failed tasks without bringing down the entire job.
+对于长时间运行的分布式训练，Ray 可以自动重新启动崩溃的 Actor 并重试失败的任务，而无需停止整个作业。
 
 .. code-block:: python
 
     import ray
 
-    # auto-restart actors up to 3 times on failure
+    # 失败时自动重启 Actor 最多 3 次
     @ray.remote(num_gpus=1, max_restarts=3)
     class ResilientWorker:
         def __init__(self):
@@ -170,34 +159,32 @@ and retry failed tasks without bringing down the entire job.
         def train(self, batch):
             ...
 
-    # retry failed tasks up to 3 times
+    # 重试失败的任务最多 3 次
     @ray.remote(num_gpus=1, max_retries=3)
     def train_step(data):
         ...
 
-Runtime Environments
---------------------
+运行时环境（Runtime Environments）
+------------------------------------------------------
 
-Runtime environments let you specify per-task or per-actor dependencies (pip
-packages, env vars, working directory) without baking them into the container.
+运行时环境允许您指定每个任务或每个参与者的依赖关系（pip packages、环境变量、工作目录），而无需将它们烘焙到容器中。
 
 .. code-block:: python
 
     import ray
 
-    # per-task runtime env
+    # 每个任务运行时环境
     @ray.remote(runtime_env={"pip": ["torch==2.9.1"], "env_vars": {"NCCL_DEBUG": "INFO"}})
     def train():
         ...
 
-    # or set at ray.init for all tasks
+    # 或 set（位于 ray.init）适用于所有任务
     ray.init(runtime_env={"working_dir": "/workspace", "pip": ["vllm==0.15.1"]})
 
-Ray Actors
-----------
+Ray Actors 用法（Ray Actors）
+--------------------------------------------------
 
-Actors are stateful workers. Each actor runs in its own process and holds state
-across method calls.
+演员是有状态的工作者。每个参与者都在自己的 process 中运行，并在 method 调用之间保持状态。
 
 .. code-block:: python
 
@@ -213,19 +200,17 @@ across method calls.
         def predict(self, batch):
             return self.model(batch.to(self.device))
 
-    # create actor instances
+    # 创建演员 instances
     workers = [Worker.remote("/fsx/model.pt") for _ in range(4)]
 
-    # call methods
+    # 拨打 methods
     futures = [w.predict.remote(data) for w, data in zip(workers, batches)]
     results = ray.get(futures)
 
-Placement Groups
-----------------
+归置组（Placement Groups）
+------------------------------------------
 
-Placement groups control how tasks and actors are co-located across nodes.
-This is essential for distributed training where you need to pin GPU workers
-to specific nodes (e.g., one placement group per node with ``STRICT_PACK``).
+归置组控制任务和参与者如何跨节点共置。这对于分布式训练至关重要，您需要将 GPU 工作线程固定到特定节点（e.g，每个带有 ``STRICT_PACK`` 的节点一个置放组）。
 
 .. code-block:: python
 
@@ -235,11 +220,11 @@ to specific nodes (e.g., one placement group per node with ``STRICT_PACK``).
 
     ray.init()
 
-    # create a placement group: 8 GPUs packed on one node
+    # 创建一个置放群组：8 个 GPU 打包在一个节点上
     pg = placement_group([{"GPU": 1} for _ in range(8)], strategy="STRICT_PACK")
     ray.get(pg.ready())
 
-    # schedule an actor on a specific bundle within the group
+    # 将参与者安排在组内的特定捆绑包上
     @ray.remote(num_gpus=1)
     class GpuWorker:
         def run(self, rank):
@@ -258,7 +243,7 @@ to specific nodes (e.g., one placement group per node with ``STRICT_PACK``).
     futures = [w.run.remote(i) for i, w in enumerate(workers)]
     print(ray.get(futures))
 
-Multi-node placement groups (e.g., for distributed training across 2 nodes):
+多节点放置组（e.g.，用于跨 2 个节点的分布式训练）：
 
 .. code-block:: python
 
@@ -275,28 +260,24 @@ Multi-node placement groups (e.g., for distributed training across 2 nodes):
     # 2 nodes x 8 GPUs = 16 GPU workers
     pgs = create_placement_groups(num_nodes=2, gpus_per_node=8)
 
-Placement strategies:
+安置策略：
 
-- ``STRICT_PACK`` — all bundles on the same node (distributed training)
-- ``PACK`` — best-effort packing on fewest nodes
-- ``STRICT_SPREAD`` — one bundle per node (fault tolerance)
-- ``SPREAD`` — best-effort spreading across nodes
+- ``STRICT_PACK`` — 同一节点上的所有包（分布式训练）
+- ``PACK`` — 在最少节点上尽力打包
+- ``STRICT_SPREAD`` — 每个节点一个捆绑包（容错）
+- ``SPREAD`` — 尽最大努力跨节点传播
 
-Deploy Megatron on Ray
-----------------------
+在 Ray 上部署 Megatron（Deploy Megatron on Ray）
+------------------------------------------------------------------------------------
 
-Ray placement groups can replace ``torchrun`` for launching Megatron distributed
-training. Each Ray actor maps to one GPU rank, and placement groups ensure workers
-are pinned to the correct nodes. The following example launches DeepSeek-V2-Lite
-pretraining across 2 nodes with 8 GPUs each. Source:
-`raytop Megatron example <https://github.com/crazyguitar/raytop/tree/main/examples/megatron>`_.
+Ray 安置组可以替代 ``torchrun`` 来启动 Megatron 分布式训练。每个 Ray 参与者映射到一个 GPU 等级，放置组确保工作人员固定到正确的节点。以下示例跨 2 个节点（每个节点有 8 个 GPU）启动 DeepSeek-V2-Lite 预训练。来源： `raytop Megatron example <https://github.com/crazyguitar/raytop/tree/main/examples/megatron>`_ 。
 
 .. code-block:: bash
 
-    # Start Ray cluster first:
+    # 首先启动Ray集群：
     salloc -N 2 bash examples/ray/ray.sbatch --image /fsx/megatron-lm+latest.tar.gz
 
-    # Then from inside the head container:
+    # 然后从头容器内部：
     python3 main.py
     python3 main.py --hf-path /fsx/models/deepseek-ai/DeepSeek-V2-Lite
     python3 main.py --nodes 2 --gpus-per-node 8
@@ -354,7 +335,7 @@ pretraining across 2 nodes with 8 GPUs each. Source:
     @ray.remote(num_cpus=0, num_gpus=1)
     class Worker:
         def run(self, rank, local_rank, world_size, master_addr, master_port, hf_path):
-            # Must reset CUDA_VISIBLE_DEVICES BEFORE any torch/CUDA import
+            # 必须重置 CUDA_VISIBLE_DEVICES BEFORE 任何 torch/CUDA 导入
             gpu_ids = ray.get_gpu_ids()
             cuda_device = int(gpu_ids[0]) if gpu_ids else local_rank
             os.environ.pop("CUDA_VISIBLE_DEVICES", None)
@@ -428,7 +409,7 @@ pretraining across 2 nodes with 8 GPUs each. Source:
         pgs = create_placement_groups(args.nodes, args.gpus_per_node)
         sorted_pgs, master_addr = resolve_master_and_sort_pgs(pgs)
 
-        # Spawn one worker per GPU, pinned to placement groups
+        # 每个 GPU 生成一名工作人员，固定到安置组
         futures = []
         rank = 0
         for pg in sorted_pgs:
@@ -453,161 +434,150 @@ pretraining across 2 nodes with 8 GPUs each. Source:
     if __name__ == "__main__":
         main()
 
-Launch a Ray Cluster on Slurm
------------------------------
+在 Slurm 上启动 Ray 集群（Launch a Ray Cluster on Slurm）
+--------------------------------------------------------------------------------------------------
 
-The following sbatch script provisions a Ray cluster inside Docker containers across
-Slurm-managed nodes. It starts a Ray head on the first allocated node and Ray workers
-on all remaining nodes, then waits until every node has registered with the cluster.
+以下 sbatch 脚本跨 Slurm 托管节点在 Docker 容器内配置 Ray 集群。它在第一个分配的节点上启动 Ray 头，并在所有剩余节点上启动 Ray 工作器，然后等待，直到每个节点都在集群中注册。
 
 .. code-block:: bash
 
-    # allocate nodes and launch interactively
+    # 分配节点并交互启动
     salloc -N 2 bash ray.sbatch
 
-    # submit as a batch job
+    # 作为批处理作业提交
     sbatch -N 2 ray.sbatch
 
-    # use a custom container image
+    # 使用自定义容器镜像
     sbatch -N 4 ray.sbatch --image /fsx/ray+latest.tar.gz
 
-The script handles image loading (tarball or registry pull), head/worker startup, and
-health checking via ``ray status``. See ``src/ray/ray.sbatch`` for the full script.
+该脚本通过 ``ray status`` 处理图像加载（tarball 或注册表拉取）、head/worker 启动和运行状况检查。完整脚本请参见 ``src/ray/ray.sbatch`` 。
 
-Ray Cluster Status
-------------------
+Ray 集群状态（Ray Cluster Status）
+--------------------------------------------------------
 
 .. code-block:: bash
 
-    # check cluster status from head node
+    # 从头节点检查集群状态
     docker exec ray-head ray status
 
-    # check from inside the container
+    # 从容器内部检查
     ray status
 
-    # get cluster info via REST API
+    # 通过 REST API 获取集群信息
     curl http://${HEAD_IP}:8265/api/cluster_status
 
-    # list nodes via REST API
+    # list 节点通过 REST API
     curl http://${HEAD_IP}:8265/api/v0/nodes
 
-    # list running jobs
+    # list 正在运行的作业
     curl http://${HEAD_IP}:8265/api/jobs/
 
-Ray Dashboard
--------------
+Ray 仪表板（Ray Dashboard）
+--------------------------------------------
 
-Ray provides a built-in web dashboard on port ``8265`` of the head node. When running
-on HPC clusters behind a firewall, use SSH port forwarding to access it:
+Ray 在头节点的 ``8265`` 端口上提供内置 Web 仪表板。当在防火墙后面的 HPC 集群上运行时，使用 SSH 端口转发来访问它：
 
 .. code-block:: bash
 
-    # forward Ray dashboard to local machine
+    # 将 Ray 仪表板转发到本地计算机
     ssh -L 8265:${HEAD_IP}:8265 login-node
 
-    # then open in browser
+    # 然后在浏览器中打开
     # http://localhost:8265
 
-Monitoring with raytop
-----------------------
+使用 Raytop 进行监控（Monitoring with raytop）
+----------------------------------------------------------------------------
 
-`raytop <https://github.com/crazyguitar/raytop>`_ is a real-time TUI monitor for Ray
-clusters — like ``htop`` for distributed GPU training. It provides a unified view of
-cluster-wide resource utilization including CPU, GPU, memory, per-node breakdowns,
-per-GPU utilization via Prometheus metrics, running job status, and live actor counts.
+`raytop <https://github.com/crazyguitar/raytop>`_ 是用于 Ray 集群的实时 TUI 监视器，就像用于分布式 GPU 训练的 ``htop`` 一样。它通过 Prometheus 指标提供集群范围资源利用率的统一视图，包括 CPU、GPU、内存、每个节点故障、每个 GPU 利用率、正在运行的作业状态和实时参与者计数。
 
-Install from `crates.io <https://crates.io/crates/raytop>`_:
+原文使用以下 cargo 命令安装。若 registry 中的包不可用，请参阅 `raytop 安装说明 <https://github.com/crazyguitar/raytop>`_；此处保留原命令：
 
 .. code-block:: bash
 
     cargo install raytop
 
-Point ``raytop`` at the Ray dashboard endpoint:
+将 ``raytop`` 指向 Ray 仪表板端点：
 
 .. code-block:: bash
 
     raytop --master http://${HEAD_IP}:8265
 
-``raytop`` retrieves data from multiple Ray APIs:
+``raytop`` 从多个 Ray APIs 检索数据：
 
-- ``/api/cluster_status`` — cluster-wide CPU/GPU/memory allocation
-- ``/api/v0/nodes`` — per-node info and state
-- ``/api/prometheus/sd`` — real-time per-GPU utilization and GRAM usage
-- ``/api/jobs/`` — running jobs
-- ``/api/v0/actors`` — actor counts per node
+- ``/api/cluster_status`` — 集群范围内的 CPU/GPU/内存分配
+- ``/api/v0/nodes`` — 每个节点的信息和状态
+- ``/api/prometheus/sd`` — 实时每个 GPU 利用率和 GRAM 使用情况
+- ``/api/jobs/`` — 正在运行的作业
+- ``/api/v0/actors`` — 每个节点的参与者计数
 
-Use ``j``/``k`` or arrow keys to navigate nodes, ``Enter`` to open the detail panel,
-``Tab`` to switch focus between jobs and nodes, ``t`` to cycle themes, and ``q`` to quit.
+使用 ``j`` / ``k`` 或箭头 keys 导航节点，使用 ``Enter`` 打开详细信息面板，使用 ``Tab`` 在作业和节点之间切换焦点，使用 ``t`` 循环主题，使用 ``q`` 退出。
 
-For monitoring long-running distributed training jobs (e.g., verl RLHF, Megatron
-pretraining), ``raytop`` provides a quick way to verify that all nodes are active,
-GPUs are fully utilized, and no actors have crashed — without needing to open the
-Ray dashboard in a browser.
+为了监控长时间运行的分布式训练作业（e.g.、版本 RLHF、Megatron 预训练）， ``raytop`` 提供了一种快速方法来验证所有节点是否处于活动状态、GPU 是否得到充分利用以及没有 Actor 崩溃，而无需在浏览器中打开 Ray 仪表板。
 
-Submit a Ray Job
-----------------
+提交 Ray 作业（Submit a Ray Job）
+------------------------------------------------------
 
-The Ray head address is printed by the sbatch script at the end:
+sbatch脚本在最后打印出Ray头地址：
 
 .. code-block:: bash
 
-    # the sbatch script prints this on success:
-    # [info] Ray cluster ready at <HEAD_IP>:<RAY_PORT>
+    # sbatch 脚本在成功时打印此内容：
+    # [info] Ray 集群已在 <HEAD_IP>:<RAY_PORT> 处就绪
 
-    # or query it from inside the head container
+    # 或者从头容器内部查询它
     docker exec ray-head ray status
 
-    # or check the Slurm job output log
+    # 或者检查Slurm作业输出日志
     cat slurm-<JOB_ID>.out | grep "Ray cluster ready"
 
-Submit jobs using ``ray job submit``:
+使用 ``ray job submit`` 提交作业：
 
 .. code-block:: bash
 
     RAY_HEAD=http://<HEAD_IP>:8265
 
-    # submit a job
+    # 提交工作
     ray job submit --address ${RAY_HEAD} -- python train.py
 
-    # submit the Megatron example
+    # 提交 Megatron 示例
     ray job submit --address ${RAY_HEAD} \
         --runtime-env-json='{"working_dir": "/workspace"}' \
         -- python main.py --nodes 2 --gpus-per-node 8
 
-    # submit with runtime env
+    # 使用运行时环境提交
     ray job submit --address ${RAY_HEAD} \
         --runtime-env-json='{"working_dir": "/workspace"}' \
         -- python train.py
 
-    # list jobs
+    # list 的职位
     ray job list --address ${RAY_HEAD}
 
-    # check job status
+    # 检查工作状态
     ray job status --address ${RAY_HEAD} JOB_ID
 
-    # get job logs
+    # 获取作业日志
     ray job logs --address ${RAY_HEAD} JOB_ID
 
-    # stop a job
+    # 停止工作
     ray job stop --address ${RAY_HEAD} JOB_ID
 
-Environment Variables
----------------------
+环境变量（Environment Variables）
+------------------------------------------------------
 
-Common environment variables for Ray on HPC clusters:
+HPC 集群上 Ray 的常见环境 variables：
 
 .. code-block:: bash
 
-    # Ray settings
-    export RAY_DEDUP_LOGS=0           # disable log deduplication
-    export RAY_USAGE_STATS_ENABLED=0  # disable usage stats
+    # Ray设置
+    export RAY_DEDUP_LOGS=0           # 禁用日志重复数据删除
+    export RAY_USAGE_STATS_ENABLED=0  # 禁用使用统计
 
-    # NCCL settings for multi-node GPU communication
+    # NCCL 多节点 GPU 通信设置
     export NCCL_DEBUG=INFO
     export NCCL_SOCKET_IFNAME=^docker,lo,veth
     export NCCL_P2P_NET_CHUNKSIZE=524288
 
-    # EFA settings (AWS)
+    # EFA 设置 (AWS)
     export FI_PROVIDER=efa
     export FI_EFA_USE_DEVICE_RDMA=1
     export FI_EFA_FORK_SAFE=1

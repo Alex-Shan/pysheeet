@@ -7,7 +7,7 @@ from queue import Queue
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
-# Module-level functions for multiprocessing (must be picklable)
+# Module 级 functions 用于 multiprocessing（必须可酸洗）
 def _mp_square(x):
     return x * x
 
@@ -93,7 +93,7 @@ class TestThreading:
                 inner()
 
         def inner():
-            with lock:  # Same thread can acquire again
+            with lock:  # 相同的thread可以再次获取
                 results.append("inner")
 
         t = Thread(target=outer)
@@ -137,7 +137,7 @@ class TestThreading:
             t.start()
 
         time.sleep(0.1)
-        assert len(results) == 0  # All waiting
+        assert len(results) == 0  # 一切等待
 
         event.set()
         for t in threads:
@@ -190,7 +190,7 @@ class TestThreading:
         for t in threads:
             t.join()
 
-        # All "before" should come before all "after"
+        # 所有 "before" 应出现在所有 "after" 之前
         before_count = sum(1 for x in order[:3] if x.startswith("before"))
         assert before_count == 3
 
@@ -310,14 +310,14 @@ class TestConcurrentFutures:
         """Test as_completed for processing results."""
 
         def task(n):
-            time.sleep(0.1 - n * 0.02)  # Varying delays
+            time.sleep(0.1 - n * 0.02)  # 不同的延误
             return n
 
         with ThreadPoolExecutor(max_workers=3) as executor:
             futures = [executor.submit(task, i) for i in range(3)]
             results = [f.result() for f in as_completed(futures)]
 
-        # Results may be in any order
+        # 结果可以按任意顺序排列
         assert sorted(results) == [0, 1, 2]
 
     def test_future_callback(self):
@@ -335,7 +335,7 @@ class TestConcurrentFutures:
                 future = executor.submit(compute, i)
                 future.add_done_callback(on_complete)
 
-        time.sleep(0.1)  # Wait for callbacks
+        time.sleep(0.1)  # 等待callbacks
         assert sorted(results) == [0, 1, 4]
 
     def test_future_exception(self):
@@ -371,14 +371,14 @@ class TestConcurrentFutures:
             time.sleep(10)
 
         with ThreadPoolExecutor(max_workers=1) as executor:
-            # First task blocks the worker
+            # 第一个任务阻塞了worker
             future1 = executor.submit(slow_task)
-            # Second task is queued
+            # 第二个任务已排队
             future2 = executor.submit(slow_task)
 
-            time.sleep(0.01)  # Let first task start
+            time.sleep(0.01)  # 让第一个任务开始
 
-            # Can cancel queued task
+            # 可以取消排队任务
             assert future2.cancel() == True
             assert future2.cancelled() == True
 
@@ -405,7 +405,7 @@ class TestProducerConsumer:
             for i in range(5):
                 produced.append(i)
                 q.put(i)
-            q.put(None)  # Sentinel
+            q.put(None)  # 哨兵
 
         def consumer():
             while True:
@@ -432,7 +432,7 @@ class TestProducerConsumer:
         def producer():
             for i in range(10):
                 q.put(i)
-            for _ in range(3):  # Sentinels for each consumer
+            for _ in range(3):  # 每个消费者的哨兵
                 q.put(None)
 
         def consumer():

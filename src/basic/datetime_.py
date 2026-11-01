@@ -117,7 +117,7 @@ def test_date_comparison():
 
 def test_weekday_operations():
     """Work with weekdays and weeks."""
-    dt = datetime(2024, 1, 15)  # Monday
+    dt = datetime(2024, 1, 15)  # 周一
 
     assert dt.weekday() == 0  # Monday = 0
     assert dt.isoweekday() == 1  # Monday = 1 (ISO)
@@ -160,7 +160,7 @@ def test_calendar_operations():
     assert calendar.isleap(2023) is False
 
     weekday, days = calendar.monthrange(2024, 2)
-    assert days == 29  # Leap year
+    assert days == 29  # 闰年
 
 
 def test_date_range():
@@ -239,8 +239,8 @@ def test_business_days():
                 yield current
             current += timedelta(days=1)
 
-    start = date(2024, 1, 15)  # Monday
-    end = date(2024, 1, 21)  # Sunday
+    start = date(2024, 1, 15)  # 周一
+    end = date(2024, 1, 21)  # 星期日
     bdays = list(business_days(start, end))
-    assert len(bdays) == 5  # Mon-Fri
+    assert len(bdays) == 5  # 周一至周五
     assert all(d.weekday() < 5 for d in bdays)

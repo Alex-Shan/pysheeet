@@ -1,156 +1,126 @@
 .. meta::
-    :description lang=en: Slurm cheat sheet for HPC job scheduling, batch jobs, distributed training, MPI, Enroot containers, and cluster management commands
+    :description lang=zh_CN: Slurm HPC 作业调度、批处理作业、分布式训练、MPI、Enroot 容器和集群管理命令的速查表
     :keywords: Slurm, HPC, job scheduler, sbatch, srun, salloc, distributed training, MPI, Enroot, Pyxis, cluster computing, workload manager, GPU cluster, machine learning, PyTorch distributed
 
-=====
-Slurm
-=====
+==============================
+Slurm 调度（Slurm）
+==============================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-Slurm (Simple Linux Utility for Resource Management) is an open-source job scheduling
-and workload management system widely used in high-performance computing (HPC) clusters.
-It is designed to efficiently allocate resources, manage queues, and dispatch jobs across
-large numbers of compute nodes. Slurm is the de facto standard for HPC job scheduling,
-powering many of the world's largest supercomputers and GPU clusters used for scientific
-computing, machine learning, and AI research.
+Slurm（Simple Linux Utility for Resource Management）是一个广泛应用于高性能计算（HPC）集群的开源作业调度和工作负载管理系统。它旨在高效分配资源、管理 queues 以及跨大量计算节点调度作业。 Slurm 是 HPC 作业调度的事实上的标准，为许多世界上最大的超级计算机和用于科学计算、机器学习和 AI 研究的 GPU 集群提供支持。
 
-For machine learning engineers, Slurm provides a straightforward way to launch distributed
-training jobs for large language models (LLMs) and deep learning workloads sharded across
-multiple nodes. Unlike container orchestration systems like Kubernetes—which often require
-additional components such as Kubeflow for ML workload scheduling—Slurm provides a simpler,
-HPC-focused workflow. Users can submit and manage jobs directly with commands like ``srun``,
-``sbatch``, and ``squeue``, without needing to configure complex orchestration layers.
+对于机器学习工程师来说，Slurm 提供了一种简单的方法来为大型语言模型 (LLM) 和跨多个节点分片的深度学习工作负载启动分布式训练作业。与 Kubernetes 等容器编排系统不同（通常需要额外的组件，例如用于 ML 工作负载调度的 Kubeflow），Slurm 提供了更简单、以 HPC 为中心的工作流程。用户可以通过 ``srun`` 、 ``sbatch`` 、 ``squeue`` 等命令直接提交和管理作业，无需配置complex编排层。
 
-This cheat sheet covers essential Slurm commands and workflows for submitting jobs, managing
-resources, running distributed training with PyTorch, launching MPI applications, and using
-containers with Enroot and Pyxis.
+本速查表涵盖了基本的 Slurm 命令和工作流程，用于提交作业、管理资源、使用 PyTorch 运行分布式训练、启动 MPI 应用程序以及使用 Enroot 和 Pyxis 容器。
 
-Slurm Info
-----------
+Slurm 信息（Slurm Info）
+----------------------------------------
 
-``sinfo`` is a command used to display general information about a Slurm-managed
-cluster, such as the number of available nodes and partitions. It also allows
-users to check the status of nodes, including identifying nodes that are down or
-in an error state.
+``sinfo`` 是用于显示有关 Slurm 管理的集群的一般信息的命令，例如可用节点和分区的数量。它还允许用户检查节点的状态，包括识别已关闭或处于错误状态的节点。
 
 .. code-block:: bash
 
-    # show slurm general info
+    # 显示 slurm 一般信息
     sinfo
 
-    # show partition info
+    # 显示分区信息
     sinfo -s
     sinfo --summarize
 
-    # show partition info
+    # 显示分区信息
     PARTITION=dev
     sinfo -p ${PARTITION}
 
-    # show nodes in idle state
+    # 显示空闲状态的节点
     sinfo --state=idle
 
-    # show nodes in specific format
-    sinfo -o "%n %P %t %C"  # node, partition, state, CPUs
+    # 以特定格式显示节点
+    sinfo -o "%n %P %t %C"  # 节点、分区、状态、CPU
 
-    # show GPU info (if configured)
+    # 显示 GPU 信息（如果配置）
     sinfo -o "%n %G"
 
-Node Info
----------
+节点信息（Node Info）
+------------------------------
 
-``scontrol show node`` provides detailed information about specific nodes in the
-cluster, including CPU count, memory, GPU resources, and current state. This is
-useful for debugging node issues or verifying hardware configurations.
+``scontrol show node`` 提供有关集群中特定节点的详细信息，包括 CPU 计数、内存、GPU 资源和当前状态。这对于 debugging 节点问题或验证硬件配置非常有用。
 
 .. code-block:: bash
 
-    # show all nodes info
+    # 显示所有节点信息
     scontrol show nodes
 
-    # show specific node info
+    # 显示特定节点信息
     scontrol show node compute-01
 
-    # show node in parseable format
+    # 以可解析格式显示节点
     scontrol show node compute-01 --oneliner
 
-    # list all hostnames
+    # list 所有主机名
     scontrol show hostnames
 
-    # expand node range to list
+    # 将节点 range 扩展为 list
     scontrol show hostnames compute-[0-5]
 
-    # show nodes in idle state
+    # 显示空闲状态的节点
     sinfo --state=idle
 
-Submit Jobs
------------
+提交作业（Submit Jobs）
+----------------------------------
 
-Launching a job across multiple nodes in the foreground is straightforward with
-``srun``. For example, running ``srun hostname`` will execute the ``hostname`` command
-on multiple allocated nodes and wait for all nodes to return results. With ``srun``,
-users can easily specify:
+使用 ``srun`` 在前台跨多个节点启动作业非常简单。例如，运行 ``srun hostname`` 将在多个分配的节点上执行 ``hostname`` 命令，并等待所有节点返回结果。通过 ``srun`` ，用户可以轻松指定：
 
-* Number of nodes to run the job on (``--nodes``)
-* Partition or queue to submit the job to (``--partition``)
-* Time limit for the job (``--time``), ensuring compute resources are automatically released when the job finishes or reaches its time limit
+* 运行作业的节点数 ( ``--nodes`` )
+* 将作业提交到的分区或 queue ( ``--partition`` )
+* 作业的时间限制（ ``--time`` ），确保作业完成或达到其时间限制时自动释放计算资源
 
-By default, ``srun`` runs interactively in the foreground, making it ideal for quick
-tests or debugging. For longer or batch jobs, users typically pair srun with job
-scripts submitted via ``sbatch``.
+默认情况下， ``srun`` 在前台交互运行，非常适合快速测试或 debugging。对于较长或批处理作业，用户通常将 srun 与通过 ``sbatch`` 提交的作业脚本配对。
 
 .. code-block:: bash
 
-    # Submit a job to a compute node
+    # 向计算节点提交作业
     srun -N1 hostname
 
-    # Submit a job on specific nodes
+    # 在特定节点上提交作业
     srun --nodelist=compute-[0-5] hostname
 
-    # Submit a job to a specific partition
+    # 将作业提交到特定分区
     PARTITION=dev
     srun -p ${PARTITION} --nodelist=compute-[0-5] hostname
 
-    # Submit a job via srun on 2 nodes (using dd to simulate a high CPU consume job)
+    # 在2个节点上通过srun提交作业（使用dd模拟高CPU消耗作业）
     srun -N2 dd if=/dev/zero of=/dev/null
 
-    # Submit a job with time constrain.
-    # - minute
-    # - minute:second
-    # - hours:minutes:seconds
-    # - days-hours
-    # - days-hours:minutes
-    # - days-hours:minutes:seconds
+    # 提交有时间限制的作业。
+    # - 分钟
+    # - 分钟：秒
+    # - 小时:分钟:秒
+    # - 天-小时
+    # - 天-小时:分钟
+    # - 天-小时:分钟:秒
     #
-    # ex: The following job will be timeout after 1m30s
+    # 例如：以下作业将在 1 分 30 秒后超时
     srun -N2 --time=01:30 dd if=/dev/zero of=/dev/null
 
-    # login to a node
+    # 登录节点
     srun -N 1 --pty /bin/bash
 
-Alloc Nodes
------------
+分配节点（Alloc Nodes）
+----------------------------------
 
-In some scenarios, users may need exclusive, interactive access to specific
-nodes for experiments or testing. For instance, a researcher running benchmarking
-tests might require all benchmarks to execute on the same fixed nodes to ensure
-consistent and reproducible results. The salloc command is used to request and
-allocate resources interactively. By using ``salloc``, users can reserve a specific
-number of nodes, ensuring that no other jobs are scheduled on them during the
-experiment. This isolation helps avoid resource contention that could affect
-benchmarking or performance measurements. For example, the following command
-allocates 2 nodes for an interactive session:
+在某些场景中，用户可能需要对特定节点进行独占、交互式访问以进行实验或测试。对于 instance，运行基准测试的研究人员可能要求所有基准测试在相同的固定节点上执行，以确保结果的一致性和可重复性。 salloc命令用于交互地请求和分配资源。通过使用 ``salloc`` ，用户可以预留特定数量的节点，确保实验期间不会在其上调度其他作业。这种隔离有助于避免可能影响基准测试或性能测量的资源争用。例如，以下命令为交互式会话分配 2 个节点：
 
 .. code-block:: bash
 
-    # Allocte 2 nodes and submit a job on those allocated nodes
+    # 分配 2 个节点并在这些分配的节点上提交作业
     salloc -N 2
     srun hostname
-    exit # release allocated nodes
+    exit # 释放分配的节点
 
 
-    # Allocate nodes on a specific partition
+    # 在特定分区上分配节点
     PARTITION=dev
     salloc -N 2 -p ${PARTITION}
 
@@ -159,62 +129,50 @@ allocates 2 nodes for an interactive session:
 
 .. note::
 
-    ``salloc`` is particularly useful for:
+    ``salloc`` 特别适用于：
 
-    * Interactive debugging
-    * Benchmarking and performance testing
-    * Running exploratory workloads without writing a full job script
+    * 互动debugging
+    * 基准测试和性能测试
+    * 无需编写完整的作业脚本即可运行探索性工作负载
 
-Cancel Jobs
------------
+取消作业（Cancel Jobs）
+----------------------------------
 
-Users may occasionally need to cancel their jobs for various reasons. For example,
-a cluster administrator may announce maintenance (such as upgrading system libraries),
-requiring users to terminate running jobs. In other cases, a job might hang or
-consume compute resources unnecessarily, making cancellation necessary. Slurm
-provides the ``scancel`` command to terminate jobs cleanly. Example usage:
+用户有时可能会因为各种原因需要取消他们的工作。例如，集群管理员可能会宣布维护（例如升级系统libraries），要求用户终止正在运行的作业。在其他情况下，作业可能会挂起或消耗不必要的计算资源，从而需要取消作业。 Slurm 提供 ``scancel`` 命令来干净地终止作业。用法示例：
 
 .. code-block:: bash
 
-    # cancel a job
+    # 取消工作
     scancel "${jobid}"
 
-    # cancel a job and disable warnings
+    # 取消作业并禁用警告
     scancel -q "${jobid}"
 
-    # cancel all jobs which are belong to an account
+    # 取消属于某个帐户的所有作业
     scancel --account="${account}"
 
-    # cancel all jobs which are belong to a partition
+    # 取消属于某个分区的所有作业
     scancel --partition="${partition}"
 
-    # cancel all pending jobs
+    # 取消所有待处理的作业
     scancel --state="PENDING"
 
-    # cancel all running jobs
+    # 取消所有正在运行的作业
     scancel --state="RUNNING"
 
-    # cancel all jobs
+    # 取消所有作业
     squeue -l | awk '{ print $ 1}' | grep '[[:digit:]].*' | xargs scancel
 
-    # cancel all jobs (using state option)
+    # 取消所有作业（使用状态选项）
     for s in "RUNNING" "PENDING" "SUSPAND"; do scancel --state="$s"; done
 
 
-Submit Batch Jobs
------------------
+提交批量作业（Submit Batch Jobs）
+--------------------------------------------------
 
-``sbatch`` is a Slurm command used to submit batch jobs for execution on a
-cluster. Unlike ``srun``, which typically runs jobs interactively in the foreground,
-``sbatch`` is designed for running long, non-interactive workloads in the background.
-This allows users to submit jobs without maintaining an active SSH session to the
-cluster's head node, making it ideal for large-scale or time-consuming tasks.
+``sbatch`` 是 Slurm 命令，用于提交批处理作业以在集群上执行。与通常在前台交互式运行作业的 ``srun`` 不同， ``sbatch`` 专为在后台运行长时间的非交互式工作负载而设计。这允许用户提交作业，而无需维护到集群头节点的活动 SSH 会话，使其成为大规模或耗时任务的理想选择。
 
-A typical workflow involves writing a Slurm job script containing job specifications
-(such as the number of nodes, time limits, and partitions) and one or more srun
-commands to execute programs. Submitting this script with sbatch queues the job,
-and Slurm automatically schedules it based on available resources. Example sbatch
-script:
+典型的工作流程包括编写 Slurm 作业脚本，其中包含作业规范（例如节点数量、时间限制和分区）以及一个或多个用于执行程序的 srun 命令。使用 sbatch queues 提交此脚本作业，Slurm 会根据可用资源自动调度它。示例批处理脚本：
 
 .. code-block:: bash
 
@@ -235,15 +193,10 @@ script:
 
     # sbatch job.sh
 
-Submit mpirun
--------------
+提交 mpirun（Submit mpirun）
+------------------------------------------------
 
-In some HPC environments, users may not be able to load the MPI module directly
-on the head (login) node due to security restrictions, minimal software installations,
-or site policies that restrict heavy workloads on login nodes. In such cases,
-the workflow is to use Slurm to allocate compute nodes and launch ``mpirun`` from
-within one of those nodes. From there, mpirun orchestrates the execution of the
-MPI program across all allocated nodes.
+在某些 HPC 环境中，由于安全限制、最少的软件安装或限制登录节点繁重工作负载的站点策略，用户可能无法直接在头（登录）节点上加载 MPI module。在这种情况下，工作流程是使用 Slurm 分配计算节点并从这些节点之一启动 ``mpirun`` 。从那里，mpirun 协调 MPI 程序在所有分配的节点上的执行。
 
 .. image:: images/mpirun.svg
 
@@ -251,11 +204,11 @@ MPI program across all allocated nodes.
 
     #!/bin/bash
 
-    # Usage:
+    # 用法：
     #
     # rank_per_node=8
     # salloc -N 4
-    # ./mpirun.sh ${rank_per_node} ${binary}
+    # ./mpirun.sh ${rank_per_node} ${二进制}
 
     launch() {
       local rank_per_node="${1}"
@@ -287,237 +240,195 @@ MPI program across all allocated nodes.
     EOF
     )"
 
-      # submit a mpirun job to a single node because mpirun will launch jobs on
-      # other nodes. Therfore, it is required to spcify -N 1 when using srun.
+      # 将 mpirun 作业提交到单个节点，因为 mpirun 将在以下节点上启动作业
+      # 其他节点。因此，使用srun时需要指定-N 1。
       srun -N 1 bash -c "${cmd}"
     }
 
     launch "$@"
 
-Submit Jobs with Enroot
------------------------
+使用 Enroot 提交作业（Submit Jobs with Enroot）
+------------------------------------------------------------------------------
 
-Sometimes, users need to run jobs with custom dependencies that differ from the
-cluster’s system-wide environment. For example, if the cluster is configured with
-NCCL 2.23 but a user wants to benchmark NCCL 2.27, it’s often impractical to ask
-administrators to upgrade or modify system libraries for a single experiment.
-One workaround is to create a custom container (e.g., Docker image) with the
-required dependencies and launch jobs from that environment. However, running
-containers in HPC environments often requires extra setup and special flags
-due to namespace isolation and security restrictions.
+有时，用户需要运行具有不同于集群系统范围环境的自定义依赖项的作业。例如，如果集群配置为 NCCL 2.23，但用户想要 benchmark NCCL 2.27，则要求管理员为单个实验升级或修改系统 libraries 通常是不切实际的。一种解决方法是创建具有所需依赖项的自定义容器（e.g.、Docker 映像），并从该环境启动作业。然而，由于 namespace 隔离和安全限制，在 HPC 环境中运行容器通常需要额外的设置和特殊标志。
 
-To simplify this process, `Enroot <https://github.com/NVIDIA/enroot>`_ provides
-a lightweight alternative to traditional container runtimes. It allows users to
-run isolated filesystem in an HPC setting with minimal overhead, similar to
-``chroot``, while still granting direct access to system hardware (e.g., GPUs, interconnects).
-This makes it ideal for ML and HPC workflows that require fine-tuned performance.
+为了简化这个 process， `Enroot <https://github.com/NVIDIA/enroot>`_ 提供了传统容器运行时的轻量级替代方案。它允许用户在 HPC 设置中以最小的开销运行隔离文件系统，类似于 ``chroot`` ，同时仍然授予对系统硬件（e.g、GPU、互连）的直接访问权限。这使其成为需要微调性能的 ML 和 HPC 工作流程的理想选择。
 
-Building on Enroot, `Pyxis <https://github.com/NVIDIA/pyxis>`_ is a Slurm plugin
-that enables launching jobs inside Enroot containers without writing additional
-wrapper scripts. Users can specify Enroot squash file and runtime options directly
-in their sbatch or srun commands, integrating container workflows seamlessly into
-Slurm job submission. The following snippet shows serveral to launch a job through
-Enroot and Pyxis.
+`Pyxis <https://github.com/NVIDIA/pyxis>`_ 构建于 Enroot 之上，是一个 Slurm 插件，可以在 Enroot 容器内启动作业，而无需编写额外的包装器脚本。用户可以直接在 sbatch 或 srun 命令中指定 Enroot 压缩文件和运行时选项，将容器工作流程无缝集成到 Slurm 作业提交中。以下代码片段显示了通过 Enroot 和 Pyxis 启动作业的几种方法。
 
 .. code-block:: bash
 
-   # build an enroot sqsh file
+   # 构建 enroot sqsh 文件
    $ enroot import -o "${output_sqsh}" "dockerd://${image}"
 
-   # submit a job with enroot
+   # 使用 enroot 提交作业
    srun --container-image "${output_sqsh}" \
      --container-mounts "/fsx:/fsx,/nfs:/nfs" \
      --ntasks-per-node=8 \
      ${cmd}
 
-   # submit a mpi job with enroot
+   # 使用 enroot 提交 mpi 作业
    srun --container-image "${output_sqsh}" \
      --container-mounts "/fsx:/fsx,/nfs:/nfs" \
      --ntasks-per-node=8 \
      --mpi=pmix \
      ${cmd}
 
-Job Status
-----------
+作业状态（Job Status）
+--------------------------------
 
-To monitor the status of jobs in a Slurm-managed cluster, users can use the
-``squeue`` command. This tool shows essential details about submitted jobs, such
-as job IDs, job names, partitions, allocated nodes, and job states. Common job
-states include:
+要监视 Slurm 管理的集群中作业的状态，用户可以使用 ``squeue`` 命令。该工具显示有关已提交作业的基本详细信息，例如作业 ID、作业名称、分区、分配的节点和作业状态。常见的工作状态包括：
 
-* RUNNING – The job is actively running on allocated resources.
-* PENDING – The job is waiting in the queue for resources to become available.
-* FAILED – The job has failed due to errors or unmet conditions.
+* RUNNING – 作业正在分配的资源上主动运行。
+* PENDING – 作业正在 queue 中等待资源可用。
+* FAILED – 作业由于错误或不满足条件而失败。
 
-If a job is stuck, fails, or behaves unexpectedly, you can terminate it with
-the ``scancel`` command and resubmit after fixing the issue.
+如果作业卡住、失败或行为异常，您可以使用 ``scancel`` 命令终止它，并在修复问题后重新提交。
 
 .. code-block:: bash
 
-   # check all Slurm jobs status
+   # 检查所有 Slurm 作业状态
    squeue
 
-   # check user's job status
+   # 检查用户的工作状态
    squeue --user=${USER}
 
-Reservation
------------
+资源预留（Reservation）
+----------------------------------
 
-From an administrator’s perspective, it may be necessary to reserve specific
-nodes to prevent Slurm from scheduling jobs on them. For example, nodes
-experiencing hardware or software issues—such as network failures or disk
-errors—should be reserved to avoid job failures. Reserving nodes allows
-administrators to troubleshoot, repair, or perform maintenance without
-interfering with active workloads. The following snippet demonstrates how to
-create reservations through ``scontrol`` for nodes and check their reservation status.
+从管理员的角度来看，可能需要保留特定节点以防止 Slurm 在其上调度作业。例如，应保留遇到硬件或软件问题（例如网络故障或磁盘错误）的节点，以避免作业失败。预留节点允许管理员排除故障、修复或执行维护，而不会干扰活动工作负载。以下代码片段演示了如何通过 ``scontrol`` 为节点创建预留并检查其预留状态。
 
 .. code-block:: bash
 
-    # reserve nodes for a user to test
-    # - minute
-    # - minute:second
-    # - hours:minutes:seconds
-    # - days-hours
-    # - days-hours:minutes
-    # - days-hours:minutes:seconds
+    # 预留节点供用户测试
+    # - 分钟
+    # - 分钟：秒
+    # - 小时:分钟:秒
+    # - 天-小时
+    # - 天-小时:分钟
+    # - 天-小时:分钟:秒
     #
-    # ex: reserve all nodes 120m for maintenance
+    # ex：预留所有节点120m用于维护
     scontrol create reservation ReservationName=maintenance \
         starttime=now duration=120 user=root flags=maint,ignore_jobs nodes=ALL
 
-    # must specify reservation; otherwise, the job will not run
+    # 必须注明预订；否则，作业将不会运行
     srun --reservation=maintain ping 8.8.8.8 2>&1 > /dev/null
 
-    # show reservations
+    # 显示预订
     scontrol show res
 
-    # delete a reservation
+    # 删除预订
     scontrol delete ReservationName=maintain
 
     # drain nodes for maintenance. ex: nodes=compute-[01-02],compute-08
     scontrol update NodeName=compute-[01-02],compute-08 State=DOWN Reason=”maintenance”
 
-    # resume nodes
+    # 恢复节点
     scontrol update NodeName=compute-[01-02],compute-08 State=Resume
 
-Accounting
-----------
+用量统计（Accounting）
+--------------------------------
 
-Slurm includes a powerful accounting and resource management system that allows
-administrators to control how computing resources are allocated and ensure fair
-usage across all users. Through this system, administrators can configure fairshare
-scheduling, job priority policies, and resource limits to prevent individual
-users or groups from monopolizing cluster resources for extended periods.
+Slurm 包括功能强大的会计和资源管理系统，允许管理员控制计算资源的分配方式并确保所有用户的公平使用。通过该系统，管理员可以配置公平共享调度、作业优先级策略和资源限制，以防止单个用户或组长时间独占集群资源。
 
-With ``fairshare``, Slurm dynamically adjusts job priorities based on historical
-resource usage, ensuring that users who have consumed fewer resources get higher
-priority in the job queue, while heavy users may experience lower priority until
-usage balances out. This helps maintain equitable access in multi-user HPC environments.
-Administrators manage these policies through Slurm’s database-backed accounting
-system (``slurmdbd``) and commands like:
+通过 ``fairshare`` ，Slurm 根据历史资源使用情况动态调整作业优先级，确保消耗较少资源的用户在作业 queue 中获得更高的优先级，而大量用户可能会遇到较低的优先级，直到使用平衡。这有助于维持多用户 HPC 环境中的公平访问。管理员通过 Slurm 的数据库支持的会计系统 ( ``slurmdbd`` ) 和以下命令来管理这些策略：
 
 .. code-block:: bash
 
-    # create a cluster (the clustername should be identical to ClusterName in slurm.conf)
+    # 创建集群（集群名称应与slurm.conf中的ClusterName相同）
     sacctmgr add cluster clustername
 
-    # create an account
+    # 创建一个帐户
     sacctmgr -i add account worker description="worker account" Organization="your.org"
 
-    # create an user and add to an account
+    # 创建用户并添加到帐户
     sacctmgr create user name=worker DefaultAccount=default
 
-    # create an user and add to additional accounts
+    # 创建用户并添加到其他帐户
     sacctmgr -i create user "worker" account="worker" adminlevel="None"
 
-    # modify user fairshare configuration
+    # 修改用户fairshare配置
     sacctmgr modify user where name="worker" account="worker" set fairshare=0
 
-    # remove an user from an account
+    # 从帐户中删除用户
     sacctmgr remove user "worker" where account="worker"
 
-    # show all users
+    # 显示所有用户
     sacctmgr show account
 
-    # show all users with associations
+    # 显示所有有关联的用户
     sacctmgr show account -s
 
 
-Job History
------------
+作业历史（Job History）
+----------------------------------
 
-``sacct`` displays accounting data for completed and running jobs. This is essential
-for analyzing job performance, debugging failed jobs, and tracking resource usage
-over time. Unlike ``squeue`` which only shows active jobs, ``sacct`` can retrieve
-historical job information from the Slurm accounting database.
+``sacct`` 显示已完成和正在运行的作业的会计数据。这对于分析作业性能、debugging 失败的作业以及跟踪一段时间内的资源使用情况至关重要。与仅显示活动作业的 ``squeue`` 不同， ``sacct`` 可以从 Slurm 会计数据库检索历史作业信息。
 
 .. code-block:: bash
 
-    # show recent jobs for current user
+    # 显示当前用户最近的工作
     sacct
 
-    # show jobs from specific date range
+    # 显示特定日期 range 的职位
     sacct --starttime=2024-01-01 --endtime=2024-01-31
 
-    # show specific job details
+    # 显示具体的工作详细信息
     sacct -j ${jobid} --format=JobID,JobName,Partition,State,ExitCode,Elapsed
 
-    # show detailed resource usage
+    # 显示详细的资源使用情况
     sacct -j ${jobid} --format=JobID,MaxRSS,MaxVMSize,AveRSS,AveCPU
 
-    # show all fields
+    # 显示所有字段
     sacct -j ${jobid} --format=ALL
 
-    # show jobs with specific state
+    # 显示特定状态的职位
     sacct --state=FAILED --starttime=2024-01-01
 
-    # common format for debugging
+    # debugging 的通用格式
     sacct -j ${jobid} --format=JobID,JobName,State,ExitCode,DerivedExitCode,Comment
 
-Environment Variables
----------------------
+环境变量（Environment Variables）
+------------------------------------------------------
 
-Slurm sets various environment variables when a job runs, providing information
-about the job's allocation and configuration. These variables are essential for
-writing portable job scripts that adapt to different resource allocations.
+Slurm sets 作业运行时的各种环境 variables，提供有关作业的分配和配置的信息。这些 variables 对于编写适应不同资源分配的可移植作业脚本至关重要。
 
 .. code-block:: bash
 
-    # Common Slurm environment variables
-    echo $SLURM_JOB_ID          # Job ID
-    echo $SLURM_JOB_NAME        # Job name
-    echo $SLURM_JOB_NODELIST    # List of allocated nodes
-    echo $SLURM_JOB_NUM_NODES   # Number of nodes allocated
-    echo $SLURM_NNODES          # Same as SLURM_JOB_NUM_NODES
-    echo $SLURM_NTASKS          # Total number of tasks
-    echo $SLURM_NTASKS_PER_NODE # Tasks per node
-    echo $SLURM_CPUS_PER_TASK   # CPUs per task
-    echo $SLURM_PROCID          # MPI rank (global)
-    echo $SLURM_LOCALID         # Local task ID on node
-    echo $SLURM_NODEID          # Node ID in allocation
-    echo $SLURM_SUBMIT_DIR      # Directory where job was submitted
-    echo $SLURM_GPUS            # Number of GPUs (if allocated)
+    # 常见 Slurm 环境 variables
+    echo $SLURM_JOB_ID          # 职位 ID
+    echo $SLURM_JOB_NAME        # 职位名称
+    echo $SLURM_JOB_NODELIST    # 分配节点数List
+    echo $SLURM_JOB_NUM_NODES   # 分配的节点数
+    echo $SLURM_NNODES          # 与SLURM_JOB_NUM_NODES相同
+    echo $SLURM_NTASKS          # 任务总数
+    echo $SLURM_NTASKS_PER_NODE # 每个节点的任务
+    echo $SLURM_CPUS_PER_TASK   # 每个任务的 CPU 数
+    echo $SLURM_PROCID          # MPI 排名（全球）
+    echo $SLURM_LOCALID         # 节点上的本地任务 ID
+    echo $SLURM_NODEID          # 分配中的节点 ID
+    echo $SLURM_SUBMIT_DIR      # 提交作业的目录
+    echo $SLURM_GPUS            # GPU 数量（如果已分配）
     echo $SLURM_GPUS_PER_NODE   # GPUs per node
 
-GPU Jobs
---------
+GPU 作业（GPU Jobs）
+--------------------------------
 
-For machine learning and deep learning workloads, requesting GPU resources is
-essential. Slurm supports GPU scheduling through the Generic Resource (GRES)
-plugin. Users can request specific numbers of GPUs, GPU types, or GPUs per task.
+对于机器学习和深度学习工作负载，请求 GPU 资源至关重要。 Slurm 通过通用资源 (GRES) 插件支持 GPU 调度。用户可以请求特定数量的 GPU、GPU types 或每个任务的 GPU。
 
 .. code-block:: bash
 
-    # request 1 GPU
+    # 请求 1 GPU
     srun --gres=gpu:1 nvidia-smi
 
-    # request 4 GPUs
+    # 请求 4 个 GPU
     srun --gres=gpu:4 python train.py
 
-    # request specific GPU type (if configured)
+    # 请求特定的 GPU type（如果已配置）
     srun --gres=gpu:a100:2 python train.py
 
-    # request GPUs per task
+    # 每个任务请求 GPU
     srun --ntasks=4 --gres=gpu:4 --gpus-per-task=1 python train.py
 
     # sbatch example with GPUs
@@ -529,13 +440,10 @@ plugin. Users can request specific numbers of GPUs, GPU types, or GPUs per task.
 
     srun python train.py
 
-PyTorch Distributed Training
-----------------------------
+PyTorch 分布式训练（PyTorch Distributed Training）
+--------------------------------------------------------------------------------------
 
-Launching distributed PyTorch training jobs on Slurm requires coordinating
-multiple processes across nodes. The ``torchrun`` launcher simplifies this by
-handling process spawning and environment setup. Here's a complete example for
-multi-node distributed training.
+在 Slurm 上启动分布式 PyTorch 训练作业需要跨节点协调多个 processes。 ``torchrun`` 启动器通过处理 process 生成和环境设置来简化这一过程。这是多节点分布式训练的完整示例。
 
 .. code-block:: bash
 
@@ -548,11 +456,11 @@ multi-node distributed training.
     #SBATCH --output=logs/%x_%j.out
     #SBATCH --error=logs/%x_%j.err
 
-    # Get master node address
+    # 获取主节点地址
     MASTER_ADDR=$(scontrol show hostnames $SLURM_JOB_NODELIST | head -n 1)
     MASTER_PORT=29500
 
-    # Set environment variables for distributed training
+    # Set 用于分布式训练的环境 variables
     export NCCL_DEBUG=INFO
     export NCCL_IB_DISABLE=0
     export NCCL_NET_GDR_LEVEL=2
@@ -565,9 +473,7 @@ multi-node distributed training.
         --rdzv_endpoint=$MASTER_ADDR:$MASTER_PORT \
         train.py --batch-size=32 --epochs=100
 
-For containerized environments using Enroot and Pyxis, add ``--container-image``
-to run training inside a custom container with specific CUDA, PyTorch, or NCCL versions.
-Use ``--container-env`` to pass environment variables into the container:
+对于使用 Enroot 和 Pyxis 的容器化环境，添加 ``--container-image`` 以在具有特定 CUDA、PyTorch 或 NCCL 版本的自定义容器内运行训练。使用 ``--container-env`` 将环境 variables 传递到容器中：
 
 .. code-block:: bash
 
@@ -594,13 +500,10 @@ Use ``--container-env`` to pass environment variables into the container:
             --rdzv_endpoint=$MASTER_ADDR:$MASTER_PORT \
             train.py --batch-size=32 --epochs=100
 
-Array Jobs
-----------
+阵列作业（Array Jobs）
+--------------------------------
 
-Array jobs allow submitting multiple similar jobs with a single ``sbatch`` command.
-Each job in the array runs independently with a unique ``SLURM_ARRAY_TASK_ID``,
-making it ideal for parameter sweeps, hyperparameter tuning, or processing multiple
-datasets.
+Array 作业允许使用单个 ``sbatch`` 命令提交多个相似的作业。 array 中的每个作业都与唯一的 ``SLURM_ARRAY_TASK_ID`` 独立运行，使其成为 parameter 扫描、超参数调整或处理多个数据集的理想选择。
 
 .. code-block:: bash
 
@@ -609,75 +512,71 @@ datasets.
     #SBATCH --array=0-9
     #SBATCH --output=logs/array_%A_%a.out
 
-    # SLURM_ARRAY_JOB_ID  - Job array's master job ID
-    # SLURM_ARRAY_TASK_ID - Job array index (0-9 in this case)
+    # SLURM_ARRAY_JOB_ID - 作业 array 的主作业 ID
+    # SLURM_ARRAY_TASK_ID - 作业 array index（本例中为 0-9）
 
     echo "Array task ID: $SLURM_ARRAY_TASK_ID"
     python train.py --seed=$SLURM_ARRAY_TASK_ID
 
-    # Submit array job
+    # 提交 array 作业
     # sbatch array_job.sh
 
-    # Submit with step size (0, 2, 4, 6, 8)
+    # 以步长 (0, 2, 4, 6, 8) 提交
     #SBATCH --array=0-9:2
 
-    # Submit with max concurrent tasks
+    # 以最大并发任务提交
     #SBATCH --array=0-99%10  # max 10 running at once
 
-    # Cancel specific array tasks
-    scancel ${jobid}_5      # cancel task 5
+    # 取消特定的 array 任务
+    scancel ${jobid}_5      # 取消任务5
     scancel ${jobid}_[1-3]  # cancel tasks 1-3
 
-Job Dependencies
-----------------
+作业依赖（Job Dependencies）
+--------------------------------------------
 
-Job dependencies allow you to control the execution order of jobs. A job can
-wait for another job to complete, succeed, or fail before starting. This is
-useful for creating pipelines where preprocessing must finish before training.
+作业依赖关系允许您控制作业的执行顺序。一个作业可以等待另一个作业完成、成功或失败后再开始。这对于创建必须在训练之前完成预处理的管道非常有用。
 
 .. code-block:: bash
 
-    # Submit first job
+    # 提交第一份工作
     JOB1=$(sbatch --parsable preprocess.sh)
 
-    # Submit second job after first completes successfully
+    # 第一个作业成功完成后提交第二个作业
     JOB2=$(sbatch --parsable --dependency=afterok:$JOB1 train.sh)
 
-    # Submit third job after second completes (regardless of status)
+    # 第二个作业完成后提交第三个作业（无论状态如何）
     sbatch --dependency=afterany:$JOB2 postprocess.sh
 
-    # Dependency types:
-    # after:jobid       - start after job begins
-    # afterok:jobid     - start after job completes successfully
-    # afternotok:jobid  - start after job fails
-    # afterany:jobid    - start after job completes (any status)
-    # singleton         - only one job with same name runs at a time
+    # 依赖项 types：
+    # after:jobid - 作业开始后开始
+    # afterok:jobid - 作业成功完成后启动
+    # afternotok:jobid - 作业失败后启动
+    # afterany:jobid - 作业完成后开始（任何状态）
+    # 单例 - 一次仅运行一项同名作业
 
-    # Multiple dependencies
+    # 多重依赖
     sbatch --dependency=afterok:$JOB1:$JOB2 final.sh
 
-Resource Limits
----------------
+资源限制（Resource Limits）
+------------------------------------------
 
-Setting appropriate resource limits helps ensure fair cluster usage and prevents
-jobs from consuming excessive resources. Slurm allows specifying memory, CPU,
-and time limits per job.
+设置适当的资源限制有助于确保公平的集群使用并防止作业消耗过多的资源。 Slurm 允许指定每个作业的内存、CPU 和时间限制。
 
 .. code-block:: bash
 
-    # Memory per node
+    # 每个节点的内存
     srun --mem=64G python train.py
 
-    # Memory per CPU
+    # 每个 CPU 的内存
     srun --mem-per-cpu=4G python train.py
 
-    # CPU limit
+    # CPU 极限
     srun --cpus-per-task=8 python train.py
 
-    # Time limit (job killed if exceeded)
+    # 时间限制（如果超过则终止工作）
     srun --time=24:00:00 python train.py
 
-    # Exclusive node access (no sharing)
+    # 独占节点访问（不共享）
     srun --exclusive python train.py
 
     # sbatch example with limits
@@ -687,37 +586,36 @@ and time limits per job.
     #SBATCH --time=48:00:00
     #SBATCH --exclusive
 
-Debugging Failed Jobs
----------------------
+调试失败的作业（Debugging Failed Jobs）
+------------------------------------------------------------
 
-When jobs fail, Slurm provides several tools to diagnose the issue. Common
-problems include out-of-memory errors, time limits exceeded, and node failures.
+当作业失败时，Slurm 提供了多种工具来诊断问题。常见问题包括内存不足错误、超出时间限制和节点故障。
 
 .. code-block:: bash
 
-    # Check job exit code and state
+    # 检查作业 exit code 和状态
     sacct -j ${jobid} --format=JobID,State,ExitCode,DerivedExitCode
 
-    # Common exit codes:
-    # 0     - Success
-    # 1     - General error
-    # 137   - OOM killed (128 + 9 SIGKILL)
-    # 143   - Time limit (128 + 15 SIGTERM)
+    # 常见exit codes：
+    # 0 - 成功
+    # 1 - 一般错误
+    # 137 - OOM 被杀（128 + 9 SIGKILL）
+    # 143 - 时间限制 (128 + 15 SIGTERM)
 
-    # Check job's stderr/stdout
+    # 检查作业的 stderr/stdout
     cat slurm-${jobid}.out
 
-    # Check why job is pending
+    # 检查作业为何待处理
     squeue -j ${jobid} --format="%i %r"
 
-    # Common pending reasons:
-    # Resources    - Waiting for resources
-    # Priority     - Lower priority than other jobs
-    # Dependency   - Waiting for dependent job
-    # QOSMaxJobsPerUserLimit - User job limit reached
+    # 常见待处理原因：
+    # 资源 - 等待资源
+    # 优先级 - 优先级低于其他作业
+    # 依赖 - 等待依赖作业
+    # QOSMaxJobsPerUserLimit - 达到用户作业限制
 
-    # Show detailed job info
+    # 显示详细的职位信息
     scontrol show job ${jobid}
 
-    # Check node health where job ran
+    # 检查运行作业的节点运行状况
     scontrol show node ${nodename}

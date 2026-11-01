@@ -18,7 +18,7 @@ from typing import (
 )
 
 
-# Basic Types
+# 基本型 Types
 def greet(name: str) -> str:
     """Function with type annotations."""
     return f"Hello, {name}!"
@@ -40,7 +40,7 @@ def get_value(data: dict[str, int], key: str) -> int | None:
     return data.get(key)
 
 
-# Optional and Union
+# 可选和联合
 def find_user(user_id: int) -> Optional[str]:
     """Return username or None."""
     users = {1: "Alice", 2: "Bob"}
@@ -52,7 +52,7 @@ def process(value: int | str) -> str:
     return str(value)
 
 
-# Callable
+# 可调用
 def apply(func: Callable[[int, int], int], a: int, b: int) -> int:
     """Apply function to arguments."""
     return func(a, b)
@@ -61,7 +61,7 @@ def apply(func: Callable[[int, int], int], a: int, b: int) -> int:
 double: Callable[[int], int] = lambda x: x * 2
 
 
-# TypeVar and Generics
+# TypeVar 和泛型
 T = TypeVar("T")
 
 
@@ -78,7 +78,7 @@ def double_num(x: Number) -> Number:
     return x * 2
 
 
-# Generic Class
+# 通用 Class
 class Stack(Generic[T]):
     """Generic stack class."""
 
@@ -95,7 +95,7 @@ class Stack(Generic[T]):
         return len(self._items) == 0
 
 
-# Protocol
+# 协议
 class Drawable(Protocol):
     """Protocol for drawable objects."""
 
@@ -121,7 +121,7 @@ def render(shape: Drawable) -> str:
     return shape.draw()
 
 
-# TypedDict
+# 类型字典
 class UserDict(TypedDict):
     """Typed dictionary for user data."""
 
@@ -135,11 +135,11 @@ def set_status(status: Literal["active", "inactive"]) -> str:
     return f"Status: {status}"
 
 
-# Final
+# 最终的
 MAX_SIZE: Final = 100
 
 
-# ClassVar
+# 类变量
 class Config:
     """Class with ClassVar."""
 
@@ -150,7 +150,7 @@ class Config:
         self.name = name
 
 
-# Tests
+# 测试
 class TestBasicTypes:
     def test_greet(self):
         assert greet("World") == "Hello, World!"

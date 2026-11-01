@@ -1,68 +1,43 @@
 .. meta::
-    :description lang=en: Python interpreter in GNU Debugger (GDB)
+    :description lang=zh_CN: Python interpreter 中 GNU Debugger (GDB)
     :keywords: Python, Python3, GDB
 
-==================================
-Python Interpreter in GNU Debugger
-==================================
+================================================================================================================
+GNU 调试器中的 Python 解释器（Python Interpreter in GNU Debugger）
+================================================================================================================
 
 :Date: 2025-08-30
 
-Abstract
---------
+摘要（Abstract）
+------------------------
 
-The GNU Debugger (GDB) is the most powerful debugging tool for developers to
-troubleshoot errors in their code. However, it is hard for beginners to learn,
-and that is why many programmers prefer to insert ``print`` to examine runtime
-status. Fortunately, `GDB Text User Interface (TUI)`_ provides a way for
-developers to review their source code and debug simultaneously. More
-excitingly, In GDB 7, **Python Interpreter** was built into GDB. This feature
-offers more straightforward ways to customize GDB printers and commands through
-the Python library. By discussing examples, this article tries to explore
-advanced debugging techniques via Python to develop tool kits for GDB.
+GNU Debugger (GDB) 是最强大的 debugging 工具，可供开发人员排除代​​码中的错误。然而，对于初学者来说很难学习，这就是为什么许多程序员更喜欢插入 ``print`` 来检查运行时状态。幸运的是， `GDB Text User Interface (TUI)`_ 为开发人员提供了一种同时查看源代码和调试的方法。更令人兴奋的是，在GDB 7中， **Python Interpreter** 被内置到GDB中。此功能提供了更直接的方法来通过 Python library 定制 GDB 打印机和命令。通过讨论示例，本文尝试通过 Python 探索先进的 debugging 技术，为 GDB 开发工具包。
 
-Introduction
-------------
+介绍（Introduction）
+--------------------------------
 
-Troubleshooting software bugs is a big challenge for developers. While GDB
-provides many “debug commands” to inspect programs’ runtime status, its
-non-intuitive usages impede programmers to use it to solve problems. Indeed,
-mastering GDB is a long-term process. However, a quick start is not complicated;
-you must unlearn what you have learned like Yoda. To better understand how to
-use Python in GDB, this article will focus on discussing Python interpreter in
-GDB.
+解决软件错误对开发人员来说是一个巨大的挑战。虽然GDB提供了许多“调试命令”来检查程序的运行状态，但其不直观的用法阻碍了程序员使用它来解决问题。确实，掌握GDB是一个长期的process。然而，快速启动并不复杂；你必须像尤达那样忘记你所学到的东西。为了更好地理解如何在GDB中使用Python，本文将重点讨论GDB中的Python interpreter。
 
-Define Commands
----------------
+定义命令（Define Commands）
+------------------------------------------
 
-GDB supports customizing commands by using ``define``. It is useful to run a
-batch of commands to troubleshoot at the same time. For example, a developer
-can display the current frame information by defining a ``sf`` command.
+GDB支持使用 ``define`` 自定义命令。同时运行一批命令来排除故障非常有用。例如，开发者可以通过定义 ``sf`` 命令来显示当前帧信息。
 
 .. code-block:: bash
 
     # define in .gdbinit
     define sf
-      where        # find out where the program is
-      info args    # show arguments
-      info locals  # show local variables
+      where        # 找出程序在哪里
+      info args    # 显示 arguments
+      info locals  # 显示本地 variables
     end
 
-However, writing a user-defined command may be inconvenient due to limited APIs.
-Fortunately, by interacting with Python interpreter in GDB, developers can
-utilize Python libraries to establish their debugging tool kits readily. The
-following sections show how to use Python to simplify debugging processes.
+然而，由于APIs的限制，编写用户自定义命令可能会很不方便。幸运的是，通过与GDB中的Python interpreter交互，开发人员可以利用Python libraries轻松建立他们的debugging工具包。以下部分介绍如何使用 Python 来简化 debugging processes。
 
-Dump Memory
------------
+转储内存（Dump Memory）
+----------------------------------
 
-Inspecting a process’s memory information is an effective way to troubleshoot
-memory issues. Developers can acquire memory contents by ``info proc mappings``
-and ``dump memory``. To simplify these steps, defining a customized command is
-useful. However, the implementation is not straightforward by using pure GDB
-syntax. Even though GDB supports conditions, processing output is not intuitive.
-To solve this problem, using Python API in GDB would be helpful because Python
-contains many useful operations for handling strings.
+检查process的内存信息是解决内存问题的有效方法。开发者可以通过 ``info proc mappings`` 和 ``dump memory`` 获取内存内容。为了简化这些步骤，定义自定义命令很有用。然而，使用纯 GDB 语法的实现并不简单。尽管GDB支持条件，但处理输出并不直观。为了解决这个问题，在 GDB 中使用 Python API 会很有帮助，因为 Python 包含许多处理 strings 的有用操作。
 
 .. code-block:: python
 
@@ -101,7 +76,7 @@ contains many useful operations for handling strings.
             try:
                 # cat /proc/self/maps
                 addrs = self.get_addr(args, tty)
-                # dump memory
+                # 转储内存
                 self.dump(addrs)
             except Exception as e:
                 print("Usage: dm [pattern]")
@@ -109,27 +84,21 @@ contains many useful operations for handling strings.
     DumpMemory()
 
 
-Running the ``dm`` command will invoke ``DumpMemory.invoke``. By sourcing
-or implementing Python scripts in *.gdbinit*, developers can utilize
-user-defined commands to trace bugs when a program is running. For example, the
-following steps show how to invoke ``DumpMemory`` in GDB.
+运行 ``dm`` 命令将调用 ``DumpMemory.invoke`` 。通过在 *.gdbinit* 中获取或实现 Python 脚本，开发人员可以利用用户定义的命令来跟踪程序运行时的错误。例如，以下步骤显示如何在 GDB 中调用 ``DumpMemory`` 。
 
 .. code-block:: bash
 
     (gdb) start
     ...
     (gdb) source mem.py  # source commands
-    (gdb) dm stack       # dump stack to ${timestamp}.bin
+    (gdb) dm stack       # 将 stack 转储到 ${timestamp}.bin
     (gdb) shell ls       # ls current dir
     1577283091687.bin  a.cpp  a.out  mem.py
 
-Dump JSON
----------
+转储 JSON（Dump JSON）
+------------------------------------
 
-Parsing JSON is helpful when a developer is inspecting a JSON string in a
-running program. GDB can parse a ``std::string`` via ``gdb.parse_and_eval``
-and return it as a ``gdb.Value``. By processing ``gdb.Value``, developers can
-pass a JSON string into Python ``json`` API and print it in a pretty format.
+当开发人员在正在运行的程序中检查 JSON string 时，解析 JSON 非常有用。 GDB 可以通过 ``gdb.parse_and_eval`` 解析 ``std::string`` 并将其作为 ``gdb.Value`` 返回。通过处理 ``gdb.Value`` ，开发人员可以将 JSON string 传递给 Python ``json`` API 并以漂亮的格式打印。
 
 .. code-block:: python
 
@@ -154,9 +123,9 @@ pass a JSON string into Python ``json`` API and print it in a pretty format.
 
         def invoke(self, args, tty):
             try:
-                # string to json string
+                # string 至 json string
                 s = self.get_json(args)
-                # json string to object
+                # json string 至 object
                 o = json.loads(s)
                 print(json.dumps(o, indent=2))
             except Exception as e:
@@ -164,10 +133,7 @@ pass a JSON string into Python ``json`` API and print it in a pretty format.
 
     DumpJson()
 
-The command ``dj`` displays a more readable JSON format in GDB. This command
-helps improve visual recognization when a JSON string large. Also, by using
-this command, it can detect or monitor whether a ``std::string`` is JSON or
-not.
+命令 ``dj`` 以 GDB 形式显示更易读的 JSON 格式。当 JSON string 较大时，此命令有助于提高视觉识别率。另外，通过该命令还可以检测或监控 ``std::string`` 是否为JSON。
 
 .. code-block:: bash
 
@@ -192,13 +158,10 @@ not.
       "bar": "BAR"
     }
 
-Highlight Syntax
-----------------
+突出显示语法（Highlight Syntax）
+------------------------------------------------
 
-Syntax highlighting is useful for developers to trace source code or to
-troubleshoot issues. By using `Pygments`_, applying color to the source is easy
-without defining ANSI escape code manually. The following example shows how to
-apply color to the ``list`` command output.
+Syntax highlighting 对于开发人员跟踪源代码或解决问题很有用。通过使用 `Pygments`_ ，可以轻松地将颜色应用于源，而无需手动定义 ANSI escape 代码。以下示例显示如何将颜色应用于 ``list`` 命令输出。
 
 .. code-block:: python
 
@@ -225,19 +188,10 @@ apply color to the ``list`` command output.
 
     PrettyList()
 
-Tracepoints
------------
+跟踪点（Tracepoints）
+--------------------------------
 
-Although a developer can insert ``printf``, ``std::cout``, or ``syslog`` to
-inspect functions, printing messages is not an effective way to debug when a
-project is enormous. Developers may waste their time in building source code
-and may acquire little information. Even worse, the output may become too much
-to detect problems. In fact, inspecting functions or variables do not require
-to embed *print functions* in code. By writing a Python script with GDB API,
-developers can customize watchpoints to trace issues dynamically at runtime.
-For example, by implementing a ``gdb.Breakpoint`` and a ``gdb.Command``, it is
-useful for developers to acquire essential information, such as parameters,
-call stacks, or memory usage.
+虽然开发人员可以插入 ``printf`` 、 ``std::cout`` 或 ``syslog`` 来检查 functions，但当项目很大时，打印消息并不是一种有效的调试方法。开发人员可能会浪费时间构建源代码，并且可能获得很少的信息。更糟糕的是，输出可能会变得太大而无法检测到问题。事实上，检查 functions 或 variables 不需要在代码中嵌入*print functions*。通过使用 GDB API 编写 Python 脚本，开发人员可以自定义观察点以在运行时动态跟踪问题。例如，通过实现 ``gdb.Breakpoint`` 和 ``gdb.Command`` ，开发人员可以获取必要的信息，例如parameters、调用stacks或内存使用情况。
 
 .. code-block:: python
 
@@ -260,9 +214,9 @@ call stacks, or memory usage.
             framename = frame.name()
             filename = sym_and_line.symtab.filename
             line = sym_and_line.line
-            # show tracepoint info
+            # 显示跟踪点信息
             print(f"{framename} @ {filename}:{line}")
-            # show args and vars
+            # 显示参数和变量
             for s in block:
                 if not s.is_argument and not s.is_variable:
                     continue
@@ -271,7 +225,7 @@ call stacks, or memory usage.
                 size = typ.sizeof
                 name = s.name
                 print(f"\t{name}({typ}: {val}) [{size}]")
-            # do not stop at tracepoint
+            # 不要在跟踪点停止
             return False
 
     class SetTracepoint(gdb.Command):
@@ -293,10 +247,7 @@ call stacks, or memory usage.
     gdb.events.exited.connect(finish)
     SetTracepoint()
 
-Instead of inserting ``std::cout`` at the beginning of functions, using a
-tracepoint at a function's entry point provides useful information to inspect
-arguments, variables, and stacks. For instance, by setting a tracepoint at
-``fib``, it is helpful to examine memory usage, stack, and the number of calls.
+无需在 functions 的开头插入 ``std::cout`` ，而是在 function 的入口点使用跟踪点可提供有用的信息来检查 arguments、variables 和 stacks。对于instance，通过在 ``fib`` 处设置跟踪点，有助于检查内存使用情况、stack和调用次数。
 
 .. code-block:: cpp
 
@@ -314,10 +265,7 @@ arguments, variables, and stacks. For instance, by setting a tracepoint at
         return 0;
     }
 
-The following output shows the result of an inspection of the function ``fib``.
-In this case, tracepoints display all information a developer needs, including
-arguments' value, recursive flow, and variables' size. By using tracepoints,
-developers can acquire more useful information comparing with ``std::cout``.
+以下输出显示了 function ``fib`` 的检查结果。在这种情况下，跟踪点显示开发人员需要的所有信息，包括 arguments' value、recursive 流量和 variables' 大小。与 ``std::cout`` 相比，通过使用tracepoint，开发人员可以获得更多有用的信息。
 
 .. code-block:: bash
 
@@ -345,15 +293,10 @@ developers can acquire more useful information comparing with ``std::cout``.
     Tracepoint 'main' Count: 1
     Tracepoint 'fib' Count: 5
 
-Profiling
----------
+分析（Profiling）
+--------------------------
 
-Without inserting timestamps, profiling is still feasible through tracepoints.
-By using a ``gdb.FinishBreakpoint`` after a ``gdb.Breakpoint``, GDB sets a
-temporary breakpoint at the return address of a frame for developers to get
-the current timestamp and to calculate the time difference. Note that profiling
-via GDB is not precise. Other tools, such as `Linux perf`_ or `Valgrind`_,
-provide more useful and accurate information to trace performance issues.
+在不插入时间戳的情况下，profiling 通过跟踪点仍然可行。通过在 ``gdb.Breakpoint`` 、GDB、sets之后使用 ``gdb.FinishBreakpoint`` ，在帧的返回地址处使用临时breakpoint，以便开发人员获取当前时间戳并计算时间差。请注意，通过 GDB 的 profiling 并不精确。其他工具（例如 `Linux perf`_ 或 `Valgrind`_ ）提供更有用和更准确的信息来跟踪性能问题。
 
 .. code-block:: python
 
@@ -367,7 +310,7 @@ provide more useful and accurate information to trace performance issues.
             self.breakpoint = breakpoint
 
         def stop(self):
-            # normal finish
+            # 正常完成
             end = time.time()
             start, out = self.breakpoint.stack.pop()
             diff = end - start
@@ -383,7 +326,7 @@ provide more useful and accurate information to trace performance issues.
 
         def stop(self):
             start = time.time()
-            # start, end, diff
+            # 开始、结束、差异
             frame = gdb.newest_frame()
             sym_and_line = frame.find_sal()
             func = frame.function().name
@@ -400,13 +343,13 @@ provide more useful and accurate information to trace performance issues.
                 val = s.value(frame)
                 args.append(f"{name}: {val} [{typ}]")
 
-            # format
+            # 格式
             out = ""
             out += f"{func} @ {filename}:{line}\n"
             for a in args:
                 out += f"\t{a}\n"
 
-            # append current status to a breakpoint stack
+            # 将当前状态附加到 breakpoint stack
             self.stack.append((start, out))
             EndPoint(self, internal=True)
             return False
@@ -424,9 +367,7 @@ provide more useful and accurate information to trace performance issues.
     Profile()
 
 
-The following output shows the profiling result by setting a tracepoint at the
-function ``fib``. It is convenient to inspect the function's performance and
-stack at the same time.
+以下输出通过在 function ``fib`` 处设置跟踪点显示 profiling 结果。方便同时检查function和stack的性能。
 
 .. code-block:: bash
 
@@ -451,15 +392,10 @@ stack at the same time.
             n: 3 [int]
             Cost: 0.01870584487915039
 
-Pretty Print
-------------
+格式化输出（Pretty Print）
+--------------------------------------
 
-Although ``set print pretty on`` in GDB offers a better format to inspect
-variables, developers may require to parse variables' value for readability.
-Take the system call ``stat`` as an example. While it provides useful information
-to examine file attributes, the output values, such as the permission, may not
-be readable for debugging. By implementing a user-defined pretty print,
-developers can parse ``struct stat`` and output information in a readable format.
+尽管 GDB 中的 ``set print pretty on`` 提供了更好的格式来检查 variables，但开发人员可能需要解析 variables' value 以提高可读性。以系统调用 ``stat`` 为例。虽然它提供了检查文件 attributes 的有用信息，但输出 values（例如权限）对于 debugging 可能无法读取。通过实现用户定义的漂亮打印，开发人员可以解析 ``struct stat`` 并以可读格式输出信息。
 
 .. code-block:: python
 
@@ -544,10 +480,7 @@ developers can parse ``struct stat`` and output information in a readable format
     o = gdb.current_objfile()
     gdb.printing.register_pretty_printer(o, p)
 
-By sourcing the previous Python script, the ``PrettyPrinter`` can recognize
-``struct stat`` and output a readable format for developers to inspect file
-attributes. Without inserting functions to parse and print ``struct stat``, it
-is a more convenient way to acquire a better output from Python API.
+通过获取之前的 Python 脚本， ``PrettyPrinter`` 可以识别 ``struct stat`` 并输出可读格式，供开发人员检查文件 attributes。无需插入functions来解析和打印 ``struct stat`` ，这是从Python API获得更好输出的更方便的方法。
 
 .. code-block:: bash
 
@@ -585,10 +518,7 @@ is a more convenient way to acquire a better output from Python API.
     Change: 2019-12-28T15:53:01
     }
 
-Note that developers can disable a user-defined pretty-print via the command
-``disable``. For example, the previous Python script registers a pretty printer
-under the global pretty-printers. By calling ``disable pretty-print``, the
-printer ``sp`` will be disabled.
+请注意，开发人员可以通过命令 ``disable`` 禁用用户定义的漂亮打印。例如，前面的 Python 脚本在全局漂亮打印机下注册了一个漂亮打印机。通过调用 ``disable pretty-print`` ，打印机 ``sp`` 将被禁用。
 
 .. code-block:: bash
 
@@ -602,9 +532,7 @@ printer ``sp`` will be disabled.
       sp [disabled]
         stat
 
-Additionally, developers can exclude a printer in the current GDB debugging
-session if it is no longer required. The following snippet shows how to delete
-the ``sp`` printer through ``gdb.pretty_printers.remove``.
+此外，如果不再需要打印机，开发人员可以将其排除在当前 GDB debugging 会话中。以下代码片段显示了如何通过 ``gdb.pretty_printers.remove`` 删除 ``sp`` 打印机。
 
 .. code-block:: bash
 
@@ -619,25 +547,14 @@ the ``sp`` printer through ``gdb.pretty_printers.remove``.
       builtin
         mpx_bound128
 
-Conclusion
-----------
+结论（Conclusion）
+----------------------------
 
-Integrating Python interpreter into GDB offers many flexible ways to
-troubleshoot issues. While many integrated development environments (IDEs) may
-embed GDB to debug visually, GDB allows developers to implement their commands
-and parse variables’ output at runtime. By using debugging scripts, developers
-can monitor and record necessary information without modifying their code.
-Honestly, inserting or enabling debugging code blocks may change a program’s
-behaviors, and developers should get rid of this bad habit. Also, when a problem
-is reproduced, GDB can attach that process and examine its status without stopping
-it. Obviously, debugging via GDB is inevitable if a challenging issue emerges.
-Thanks to integrating Python into GDB, developing a script to troubleshoot becomes
-more accessible that leads to developers establishing their debugging methods
-diversely.
+将 Python interpreter 集成到 GDB 中提供了许多灵活的方法来解决问题。虽然许多集成开发环境 (IDE) 可能嵌入 GDB 进行可视化调试，但 GDB 允许开发人员在运行时实现其命令并解析 variables 的输出。通过使用debugging脚本，开发人员无需修改代码即可监控和记录必要的信息。老实说，插入或启用 debugging 代码块可能会改变程序的行为，开发人员应该改掉这个坏习惯。此外，当问题重现时，GDB 可以附加该 process 并检查其状态，而无需停止它。显然，如果出现具有挑战性的问题，debugging 经由 GDB 是不可避免的。由于将 Python 集成到 GDB 中，开发故障排除脚本变得更加容易，从而使开发人员能够以不同的方式建立他们的 debugging methods。
 
 
-Reference
----------
+参考资料（Reference）
+------------------------------
 
 1. `Extending GDB using Python`_
 2. `gcc/gcc/gdbhooks.py`_

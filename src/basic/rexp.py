@@ -9,7 +9,7 @@ from collections import namedtuple
 import pytest
 
 
-# Basic Matching
+# 基本搭配
 def search_pattern(pattern: str, text: str) -> str | None:
     """Find first match of pattern in text."""
     m = re.search(pattern, text)
@@ -26,7 +26,7 @@ def fullmatch(pattern: str, text: str) -> bool:
     return re.fullmatch(pattern, text) is not None
 
 
-# Find All
+# 查找全部
 def find_all(pattern: str, text: str) -> list:
     """Find all matches of pattern."""
     return re.findall(pattern, text)
@@ -37,13 +37,13 @@ def find_all_groups(pattern: str, text: str) -> list:
     return re.findall(pattern, text)
 
 
-# Split
+# 分裂
 def split_pattern(pattern: str, text: str) -> list:
     """Split text by pattern."""
     return re.split(pattern, text)
 
 
-# Groups
+# 团体
 def parse_date(text: str) -> dict | None:
     """Parse date string into components."""
     m = re.search(r"(\d{4})-(\d{2})-(\d{2})", text)
@@ -59,14 +59,14 @@ def parse_date_named(text: str) -> dict | None:
     return m.groupdict() if m else None
 
 
-# Non-capturing group
+# 非捕获组
 def parse_url(url: str) -> tuple | None:
     """Parse URL with non-capturing group for protocol."""
     m = re.search(r"(?:https?|ftp)://([^/\r\n]+)(/[^\r\n]*)?", url)
     return m.groups() if m else None
 
 
-# Back Reference
+# 向后参考
 def has_repeated_char(text: str) -> bool:
     """Check if text has repeated adjacent characters."""
     return re.search(r"(\w)\1", text) is not None
@@ -78,7 +78,7 @@ def match_html_tag(text: str) -> str | None:
     return m.group() if m else None
 
 
-# Lookahead/Lookbehind
+# 前瞻/后瞻
 def find_before_at(text: str) -> list:
     """Find words before @ symbol (positive lookahead)."""
     return re.findall(r"\w+(?=@)", text)
@@ -94,7 +94,7 @@ def find_not_followed_by(text: str, suffix: str) -> list:
     return re.findall(rf"\d+(?!{suffix})", text)
 
 
-# Substitution
+# 替代
 def replace_pattern(pattern: str, repl: str, text: str) -> str:
     """Replace pattern with replacement."""
     return re.sub(pattern, repl, text)
@@ -111,7 +111,7 @@ def camel_to_snake(s: str) -> str:
     return re.sub(r"([a-z])([A-Z])", r"\1_\2", s).lower()
 
 
-# Compiled Patterns
+# 编译模式
 EMAIL_PATTERN = re.compile(r"^[\w.+-]+@[\w-]+\.[\w.-]+$")
 IP_PATTERN = re.compile(
     r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}"
@@ -165,7 +165,7 @@ def is_strong_password(text: str) -> bool:
     return PASSWORD_PATTERN.match(text) is not None
 
 
-# HTML Tags
+# HTML标签
 def find_open_tags(html: str) -> list:
     """Find all open tags."""
     return re.findall(r"<[^/>][^>]*>", html)
@@ -181,7 +181,7 @@ def strip_html_tags(html: str) -> str:
     return re.sub(r"<[^>]+>", "", html)
 
 
-# Lexer
+# 词法分析器
 Token = namedtuple("Token", ["type", "value"])
 
 
@@ -204,7 +204,7 @@ def tokenize(text: str) -> list:
     ]
 
 
-# Utility functions
+# 实用程序 functions
 def find_hashtags(text: str) -> list:
     """Find all hashtags in text."""
     return re.findall(r"#\w+", text)
@@ -221,7 +221,7 @@ def extract_domain(url: str) -> str | None:
     return m.group(1) if m else None
 
 
-# Tests
+# 测试
 class TestBasicMatching:
     def test_search(self):
         assert search_pattern(r"\d+", "abc123def") == "123"
@@ -268,7 +268,7 @@ class TestGroups:
 
 class TestBackReference:
     def test_repeated_char(self):
-        assert has_repeated_char("hello")  # ll
+        assert has_repeated_char("hello")  # 二
         assert not has_repeated_char("world")
 
     def test_html_tag(self):

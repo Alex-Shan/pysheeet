@@ -15,7 +15,7 @@ import tempfile
 import pytest
 
 
-# Skip all tests if no C compiler available
+# 如果没有 C compiler 可用，则跳过所有测试
 def has_c_compiler():
     """Check if gcc or clang is available."""
     for compiler in ["gcc", "clang", "cc"]:
@@ -94,7 +94,7 @@ class TestCtypesStructures:
         assert p.x == 3.0
         assert p.y == 4.0
 
-        # Calculate distance manually
+        # 手动计算距离
         distance = math.sqrt(p.x**2 + p.y**2)
         assert abs(distance - 5.0) < 1e-10
 
@@ -137,16 +137,16 @@ class TestCtypesPointers:
         ptr = ctypes.pointer(value)
         assert ptr.contents.value == 42
 
-        # Modify through pointer
+        # 通过指针修改
         ptr.contents.value = 100
         assert value.value == 100
 
     def test_byref(self):
         """Test byref for passing by reference."""
         value = ctypes.c_int(42)
-        # byref creates a lightweight pointer for passing to C functions
+        # byref 创建一个轻量级指针用于传递给 C functions
         ref = ctypes.byref(value)
-        # byref returns a CArgObject, not a full pointer
+        # byref 返回 CArgObject，而不是完整指针
         assert ref is not None
 
 
@@ -195,7 +195,7 @@ class TestCtypesCustomLibrary:
 
         lib = ctypes.CDLL(str(lib_file))
 
-        # Set up function signatures
+        # Set 最多 function 签名
         lib.fib.argtypes = [ctypes.c_ulong]
         lib.fib.restype = ctypes.c_ulong
 

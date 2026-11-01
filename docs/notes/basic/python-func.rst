@@ -1,30 +1,20 @@
 .. meta::
-    :description lang=en: Python function cheat sheet covering function definitions, arguments, decorators, lambda, closures, and functools with code examples
+    :description lang=zh_CN: Python function 速查表涵盖 function 定义、arguments、decorators、lambda、closures 和带有代码示例的 functools
     :keywords: Python, Python3, Python function, Python function cheat sheet, decorator, lambda, closure, *args, **kwargs, functools, lru_cache, partial
 
-========
-Function
-========
+========================
+函数（Function）
+========================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-A function can help programmers to wrap their logic into a task for avoiding
-duplicate code. In Python, the definition of a function is so versatile that
-we can use many features such as decorator, annotation, docstrings, default
-arguments and so on to define a function. In this cheat sheet, it collects
-many ways to define a function and demystifies some enigmatic syntax in functions.
+function 可以帮助程序员将逻辑包装到任务中，以避免重复代码。在Python中，function的定义非常通用，我们可以使用decorator、注释、文档字符串、default arguments等许多特性来定义function。在此速查表中，它收集了定义 function 的多种方法，并揭开了 functions 中一些神秘语法的神秘面纱。
 
-Document Functions
-------------------
+为函数编写文档（Document Functions）
+------------------------------------------------------
 
-Documentation provides programmers hints about how a function is supposed to
-be used. A docstring gives an expedient way to write a readable document of
-functions. The docstring should be placed as the first statement in the function
-body, enclosed in triple quotes. It can be accessed via the ``__doc__`` attribute
-or the built-in ``help()`` function. PEP `257 <https://www.python.org/dev/peps/pep-0257>`_
-defines conventions for docstrings, and tools like ``pydocstyle`` can help
-enforce these conventions in your codebase.
+文档为程序员提供了有关如何使用 function 的提示。文档字符串提供了一种编写 functions 可读文档的便捷方法。文档字符串应作为 function 正文中的第一个 statement 放置，并用三引号括起来。可通过 ``__doc__`` attribute 或内置 ``help()`` function 进行访问。 PEP `257 <https://www.python.org/dev/peps/pep-0257>`_ 定义文档字符串的约定， ``pydocstyle`` 等工具可以帮助在代码库中强制执行这些约定。
 
 .. code-block:: python
 
@@ -36,15 +26,10 @@ enforce these conventions in your codebase.
     'This is an example function.'
     >>> help(example)
 
-Default Arguments
------------------
+默认参数（Default Arguments）
+----------------------------------------------
 
-Defining a function where the arguments are optional and have a default value
-is quite simple in Python. We can just assign values in the definition and make
-sure the default arguments appear in the end. When calling the function, you can
-omit arguments that have defaults, pass them positionally, or use keyword syntax
-to specify them explicitly. This flexibility makes functions more versatile and
-easier to use in different contexts.
+在 Python 中定义 function（其中 arguments 是可选的并且具有默认值 value）非常简单。我们可以在定义中分配 values 并确保 default arguments 出现在最后。调用 function 时，您可以省略具有默认值的 arguments，按位置传递它们，或使用关键字语法显式指定它们。这种灵活性使 functions 更加通用，更易于在不同环境中使用。
 
 .. code-block:: python
 
@@ -60,39 +45,29 @@ easier to use in different contexts.
 
 .. warning::
 
-    Avoid using mutable objects (like lists or dictionaries) as default arguments.
-    Default argument values are evaluated only once when the function is defined,
-    not each time the function is called. This means mutable defaults are shared
-    across all calls, which can lead to unexpected behavior where modifications
-    persist between function calls.
+    避免将 mutable objects（如 lists 或 dictionaries）用作 default arguments。 Default argument values 仅在定义 function 时评估一次，而不是每次调用 function 时评估。这意味着 mutable 默认值在所有调用之间共享，这可能会导致意外行为，即 function 调用之间的修改仍然存在。
 
     .. code-block:: python
 
-        >>> def bad(items=[]):  # DON'T do this
+        >>> def bad(items=[]):  # DON'不这样做
         ...     items.append(1)
         ...     return items
         ...
         >>> bad()
         [1]
-        >>> bad()  # unexpected!
+        >>> bad()  # 意外！
         [1, 1]
 
-        >>> def good(items=None):  # DO this instead
+        >>> def good(items=None):  # DO 这个改为
         ...     if items is None:
         ...         items = []
         ...     items.append(1)
         ...     return items
 
-Variable Arguments ``*args`` and ``**kwargs``
----------------------------------------------
+可变参数 ``*args`` 与 ``**kwargs`` （Variable Arguments ``*args`` and ``**kwargs`` ）
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Python provides a flexible way to handle functions that need to accept a variable
-number of arguments. Use ``*args`` to collect any number of positional arguments
-into a tuple, and ``**kwargs`` to collect any number of keyword arguments into a
-dictionary. These are commonly used when writing wrapper functions, decorators,
-or functions that need to pass arguments through to other functions. The names
-``args`` and ``kwargs`` are conventions; you can use any valid identifier after
-the ``*`` or ``**``.
+Python 可以灵活处理需要接收可变数量 arguments 的 functions。使用 ``*args`` 将任意数量的 positional arguments 收集到 tuple，使用 ``**kwargs`` 将任意数量的 keyword arguments 收集到 dictionary。编写 wrapper functions、decorators，或需要向其他 functions 转发 arguments 的 functions 时，经常使用这两种方式。 ``args`` 和 ``kwargs`` 是惯用名称；在 ``*`` 或 ``**`` 后可以使用任何有效标识符。
 
 .. code-block:: python
 
@@ -106,14 +81,10 @@ the ``*`` or ``**``.
     (2, 3)
     {'word': 'hello'}
 
-Unpack Arguments
-----------------
+解包参数（Unpack Arguments）
+--------------------------------------------
 
-When calling a function, you can use ``*`` to unpack a sequence (like a list or
-tuple) into separate positional arguments, and ``**`` to unpack a dictionary into
-keyword arguments. This is the inverse of ``*args`` and ``**kwargs`` in function
-definitions. Unpacking is particularly useful when you have data in a collection
-that you want to pass to a function that expects separate arguments.
+调用 function 时，您可以使用 ``*`` 将序列（如 list 或 tuple）解包到单独的 positional arguments 中，并使用 ``**`` 将 dictionary 解包到 keyword arguments 中。这是 function 定义中的 ``*args`` 和 ``**kwargs`` 的逆。当您希望将 collection 中的数据传递给需要单独 arguments 的 function 时，解包特别有用。
 
 .. code-block:: python
 
@@ -127,16 +98,12 @@ that you want to pass to a function that expects separate arguments.
     >>> print(*args)
     1 2 3
 
-Keyword-Only Arguments
-----------------------
+仅关键字参数（Keyword-Only Arguments）
+------------------------------------------------------------
 
-Arguments that appear after ``*`` or ``*args`` in a function definition are
-keyword-only, meaning they must be passed by name and cannot be passed positionally.
-This feature, introduced in Python 3.0, helps prevent errors when functions have
-many parameters, as it forces callers to be explicit about which argument they're
-providing. Keyword-only arguments can have default values, making them optional.
+在 function 定义中出现在 ``*`` 或 ``*args`` 之后的 Arguments 仅是关键字，这意味着它们必须按名称传递，不能按位置传递。 Python 3.0 中引入的此功能有助于防止当 functions 有多个 parameters 时出现错误，因为它强制调用者明确他们正在提供哪个 argument。仅关键字 arguments 可以有默认值 values，使它们成为可选的。
 
-**New in Python 3.0**
+**Python新品 3.0**
 
 .. code-block:: python
 
@@ -149,24 +116,19 @@ providing. Keyword-only arguments can have default values, making them optional.
     Traceback (most recent call last):
     TypeError: f() takes 2 positional arguments but 3 were given
 
-    >>> # keyword-only with default
+    >>> # 仅关键字，默认
     >>> def g(a, *, kw=10):
     ...     return a + kw
     ...
     >>> g(5)
     15
 
-Positional-Only Arguments
--------------------------
+仅位置参数（Positional-Only Arguments）
+----------------------------------------------------------------
 
-Arguments that appear before ``/`` in a function definition are positional-only,
-meaning they cannot be passed by keyword name. This feature, introduced in Python
-3.8, is useful when parameter names are not meaningful to callers or when you want
-to reserve the flexibility to change parameter names without breaking existing code.
-Many built-in functions like ``len()`` and ``pow()`` use positional-only parameters.
-You can combine positional-only (``/``) and keyword-only (``*``) in the same function.
+在 function 定义中出现在 ``/`` 之前的 Arguments 是仅位置的， 这意味着它们不能通过关键字名称传递。 这个功能， 在Python 3.8中引入， 当 parameter 名称对调用者没有意义或当您想要保留更改 parameter 名称而不破坏现有代码的灵活性时，此选项非常有用。 许多内置 functions（如 ``len()`` 和 ``pow()`` ）使用仅位置 parameters。 您可以在同一个 function 中组合仅位置 ( ``/`` ) 和仅关键字 ( ``*`` )。
 
-**New in Python 3.8**
+**Python新品 3.8**
 
 .. code-block:: python
 
@@ -181,24 +143,19 @@ You can combine positional-only (``/``) and keyword-only (``*``) in the same fun
     Traceback (most recent call last):
     TypeError: f() got some positional-only arguments passed as keyword arguments
 
-    >>> # combining positional-only and keyword-only
+    >>> # 结合仅位置和仅关键字
     >>> def g(a, /, b, *, c):
     ...     return a + b + c
     ...
     >>> g(1, 2, c=3)
     6
 
-Annotations
------------
+标注（Annotations）
+------------------------------
 
-Function annotations provide a way to attach metadata to function parameters and
-return values. While Python doesn't enforce these annotations at runtime, they
-serve as documentation and are used by static type checkers like ``mypy`` to catch
-type errors before code runs. Annotations are stored in the function's ``__annotations__``
-attribute as a dictionary. The ``typing`` module (Python 3.5+) provides additional
-types like ``List``, ``Dict``, ``Optional``, and ``Union`` for more expressive type hints.
+Function 注释提供了一种将元数据附加到 function、parameters 和 return values 的方法。虽然 Python 不在运行时强制执行这些注释，但它们充当文档，并由 ``mypy`` 等静态 type 检查器使用，以在代码运行之前捕获 type 错误。注释作为 dictionary 存储在 function 的 ``__annotations__`` attribute 中。 ``typing`` module (Python 3.5+) 提供额外的 types，如 ``List`` 、 ``Dict`` 、 ``Optional`` 和 ``Union`` ，以获得更具表现力的 type hints。
 
-**New in Python 3.0**
+**Python新品 3.0**
 
 .. code-block:: python
 
@@ -213,15 +170,10 @@ types like ``List``, ``Dict``, ``Optional``, and ``Union`` for more expressive t
     >>> fib.__annotations__
     {'n': <class 'int'>, 'return': <class 'int'>}
 
-Lambda
-------
+Lambda 表达式（Lambda）
+------------------------------------
 
-Lambda expressions create small anonymous functions inline. They are syntactically
-restricted to a single expression, which is implicitly returned. Lambdas are useful
-for short, throwaway functions, especially as arguments to higher-order functions
-like ``sorted()``, ``map()``, ``filter()``, and ``reduce()``. While lambdas can make
-code more concise, complex logic should be written as regular named functions for
-better readability and debugging.
+Lambda expressions 创建小型匿名 functions 内联。它们在语法上仅限于隐式返回的单个 expression。 Lambdas 对于短的、一次性的 functions 非常有用，尤其是 arguments 到高阶 functions，如 ``sorted()`` 、 ``map()`` 、 ``filter()`` 和 ``reduce()`` 。虽然 lambdas 可以使代码更加简洁，但 complex 逻辑应该编写为常规名称 functions 以获得更好的可读性和 debugging。
 
 .. code-block:: python
 
@@ -229,30 +181,25 @@ better readability and debugging.
     >>> square(5)
     25
 
-    >>> # lambda with multiple arguments
+    >>> # lambda 与多个 arguments
     >>> add = lambda a, b: a + b
     >>> add(2, 3)
     5
 
-    >>> # lambda with conditional
+    >>> # lambda 有条件
     >>> max_val = lambda a, b: a if a > b else b
     >>> max_val(3, 5)
     5
 
-    >>> # common use: sorting key
+    >>> # 常用：排序key
     >>> pairs = [(1, 'b'), (2, 'a'), (3, 'c')]
     >>> sorted(pairs, key=lambda x: x[1])
     [(2, 'a'), (1, 'b'), (3, 'c')]
 
-Callable
---------
+可调用（Callable）
+--------------------------
 
-In Python, any object that implements the ``__call__`` method is callable, meaning
-it can be invoked like a function using parentheses. This includes functions, methods,
-lambdas, classes (calling a class creates an instance), and instances of classes that
-define ``__call__``. The built-in ``callable()`` function returns ``True`` if an object
-appears callable, which is useful for checking before attempting to call an object
-to avoid ``TypeError`` exceptions.
+在Python中，任何实现 ``__call__`` method的object都是可调用的，这意味着它可以像function一样使用括号来调用。这包括 functions、methods、lambdas、classes（调用 class 创建 instance）以及定义 ``__call__`` 的 classes 的 instances。如果 object 显示为可调用，内置 ``callable()`` function 返回 ``True`` ，这对于在尝试调用 object 之前进行检查以避免 ``TypeError`` exceptions 很有用。
 
 .. code-block:: python
 
@@ -273,14 +220,10 @@ to avoid ``TypeError`` exceptions.
     >>> add_five(10)
     15
 
-Get Function Name
------------------
+获取函数名称（Get Function Name）
+--------------------------------------------------
 
-Functions in Python are first-class objects with various attributes that provide
-metadata about them. The ``__name__`` attribute contains the function's name as
-defined, ``__doc__`` contains the docstring, ``__module__`` indicates which module
-the function was defined in, and ``__annotations__`` holds type hints. These
-attributes are useful for debugging, logging, and introspection.
+Python 中的 Functions 首先是 class objects 以及提供有关它们的元数据的各种 attributes。 ``__name__`` attribute 包含所定义的 function 的名称， ``__doc__`` 包含文档字符串， ``__module__`` 指示 function 是在哪个 module 中定义的， ``__annotations__`` 包含 type hints。这些 attributes 对于 debugging、日志记录和内省很有用。
 
 .. code-block:: python
 
@@ -295,16 +238,10 @@ attributes are useful for debugging, logging, and introspection.
     >>> example_function.__module__
     '__main__'
 
-Closure
--------
+闭包（Closure）
+----------------------
 
-A closure is a function that captures and remembers values from its enclosing
-lexical scope even after that scope has finished executing. This happens when
-a nested function references variables from its outer function. Closures are
-powerful for creating function factories (functions that return customized
-functions), implementing decorators, and maintaining state without using global
-variables or classes. Use the ``nonlocal`` keyword to modify captured variables
-from the enclosing scope.
+closure 是一个 function，它从其封闭的词法 scope 中捕获并记住 values，即使在 scope 完成执行之后也是如此。当嵌套 function 从其外部 function 引用 variables 时，会发生这种情况。 Closures 功能强大，可用于创建 function 工厂（返回自定义 functions 的 functions）、实现 decorators 以及在不使用全局 variables 或 classes 的情况下维护状态。使用 ``nonlocal`` 关键字修改从封闭的 scope 捕获的 variables。
 
 .. code-block:: python
 
@@ -320,7 +257,7 @@ from the enclosing scope.
     >>> triple(5)
     15
 
-    >>> # closure with mutable state
+    >>> # closure 与 mutable 状态
     >>> def make_counter():
     ...     count = 0
     ...     def counter():
@@ -335,15 +272,10 @@ from the enclosing scope.
     >>> counter()
     2
 
-Generator
----------
+生成器（Generator）
+----------------------------
 
-Generator functions use the ``yield`` statement to produce a sequence of values
-lazily, one at a time, instead of computing all values upfront and storing them
-in memory. When called, a generator function returns a generator iterator that
-can be iterated over with ``for`` loops or ``next()``. Generators are memory-efficient
-for large sequences and can represent infinite sequences. Generator expressions
-provide a concise syntax similar to list comprehensions but with lazy evaluation.
+Generator functions 使用 ``yield`` statement 一次一个地延迟生成一系列 values，而不是预先计算所有 values 并将它们存储在内存中。调用时，generator function 返回 generator iterator，可以使用 ``for`` loops 或 ``next()`` 进行迭代。 Generators 对于大型序列来说具有内存效率，并且可以表示无限序列。 Generator expressions 提供类似于 list comprehensions 的简洁语法，但具有惰性求值。
 
 .. code-block:: python
 
@@ -361,18 +293,12 @@ provide a concise syntax similar to list comprehensions but with lazy evaluation
     >>> list(squares)
     [0, 1, 4, 9, 16]
 
-Decorator
----------
+装饰器（Decorator）
+----------------------------
 
-Decorators are a powerful pattern for modifying or extending the behavior of
-functions without changing their source code. A decorator is a function that
-takes a function as input and returns a new function (usually a wrapper) that
-adds some functionality before or after calling the original. The ``@decorator``
-syntax is syntactic sugar for ``func = decorator(func)``. Always use ``@wraps``
-from ``functools`` in your wrapper function to preserve the original function's
-metadata like ``__name__``, ``__doc__``, and ``__annotations__``.
+Decorators 是一种强大的模式，可以在不修改 functions 源码的情况下修改或扩展其行为。Decorator 是一个接收 function 并返回新 function 的 function；返回值通常是 wrapper，在调用原 function 前后增加功能。 ``@decorator`` 语法是 ``func = decorator(func)`` 的 syntactic sugar。应在 wrapper function 中使用 ``functools`` 提供的 ``@wraps`` ，保留原 function 的 ``__name__`` 、 ``__doc__`` 和 ``__annotations__`` 等 metadata。
 
-**New in Python 2.4** - PEP `318 <https://www.python.org/dev/peps/pep-0318/>`_
+**Python 中的新功能 2.4** - PEP `318 <https://www.python.org/dev/peps/pep-0318/>`_
 
 .. code-block:: python
 
@@ -392,24 +318,17 @@ metadata like ``__name__``, ``__doc__``, and ``__annotations__``.
     Calling greet
     'Hello, Alice!'
 
-    >>> # equivalent to:
+    >>> # 相当于：
     >>> # greet = log_calls(greet)
 
 .. note::
 
-    Always use ``@wraps(func)`` in decorators to preserve the original function's
-    ``__name__``, ``__doc__``, and other attributes. Without it, the decorated
-    function will have the wrapper's attributes, which makes debugging harder.
+    始终在decorators中使用 ``@wraps(func)`` ，以保留原始function的 ``__name__`` 、 ``__doc__`` 和其他attributes。如果没有它，装饰后的 function 将具有包装器的 attributes，这使得 debugging 更难。
 
-Decorator with Arguments
-------------------------
+带参数的装饰器（Decorator with Arguments）
+------------------------------------------------------------------
 
-To create a decorator that accepts arguments, you need an extra layer of nesting.
-The outermost function takes the decorator's arguments and returns the actual
-decorator. The middle function takes the function being decorated and returns
-the wrapper. The innermost function is the wrapper that executes when the decorated
-function is called. This pattern is commonly used for decorators like ``@repeat(3)``
-or ``@route('/path')``.
+要创建接受 arguments 的 decorator，您需要额外的嵌套层。最外面的function采用decorator的arguments并返回实际的decorator。中间的 function 接受被装饰的 function 并返回包装器。最里面的 function 是调用修饰后的 function 时执行的包装器。此模式通常用于 decorators，如 ``@repeat(3)`` 或 ``@route('/path')`` 。
 
 .. code-block:: python
 
@@ -433,17 +352,13 @@ or ``@route('/path')``.
     Hello!
     Hello!
 
-    >>> # equivalent to:
+    >>> # 相当于：
     >>> # say_hello = repeat(3)(say_hello)
 
-Class Decorator
----------------
+类装饰器（Class Decorator）
+------------------------------------------
 
-Decorators can also be implemented as classes instead of functions. A class-based
-decorator implements ``__init__`` to receive the decorated function and ``__call__``
-to act as the wrapper. This approach is useful when the decorator needs to maintain
-state across multiple calls to the decorated function, such as counting calls,
-caching results, or tracking timing information.
+Decorators 也可以实现为 classes，而不是 functions。基于 class 的 decorator 实现 ``__init__`` 来接收修饰后的 function 和 ``__call__`` 来充当包装器。当 decorator 需要在对修饰的 function 的多个调用中维护状态（例如对调用进行计数、caching 结果或跟踪计时信息）时，此方法非常有用。
 
 .. code-block:: python
 
@@ -466,17 +381,12 @@ caching results, or tracking timing information.
     >>> example.count
     2
 
-Cache with ``lru_cache``
-------------------------
+使用 ``lru_cache`` 缓存（Cache with ``lru_cache`` ）
+--------------------------------------------------------------------------------------------
 
-The ``lru_cache`` decorator from ``functools`` automatically caches function results
-based on the arguments passed. When the function is called with the same arguments
-again, the cached result is returned instead of recomputing it. This is especially
-useful for expensive computations or recursive functions like Fibonacci. The ``maxsize``
-parameter limits cache size (use ``None`` for unlimited). Use ``cache_info()`` to
-see hit/miss statistics and ``cache_clear()`` to reset the cache.
+``functools`` 中的 ``lru_cache`` decorator 根据传递的 arguments 自动缓存 function 结果。当再次用相同的arguments调用function时，返回cached结果而不是重新计算它。这对于昂贵的计算或像斐波那契这样的 recursive functions 特别有用。 ``maxsize`` parameter 限制了 cache 的大小（使用 ``None`` 则无限制）。使用 ``cache_info()`` 查看命中/未命中统计数据，使用 ``cache_clear()`` 重置 cache。
 
-**New in Python 3.2**
+**Python新品 3.2**
 
 .. code-block:: python
 
@@ -491,9 +401,9 @@ see hit/miss statistics and ``cache_clear()`` to reset the cache.
     354224848179261915075
     >>> fib.cache_info()
     CacheInfo(hits=98, misses=101, maxsize=None, currsize=101)
-    >>> fib.cache_clear()  # clear the cache
+    >>> fib.cache_clear()  # 清除cache
 
-**New in Python 3.9** - ``@cache`` is a simpler alias for ``@lru_cache(maxsize=None)``
+**Python 中的新功能 3.9** - ``@cache`` 是 ``@lru_cache(maxsize=None)`` 的更简单别名
 
 .. code-block:: python
 
@@ -502,14 +412,10 @@ see hit/miss statistics and ``cache_clear()`` to reset the cache.
     ... def factorial(n):
     ...     return n * factorial(n-1) if n else 1
 
-Partial Functions
------------------
+偏函数（Partial Functions）
+--------------------------------------------
 
-The ``functools.partial`` function creates a new callable with some arguments of
-the original function pre-filled. This is useful for adapting functions to interfaces
-that expect fewer arguments, creating specialized versions of general functions,
-or preparing callback functions. The resulting partial object can be called with
-the remaining arguments. You can pre-fill both positional and keyword arguments.
+``functools.partial`` function 创建了一个新的可调用对象，其中预填充了原始 function 的一些 arguments。这对于使 functions 适应需要较少 arguments 的接口、创建通用 functions 的专用版本或准备 callback functions 非常有用。生成的部分 object 可以与剩余的 arguments 一起调用。您可以预填写位置和 keyword arguments。
 
 .. code-block:: python
 
@@ -524,7 +430,7 @@ the remaining arguments. You can pre-fill both positional and keyword arguments.
     >>> cube(5)
     125
 
-    >>> # useful for callbacks
+    >>> # 适用于 callbacks
     >>> from functools import partial
     >>> def greet(greeting, name):
     ...     return f"{greeting}, {name}!"
@@ -533,17 +439,12 @@ the remaining arguments. You can pre-fill both positional and keyword arguments.
     >>> say_hello("Alice")
     'Hello, Alice!'
 
-``singledispatch`` - Function Overloading
------------------------------------------
+``singledispatch`` - 函数重载（ ``singledispatch`` - Function Overloading）
+------------------------------------------------------------------------------------------------------------------------------------------
 
-The ``singledispatch`` decorator from ``functools`` enables function overloading
-based on the type of the first argument. You define a base function and then
-register specialized implementations for different types using the ``@func.register``
-decorator. When the function is called, Python automatically dispatches to the
-appropriate implementation based on the argument's type. This is useful for writing
-generic functions that behave differently for different types.
+``functools`` 中的 ``singledispatch`` decorator 在第一个 argument 的 type 的基础上启用 function 重载。您定义一个基础 function，然后使用 ``@func.register`` decorator 注册不同 types 的专用实现。当调用function时，Python会根据argument的type自动调度到适当的实现。这对于编写对于不同的 types 具有不同行为的通用 functions 非常有用。
 
-**New in Python 3.4**
+**Python新品 3.4**
 
 .. code-block:: python
 
@@ -567,55 +468,45 @@ generic functions that behave differently for different types.
     >>> process([1, 2, 3])
     'List with 3 items'
 
-``reduce`` - Cumulative Operations
-----------------------------------
+``reduce`` - 累积运算（ ``reduce`` - Cumulative Operations）
+------------------------------------------------------------------------------------------------------------
 
-The ``reduce`` function from ``functools`` applies a two-argument function
-cumulatively to the items of a sequence, from left to right, reducing the sequence
-to a single value. For example, ``reduce(f, [a, b, c, d])`` computes ``f(f(f(a, b), c), d)``.
-An optional third argument provides an initial value. While ``reduce`` can be powerful,
-list comprehensions or explicit loops are often more readable for simple cases.
+``functools`` 中的 ``reduce`` function 将两个 argument function 从左到右累加到序列的 items，从而将序列减少为单个 value。例如， ``reduce(f, [a, b, c, d])`` 计算 ``f(f(f(a, b), c), d)`` 。可选的第三个 argument 提供初始 value。虽然 ``reduce`` 功能强大，但对于简单情况，list comprehensions 或显式 loops 通常更具可读性。
 
 .. code-block:: python
 
     >>> from functools import reduce
-    >>> # sum of list
+    >>> # list 之和
     >>> reduce(lambda x, y: x + y, [1, 2, 3, 4, 5])
     15
 
-    >>> # product of list
+    >>> # list的产品
     >>> reduce(lambda x, y: x * y, [1, 2, 3, 4, 5])
     120
 
-    >>> # with initial value
+    >>> # 开头为 value
     >>> reduce(lambda x, y: x + y, [1, 2, 3], 10)
     16
 
-Higher-Order Functions
-----------------------
+高阶函数（Higher-Order Functions）
+--------------------------------------------------------
 
-Higher-order functions are functions that take other functions as arguments or
-return functions as results. Python provides several built-in higher-order functions
-that are commonly used for functional programming patterns. ``map()`` applies a
-function to every item in an iterable, ``filter()`` keeps items where the function
-returns ``True``, and ``sorted()``/``min()``/``max()`` accept a ``key`` function
-to customize comparison. These functions return iterators (except ``sorted``),
-so wrap them in ``list()`` if you need a list.
+高阶functions是将其他functions作为arguments或返回functions作为结果的functions。 Python 提供了几个常用于函数式编程模式的内置高阶 functions。 ``map()`` 将 function 应用于 iterable 中的每个 item， ``filter()`` 保留 items，其中 function 返回 ``True`` ，并且 ``sorted()`` / ``min()`` / ``max()`` 接受 ``key`` function 进行自定义比较。这些 functions 返回 iterators（ ``sorted`` 除外），因此如果您需要 list，请将它们包装在 ``list()`` 中。
 
 .. code-block:: python
 
-    >>> # map - apply function to each item
+    >>> # 映射 - 将 function 应用于每个 item
     >>> list(map(lambda x: x**2, [1, 2, 3, 4]))
     [1, 4, 9, 16]
 
-    >>> # filter - keep items where function returns True
+    >>> # 过滤器 - 保留 items，其中 function 返回 True
     >>> list(filter(lambda x: x > 2, [1, 2, 3, 4]))
     [3, 4]
 
-    >>> # sorted with key function
+    >>> # 按 key function 排序
     >>> sorted(['banana', 'apple', 'cherry'], key=len)
     ['apple', 'banana', 'cherry']
 
-    >>> # min/max with key function
+    >>> # 最小/最大 key function
     >>> max(['apple', 'banana', 'cherry'], key=len)
     'banana'

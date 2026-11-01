@@ -1,9 +1,9 @@
 /*
- * Learn C++ from Python - Modern C++ Examples with Tests
+ * 从 Python 学习 C++ - 现代 C++ 示例和测试
  *
- * Demonstrates modern C++ syntax with Python equivalents in Doxygen comments.
- * Build: mkdir build && cd build && cmake .. && make
- * Test: make test
+ * 演示现代 C++ 语法以及 Doxygen 注释中的 Python 等效项。
+ * 构建： mkdir 构建 && cd 构建 && cmake .. && make
+ * 测试：进行测试
  */
 
 #include <iostream>
@@ -19,27 +19,27 @@
 #include <gtest/gtest.h>
 
 /**
- * @brief Print hello world message
+ * @brief 打印 hello world 消息
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * print("Hello, World!")
- * @endcode
+ * @结束代码
  */
 void hello_world() {
     std::cout << "Hello, World!" << std::endl;
 }
 
 /**
- * @brief Demonstrate automatic type inference with auto keyword
+ * @brief 使用 auto 关键字演示自动 type 推理
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * x = 10
  * y = 3.14
  * name = "Alice"
  * is_valid = True
- * @endcode
+ * @结束代码
  */
 void variables() {
     auto x = 10;
@@ -49,15 +49,15 @@ void variables() {
 }
 
 /**
- * @brief Create and manipulate vectors (dynamic arrays)
+ * @brief 创建和操作向量（动态 arrays）
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * numbers = [1, 2, 3, 4, 5]
  * numbers.append(6)
  * print(numbers[0])
- * print(len(numbers))
- * @endcode
+ * print(len(numbers)）
+ * @结束代码
  */
 std::vector<int> lists_and_vectors() {
     std::vector<int> numbers = {1, 2, 3, 4, 5};
@@ -66,10 +66,10 @@ std::vector<int> lists_and_vectors() {
 }
 
 /**
- * @brief Demonstrate array slicing and access patterns
+ * @brief 演示 array 切片和访问模式
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
  * print(numbers[0])
  * print(numbers[-1])
@@ -78,35 +78,35 @@ std::vector<int> lists_and_vectors() {
  * print(numbers[7:])
  * print(numbers[::2])
  * print(numbers[::-1])
- * @endcode
+ * @结束代码
  */
 std::vector<int> array_slicing() {
     std::vector<int> numbers = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-    // Slicing [2:5]
+    // 切片[2:5]
     std::vector<int> slice(numbers.begin() + 2, numbers.begin() + 5);
 
-    // Every second element [::2]
+    // 每秒 element [::2]
     std::vector<int> every_second;
     for (size_t i = 0; i < numbers.size(); i += 2) {
         every_second.push_back(numbers[i]);
     }
 
-    // Reversed [::-1]
+    // 反转[::-1]
     std::vector<int> reversed(numbers.rbegin(), numbers.rend());
 
     return reversed;
 }
 
 /**
- * @brief Use maps for key-value storage
+ * @brief 使用 key-value 存储的映射
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * ages = {"Alice": 30, "Bob": 25}
- * ages["Charlie"] = 35
+ * 年龄["Charlie"] = 35
  * print(ages["Alice"])
- * @endcode
+ * @结束代码
  */
 std::map<std::string, int> dictionaries_and_maps() {
     std::map<std::string, int> ages = {{"Alice", 30}, {"Bob", 25}};
@@ -115,83 +115,83 @@ std::map<std::string, int> dictionaries_and_maps() {
 }
 
 /**
- * @brief Range-based for loops
+ * @brief Range 基于 loops
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * for i in range(5):
  *     print(i)
  *
  * for item in [1, 2, 3]:
  *     print(item)
- * @endcode
+ * @结束代码
  */
 void for_loop() {
     for (int i = 0; i < 5; i++) {
-        // Traditional loop
+        // 传统型 loop
     }
 
     for (auto item : {1, 2, 3}) {
-        // Range-based loop
+        // 基于Range的loop
     }
 }
 
 /**
- * @brief Add two numbers
+ * @brief 添加两个数字
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * def add(a, b):
- *     return a + b
+ *     返回 a + b
  *
  * result = add(3, 5)
- * @endcode
+ * @结束代码
  */
 auto add(int a, int b) -> int {
     return a + b;
 }
 
 /**
- * @brief Lambda function that squares a number
+ * @brief Lambda function 计算数字的平方
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * square = lambda x: x * x
- * print(square(5))
+ * print(square(5)）
  *
  * numbers = [1, 2, 3, 4]
  * squared = list(map(lambda x: x * x, numbers))
  *
  * multiplier = 10
  * multiply = lambda x: x * multiplier
- * print(multiply(5))
- * @endcode
+ * print(multiply(5)）
+ * @结束代码
  */
 std::function<int(int)> create_square_lambda() {
     return [](int x) { return x * x; };
 }
 
 /**
- * @brief Lambda with variable capture
+ * @brief Lambda 与 variable 捕获
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * multiplier = 10
  * multiply = lambda x: x * multiplier
- * @endcode
+ * @结束代码
  */
 std::function<int(int)> create_multiply_lambda(int multiplier) {
     return [multiplier](int x) { return x * multiplier; };
 }
 
 /**
- * @brief Transform vector using lambda
+ * @brief 使用 lambda 变换向量
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * numbers = [1, 2, 3, 4]
  * squared = list(map(lambda x: x * x, numbers))
- * @endcode
+ * @结束代码
  */
 std::vector<int> transform_with_lambda(const std::vector<int>& numbers) {
     std::vector<int> squared;
@@ -202,13 +202,13 @@ std::vector<int> transform_with_lambda(const std::vector<int>& numbers) {
 }
 
 /**
- * @brief List comprehension equivalent
+ * @brief List comprehension 等效项
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * squares = [x * x for x in range(10)]
  * evens = [x for x in range(10) if x % 2 == 0]
- * @endcode
+ * @结束代码
  */
 std::vector<int> list_comprehension() {
     std::vector<int> evens;
@@ -221,15 +221,15 @@ std::vector<int> list_comprehension() {
 }
 
 /**
- * @brief String concatenation and manipulation
+ * @brief String 连接和操作
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * s = "Hello"
  * s += " World"
- * print(len(s))
+ * print(len(s)）
  * print(s[0])
- * @endcode
+ * @结束代码
  */
 std::string string_operations() {
     std::string s = "Hello";
@@ -238,21 +238,21 @@ std::string string_operations() {
 }
 
 /**
- * @brief Person class with constructor and method
+ * @brief Person class 与构造函数和 method
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * class Person:
  *     def __init__(self, name, age):
  *         self.name = name
  *         self.age = age
  *
  *     def greet(self):
- *         return f"Hello, I'm {self.name}"
+ *         return f"你好，我是{self.name}"
  *
  * p = Person("Alice", 30)
- * print(p.greet())
- * @endcode
+ * print(p.greet()）
+ * @结束代码
  */
 class Person {
 public:
@@ -270,10 +270,10 @@ std::string Person::greet() const {
 }
 
 /**
- * @brief Optional value handling
+ * @brief 可选的 value 处理
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * def find_value(key):
  *     data = {"a": 1, "b": 2}
  *     return data.get(key)
@@ -281,7 +281,7 @@ std::string Person::greet() const {
  * result = find_value("a")
  * if result is not None:
  *     print(result)
- * @endcode
+ * @结束代码
  */
 std::optional<int> find_value(const std::string& key) {
     std::map<std::string, int> data = {{"a", 1}, {"b", 2}};
@@ -293,27 +293,27 @@ std::optional<int> find_value(const std::string& key) {
 }
 
 /**
- * @brief Tuple unpacking with structured bindings
+ * @brief Tuple 使用结构化绑定进行解包
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * point = (10, 20)
  * x, y = point
  * print(x, y)
- * @endcode
+ * @结束代码
  */
 std::tuple<int, int> create_tuple() {
     return std::make_tuple(10, 20);
 }
 
 /**
- * @brief Filter even numbers from vector
+ * @brief 从向量中过滤偶数
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * numbers = [1, 2, 3, 4, 5]
  * evens = list(filter(lambda x: x % 2 == 0, numbers))
- * @endcode
+ * @结束代码
  */
 std::vector<int> filter_evens(const std::vector<int>& numbers) {
     std::vector<int> evens;
@@ -324,13 +324,13 @@ std::vector<int> filter_evens(const std::vector<int>& numbers) {
 }
 
 /**
- * @brief Check if any element satisfies condition
+ * @brief 检查是否有 element 满足条件
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * numbers = [1, 2, 3, 4, 5]
  * has_even = any(x % 2 == 0 for x in numbers)
- * @endcode
+ * @结束代码
  */
 bool has_even(const std::vector<int>& numbers) {
     return std::any_of(numbers.begin(), numbers.end(),
@@ -338,13 +338,13 @@ bool has_even(const std::vector<int>& numbers) {
 }
 
 /**
- * @brief Check if all elements satisfy condition
+ * @brief 检查是否所有 elements 满足条件
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * numbers = [1, 2, 3, 4, 5]
  * all_positive = all(x > 0 for x in numbers)
- * @endcode
+ * @结束代码
  */
 bool all_positive(const std::vector<int>& numbers) {
     return std::all_of(numbers.begin(), numbers.end(),
@@ -352,13 +352,13 @@ bool all_positive(const std::vector<int>& numbers) {
 }
 
 /**
- * @brief Sort vector in place
+ * @brief 对向量进行适当排序
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * numbers = [3, 1, 4, 1, 5]
  * numbers.sort()
- * @endcode
+ * @结束代码
  */
 std::vector<int> sort_vector(std::vector<int> numbers) {
     std::sort(numbers.begin(), numbers.end());
@@ -366,42 +366,42 @@ std::vector<int> sort_vector(std::vector<int> numbers) {
 }
 
 /**
- * @brief Find minimum element
+ * @brief 找到最小值 element
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * numbers = [3, 1, 4, 1, 5]
- * print(min(numbers))
- * @endcode
+ * print(min(numbers)）
+ * @结束代码
  */
 int find_min(const std::vector<int>& numbers) {
     return *std::min_element(numbers.begin(), numbers.end());
 }
 
 /**
- * @brief Sum all elements
+ * @brief 总结所有 elements
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * numbers = [1, 2, 3, 4, 5]
  * total = sum(numbers)
- * @endcode
+ * @结束代码
  */
 int sum_vector(const std::vector<int>& numbers) {
     return std::accumulate(numbers.begin(), numbers.end(), 0);
 }
 
 /**
- * @brief Function with default argument
+ * @brief Function 和 default argument
  *
- * Python equivalent:
- * @code{.py}
+ * Python 等效项：
+ * @代码{.py}
  * def greet(name, greeting="Hello"):
- *     return f"{greeting}, {name}"
+ *     return f"{问候语}，{名字}"
  *
- * print(greet("Alice"))
- * print(greet("Bob", "Hi"))
- * @endcode
+ * print(greet("Alice")）
+ * print(greet("Bob", "Hi")）
+ * @结束代码
  */
 std::string greet(const std::string& name, const std::string& greeting = "Hello") {
     return greeting + ", " + name;

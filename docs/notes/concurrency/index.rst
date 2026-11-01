@@ -1,21 +1,13 @@
 .. meta::
-    :description lang=en: Python concurrency tutorial covering threading, multiprocessing, locks, semaphores, queues, process pools, and concurrent.futures
+    :description lang=zh_CN: Python 并发教程，涵盖线程、multiprocessing、locks、semaphores、queues、process 池和 concurrent.futures
     :keywords: Python, Python3, threading, multiprocessing, concurrency, parallel, lock, semaphore, queue, ThreadPoolExecutor, ProcessPoolExecutor, GIL
 
-Concurrency
-===========
+并发（Concurrency）
+==============================
 
-Python provides multiple approaches for concurrent execution to handle CPU-bound
-and I/O-bound tasks efficiently. The ``threading`` module enables lightweight
-concurrent execution within a single process, while ``multiprocessing`` bypasses
-the Global Interpreter Lock (GIL) by using separate processes for true parallelism.
-The ``concurrent.futures`` module offers a high-level interface that abstracts
-the differences between threads and processes behind a unified API.
+Python 提供多种并发执行方法，以高效处理 CPU 绑定和 I/O 绑定任务。 ``threading`` module 可在单个 process 内实现轻量级并发执行，而 ``multiprocessing`` 通过使用单独的 processes 实现 true 并行性来绕过全局 Interpreter Lock (GIL)。 ``concurrent.futures`` module 提供了一个高级接口，将 threads 和 processes 之间的差异抽象为统一的 API。
 
-Understanding when to use each approach is crucial: threads excel at I/O-bound
-tasks (network requests, file operations) where the GIL is released during
-waiting, while processes are better for CPU-bound tasks (computation, data
-processing) where true parallel execution is needed.
+了解何时使用每种方法至关重要：threads 擅长于 I/O 绑定任务（网络请求、文件操作），其中 GIL 在等待期间被释放，而 processes 更适合 CPU 绑定任务（计算、数据处理），其中 true 需要并行执行。
 
 .. toctree::
    :maxdepth: 1

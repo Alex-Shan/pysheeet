@@ -26,12 +26,12 @@ class TestSecureRandom:
     def test_token_bytes(self):
         key = secrets.token_bytes(32)
         assert len(key) == 32
-        # Should be different each time
+        # 每次应该不一样
         assert key != secrets.token_bytes(32)
 
     def test_token_urlsafe(self):
         token = secrets.token_urlsafe(32)
-        assert len(token) >= 32  # Base64 encoding makes it longer
+        assert len(token) >= 32  # Base64 encoding 使其更长
 
     def test_token_hex(self):
         token = secrets.token_hex(16)
@@ -105,7 +105,7 @@ class TestKeyDerivation:
             algorithm=hashes.SHA256(),
             length=32,
             salt=salt,
-            iterations=100_000,  # Lower for tests
+            iterations=100_000,  # 较低的测试
         )
         key = kdf.derive(password)
         assert len(key) == 32
@@ -121,14 +121,14 @@ class TestKeyDerivation:
         )
         key = kdf.derive(password)
 
-        # Verify with new KDF instance
+        # 使用新的 KDF instance 进行验证
         kdf2 = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
             salt=salt,
             iterations=100_000,
         )
-        kdf2.verify(password, key)  # Should not raise
+        kdf2.verify(password, key)  # 不应该提高
 
     def test_hkdf(self):
         master_key = os.urandom(32)
@@ -207,7 +207,7 @@ class TestFernet:
         plaintext = b"Secret message"
         token1 = f.encrypt(plaintext)
         token2 = f.encrypt(plaintext)
-        # Same plaintext produces different tokens (random IV)
+        # 相同的明文产生不同的令牌（随机IV）
         assert token1 != token2
 
 
@@ -275,7 +275,7 @@ class TestRSA:
             ),
             hashes.SHA256(),
         )
-        # Should not raise
+        # 不应该提高
         public_key.verify(
             signature,
             message,
@@ -295,7 +295,7 @@ class TestEd25519:
         public_key = private_key.public_key()
         message = b"Message to sign"
         signature = private_key.sign(message)
-        # Should not raise
+        # 不应该提高
         public_key.verify(signature, message)
 
     def test_invalid_signature(self):

@@ -1,38 +1,22 @@
 .. meta::
-    :description lang=en: Python socket programming tutorial with examples for DNS resolution, TCP/UDP clients, IP address conversion, network byte order, timeouts, multicast, and SOCKS proxy
+    :description lang=zh_CN: Python socket 编程教程，包含 DNS 分辨率、TCP/UDP 客户端、IP 地址转换、网络 byte 顺序、超时、多播和 SOCKS 代理的示例
     :keywords: Python, socket, networking, TCP, UDP, DNS, IP address, hostname, getaddrinfo, inet_aton, inet_ntoa, network programming, timeout, multicast, SOCKS proxy, HTTP client
 
-==============
-Socket Basics
-==============
+============================================
+套接字基础知识（Socket Basics）
+============================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-Socket programming is the foundation of network communication in Python and virtually
-all networked applications. A socket is an endpoint for sending and receiving data
-across a network, providing a bidirectional communication channel between processes
-on the same machine or across different machines over the Internet. While Python
-provides high-level networking interfaces like ``urllib``, ``requests``, and ``asyncio``,
-understanding low-level socket operations is essential for building custom protocols,
-debugging network issues, implementing network tools, and interfacing with system-level
-networking APIs.
+Socket 编程是 Python 和几乎所有网络应用程序中网络通信的基础。 socket 是用于通过网络发送和接收数据的端点，通过 Internet 在同一台机器上或不同机器上的 processes 之间提供双向通信通道。虽然 Python 提供 ``urllib`` 、 ``requests`` 和 ``asyncio`` 等高级网络接口，但了解低级 socket 操作对于构建自定义协议、debugging 网络问题、实施网络工具以及与系统级网络 APIs 进行交互至关重要。
 
-This cheat sheet covers the fundamentals of socket programming in Python, including
-hostname and DNS resolution, IP address manipulation, network byte order conversion,
-timeout handling, multicast communication, and proxy support. Whether you're building
-a simple client-server application, implementing a custom protocol, or troubleshooting
-network connectivity issues, these examples provide the building blocks you need.
+本速查表涵盖了 Python 中 socket 编程的基础知识，包括主机名和 DNS 解析、IP 地址操作、网络 byte 顺序转换、超时处理、多播通信和代理支持。无论您是构建简单的客户端-服务器应用程序、实施自定义协议，还是解决网络连接问题，这些示例都提供了您所需的构建块。
 
-Get Hostname
-------------
+获取主机名（Get Hostname）
+--------------------------------------
 
-The ``socket.gethostname()`` function returns the current machine's hostname as
-configured in the operating system, while ``socket.gethostbyname()`` performs a
-DNS lookup to resolve a hostname to its IPv4 address. These functions are the most
-basic building blocks for network programming, allowing your application to identify
-itself and resolve other hosts on the network. Note that ``gethostbyname()`` only
-returns IPv4 addresses; use ``getaddrinfo()`` for IPv6 support.
+``socket.gethostname()`` function 返回操作系统中配置的当前计算机的主机名，而 ``socket.gethostbyname()`` 执行 DNS 查找以将主机名解析为其 IPv4 地址。这些 functions 是网络编程最基本的构建块，允许您的应用程序识别自身并解析网络上的其他主机。请注意， ``gethostbyname()`` 仅返回 IPv4 地址；使用 ``getaddrinfo()`` 来支持 IPv6。
 
 .. code-block:: python
 
@@ -45,15 +29,10 @@ returns IPv4 addresses; use ``getaddrinfo()`` for IPv6 support.
     >>> socket.gethostbyname('localhost')
     '127.0.0.1'
 
-Get Address Info (DNS Resolution)
----------------------------------
+获取地址信息（DNS 解析）（Get Address Info (DNS Resolution)）
+--------------------------------------------------------------------------------------------------
 
-``socket.getaddrinfo()`` is the most versatile and recommended function for DNS
-resolution in modern Python code. Unlike ``gethostbyname()``, it supports both IPv4
-and IPv6 addresses, returns multiple results when available, and provides complete
-information including address family, socket type, protocol, canonical name, and
-socket address. This function is essential for writing protocol-agnostic code that
-works seamlessly with both IPv4 and IPv6 networks.
+``socket.getaddrinfo()`` 是现代 Python 代码中 DNS 分辨率的最通用且推荐的 function。与 ``gethostbyname()`` 不同，它支持 IPv4 和 IPv6 地址，在可用时返回多个结果，并提供完整的信息，包括地址族、socket type、协议、规范名称和 socket 地址。 function 对于编写与 IPv4 和 IPv6 网络无缝协作的协议无关代码至关重要。
 
 .. code-block:: python
 
@@ -69,7 +48,7 @@ works seamlessly with both IPv4 and IPv6 networks.
     except socket.gaierror:
         print("Invalid")
 
-Output:
+输出：
 
 .. code-block:: console
 
@@ -81,132 +60,107 @@ Output:
     AddressFamily.AF_INET6 ('2607:f8b0:4006:818::2004', 0, 0, 0)
     AddressFamily.AF_INET ('172.217.10.132', 0)
 
-It handles unusual cases, valid and invalid:
+它处理异常情况，有效和无效：
 
 .. code-block:: console
 
-    $ python gai.py 10.0.0.256  # octet overflow
+    $ python gai.py 10.0.0.256  # 八位位组溢出
     Invalid
-    $ python gai.py not-exist.example.com  # unresolvable
+    $ python gai.py not-exist.example.com  # 无法解决的
     Invalid
-    $ python gai.py fe80::1%eth0  # scoped
+    $ python gai.py fe80::1%eth0  # 范围内的
     AddressFamily.AF_INET6 ('fe80::1%eth0', 0, 0, 2)
-    $ python gai.py ::ffff:192.0.2.128  # IPv4-Mapped
+    $ python gai.py ::ffff:192.0.2.128  # IPv4 映射
     AddressFamily.AF_INET6 ('::ffff:192.0.2.128', 0, 0, 0)
-    $ python gai.py 0xc000027b  # IPv4 in hex
+    $ python gai.py 0xc000027b  # IPv4（十六进制）
     AddressFamily.AF_INET ('192.0.2.123', 0)
 
-Advanced DNS Queries
---------------------
+高级 DNS 查询（Advanced DNS Queries）
+--------------------------------------------------------------
 
-While ``socket.getaddrinfo()`` handles basic hostname resolution, many applications
-require more advanced DNS operations like querying specific record types. MX records
-identify mail servers for a domain, TXT records store SPF and DKIM data for email
-authentication, NS records list authoritative name servers, and SRV records enable
-service discovery. The ``dnspython`` library provides a comprehensive DNS toolkit
-that supports all record types, custom nameservers, DNSSEC validation, and zone
-transfers. This is essential for building email validation systems, service discovery
-mechanisms, and DNS monitoring tools.
+虽然 ``socket.getaddrinfo()`` 处理基本的主机名解析，但许多应用程序需要更高级的 DNS 操作，例如查询特定记录 types。 MX 记录标识域的邮件服务器，TXT 记录存储用于电子邮件身份验证的 SPF 和 DKIM 数据，NS 记录 list 权威名称服务器，SRV 记录启用服务发现。 ``dnspython`` library 提供了全面的 DNS 工具包，支持所有记录 types、自定义名称服务器、DNSSEC 验证和区域传输。这对于构建电子邮件验证系统、服务发现机制和 DNS 监控工具至关重要。
 
 .. code-block:: python
 
     # pip install dnspython
     import dns.resolver
 
-    # Query MX records (mail servers)
+    # 查询MX记录（邮件服务器）
     answers = dns.resolver.resolve('google.com', 'MX')
     for rdata in answers:
         print(f"MX: {rdata.exchange} (priority: {rdata.preference})")
 
-    # Query TXT records (SPF, DKIM, etc.)
+    # 查询TXT记录（SPF、DKIM等）
     answers = dns.resolver.resolve('google.com', 'TXT')
     for rdata in answers:
         print(f"TXT: {rdata}")
 
-    # Query NS records (name servers)
+    # 查询NS记录（名称服务器）
     answers = dns.resolver.resolve('google.com', 'NS')
     for rdata in answers:
         print(f"NS: {rdata}")
 
-    # Query A records with custom nameserver
+    # 使用自定义名称服务器查询 A 记录
     resolver = dns.resolver.Resolver()
-    resolver.nameservers = ['8.8.8.8']  # Use Google DNS
+    resolver.nameservers = ['8.8.8.8']  # 使用谷歌DNS
     answers = resolver.resolve('example.com', 'A')
     for rdata in answers:
         print(f"A: {rdata}")
 
-Reverse DNS Lookup
-------------------
+反向 DNS 查找（Reverse DNS Lookup）
+----------------------------------------------------------
 
-Reverse DNS (rDNS) lookup converts an IP address back to its associated hostname by
-querying PTR records in the in-addr.arpa (IPv4) or ip6.arpa (IPv6) domains. This is
-commonly used for logging to make IP addresses human-readable, security analysis to
-verify that a connecting client's IP matches its claimed hostname, spam filtering
-to check if mail servers have valid reverse DNS, and network troubleshooting to
-identify devices on a network.
+反向 DNS (rDNS) 查找通过查询 in-addr.arpa (IPv4) 或 ip6.arpa (IPv6) 域中的 PTR 记录，将 IP 地址转换回其关联的主机名。这通常用于日志记录以使 IP 地址可读、安全分析以验证连接客户端的 IP 是否与其声明的主机名匹配、垃圾邮件过滤以检查邮件服务器是否具有有效的反向 DNS 以及网络故障排除以识别网络上的设备。
 
 .. code-block:: python
 
     >>> import socket
-    >>> # Reverse lookup returns (hostname, aliases, addresses)
+    >>> # 反向查找返回（主机名、别名、地址）
     >>> socket.gethostbyaddr('8.8.8.8')
     ('dns.google', [], ['8.8.8.8'])
     >>> socket.gethostbyaddr('140.82.112.4')
     ('github.com', [], ['140.82.112.4'])
 
-    >>> # Using getfqdn for fully qualified domain name
+    >>> # 使用 getfqdn 获取完全限定域名
     >>> socket.getfqdn('8.8.8.8')
     'dns.google'
 
-Network Byte Order Conversion
------------------------------
+网络字节顺序转换（Network Byte Order Conversion）
+------------------------------------------------------------------------------
 
-Network protocols universally use big-endian byte order (most significant byte first),
-also called "network byte order," while most modern CPUs (x86, ARM in little-endian
-mode) use little-endian (least significant byte first). When sending multi-byte
-integers over the network, you must convert from host byte order to network byte
-order, and vice versa when receiving. The ``htons``/``htonl`` functions convert host
-to network order for short (16-bit) and long (32-bit) integers, while ``ntohs``/``ntohl``
-convert network to host order. Failing to perform these conversions causes subtle
-bugs where values appear corrupted on machines with different endianness.
+网络协议普遍采用big-endian byte顺序（最高位byte在前）， 也称为 "network byte order,"，而大多数现代 CPU（x86、 little-endian 模式下的 ARM）使用 little-endian（最低有效位 byte 在前）。 通过网络发送多个byte integers时， 您必须从主机 byte 订单转换为网络 byte 订单， 接收时反之亦然。 ``htons`` / ``htonl`` functions 将主机转换为短 (16-bit) 和长 (32-bit) integers 的网络顺序， 而 ``ntohs`` / ``ntohl`` 则将网络顺序转换为主机顺序。 未能执行这些转换会导致细微的错误，其中 values 在具有不同 endianness 的计算机上出现损坏。
 
 .. code-block:: python
 
-    # little-endian machine
+    # little-endian机
     >>> import socket
-    >>> a = 1  # host endian
-    >>> socket.htons(a)  # host to network short (16-bit)
+    >>> a = 1  # 主机字节序
+    >>> socket.htons(a)  # 主机到网络短路 (16-bit)
     256
-    >>> socket.htonl(a)  # host to network long (32-bit)
+    >>> socket.htonl(a)  # 主机到网络长 (32-bit)
     16777216
-    >>> socket.ntohs(256)  # network to host short
+    >>> socket.ntohs(256)  # 网络到主机短
     1
-    >>> socket.ntohl(16777216)  # network to host long
+    >>> socket.ntohl(16777216)  # 网络到主机长
     1
 
-IP Address String/Binary Conversion
------------------------------------
+IP 地址字符串/二进制转换（IP Address String/Binary Conversion）
+------------------------------------------------------------------------------------------------------
 
-IP addresses are typically displayed as human-readable strings (dotted-quad for IPv4
-like "192.168.1.1", or colon-hex for IPv6 like "2001:db8::1"), but network protocols
-transmit them as binary data (4 bytes for IPv4, 16 bytes for IPv6). The ``inet_aton``
-and ``inet_ntoa`` functions convert between string and binary formats for IPv4 only.
-For code that needs to support both IPv4 and IPv6, use ``inet_pton`` (presentation
-to network) and ``inet_ntop`` (network to presentation), which take an address family
-parameter to specify the IP version.
+IP 地址通常显示为人类可读的 strings（IPv4 的点分四组，如 "192.168.1.1"，或 IPv6 的冒号十六进制，如 "2001:db8::1"），但网络协议将它们作为二进制数据传输（4 bytes 表示 IPv4，16 bytes 表示 IPv6）。 ``inet_aton`` 和 ``inet_ntoa`` functions 在 string 和二进制格式之间进行转换（仅适用于 IPv4）。对于需要同时支持 IPv4 和 IPv6 的代码，请使用 ``inet_pton`` （表示到网络）和 ``inet_ntop`` （网络到表示），它们采用地址族 parameter 来指定 IP 版本。
 
 .. code-block:: python
 
     >>> import socket
-    >>> # IPv4: string to binary
+    >>> # IPv4：string 转为二进制
     >>> addr = socket.inet_aton('127.0.0.1')
     >>> addr
     b'\x7f\x00\x00\x01'
-    >>> # IPv4: binary to string
+    >>> # IPv4：二进制为 string
     >>> socket.inet_ntoa(addr)
     '127.0.0.1'
 
-    >>> # IPv4/IPv6: use inet_pton/inet_ntop
+    >>> # IPv4/IPv6：使用inet_pton/inet_ntop
     >>> socket.inet_pton(socket.AF_INET, '192.168.1.1')
     b'\xc0\xa8\x01\x01'
     >>> socket.inet_pton(socket.AF_INET6, '::1')
@@ -214,15 +168,10 @@ parameter to specify the IP version.
     >>> socket.inet_ntop(socket.AF_INET6, b'\x00' * 15 + b'\x01')
     '::1'
 
-MAC Address Conversion
-----------------------
+MAC 地址转换（MAC Address Conversion）
+----------------------------------------------------------------
 
-MAC (Media Access Control) addresses are 48-bit hardware identifiers assigned to
-network interface cards, typically displayed as six colon-separated hexadecimal
-pairs like "00:11:22:33:44:55". When working with raw Ethernet frames or ARP packets,
-you need to convert between this human-readable format and the 6-byte binary format
-used in network protocols. The ``binascii`` module provides ``hexlify`` and ``unhexlify``
-functions for this conversion.
+MAC（媒体访问控制）地址是分配给网络接口卡的 48-bit 硬件标识符，通常显示为六个以冒号分隔的十六进制对，如 "00:11:22:33:44:55"。在处理原始以太网帧或 ARP 数据包时，您需要在这种人类可读的格式与网络协议中使用的 6-byte 二进制格式之间进行转换。 ``binascii`` module 为该转换提供了 ``hexlify`` 和 ``unhexlify`` functions。
 
 .. code-block:: python
 
@@ -233,19 +182,14 @@ functions for this conversion.
     b'\x00\x112<\xc3\x0b'
     >>> binascii.hexlify(byte)
     b'0011323cc30b'
-    >>> # Format back to colon-separated
+    >>> # 格式恢复为冒号分隔
     >>> ':'.join(f'{b:02x}' for b in byte)
     '00:11:32:3c:c3:0b'
 
-Check Port Availability
------------------------
+检查端口可用性（Check Port Availability）
+----------------------------------------------------------------
 
-Before starting a server, you often need to verify that the desired port is available
-for binding. Similarly, network monitoring tools need to check if remote services are
-reachable. The ``is_port_open`` function attempts a TCP connection to test remote
-service availability, while ``is_port_available`` tries to bind locally to check if
-a port is free. These checks are essential for service health monitoring, port
-scanning, and avoiding "Address already in use" errors when starting servers.
+在启动服务器之前，您通常需要验证所需的端口是否可用于绑定。同样，网络监控工具需要检查远程服务是否可达。 ``is_port_open`` function 尝试 TCP 连接来测试远程服务可用性，而 ``is_port_available`` 尝试本地绑定以检查端口是否空闲。这些检查对于服务运行状况监控、端口扫描以及避免启动服务器时出现 "Address already in use" 错误至关重要。
 
 .. code-block:: python
 
@@ -274,20 +218,14 @@ scanning, and avoiding "Address already in use" errors when starting servers.
         finally:
             sock.close()
 
-    # Usage
+    # 用法
     print(is_port_open('google.com', 443))  # True
-    print(is_port_available(8080))  # True if not in use
+    print(is_port_available(8080))  # True 如果不使用
 
-Get Network Interfaces
-----------------------
+获取网络接口（Get Network Interfaces）
+------------------------------------------------------------
 
-Multi-homed servers (machines with multiple network interfaces) need to discover
-their available IP addresses to bind to specific interfaces or advertise their
-addresses to clients. The basic approach uses ``getaddrinfo`` on the hostname, but
-for detailed interface information including interface names, netmasks, and broadcast
-addresses, the ``netifaces`` library provides a cross-platform solution. This is
-useful for network configuration tools, service discovery, and building applications
-that need to select specific network interfaces.
+多宿主服务器（具有多个网络接口的计算机）需要发现其可用的 IP 地址以绑定到特定接口或将其地址通告给客户端。基本方法在主机名上使用 ``getaddrinfo`` ，但对于包括接口名称、网络掩码和 broadcast 地址在内的详细接口信息， ``netifaces`` library 提供了跨平台解决方案。这对于网络配置工具、服务发现以及构建需要选择特定网络接口的应用程序非常有用。
 
 .. code-block:: python
 
@@ -298,7 +236,7 @@ that need to select specific network interfaces.
         ips = []
         hostname = socket.gethostname()
         try:
-            # Get all addresses for hostname
+            # 获取主机名的所有地址
             for info in socket.getaddrinfo(hostname, None):
                 ip = info[4][0]
                 if ip not in ips:
@@ -307,7 +245,7 @@ that need to select specific network interfaces.
             pass
         return ips
 
-    # For more detailed interface info, use netifaces
+    # 有关更详细的接口信息，请使用 netifaces
     # pip install netifaces
     import netifaces
 
@@ -317,16 +255,10 @@ that need to select specific network interfaces.
             for addr in addrs[netifaces.AF_INET]:
                 print(f"{iface}: {addr['addr']}")
 
-Socket Options
---------------
+套接字选项（Socket Options）
+------------------------------------------
 
-Socket options control low-level socket behavior and are essential for building
-robust network applications. ``SO_REUSEADDR`` allows immediate restart of servers
-without waiting for TIME_WAIT to expire. ``SO_REUSEPORT`` enables multiple processes
-to bind to the same port for load balancing. Buffer size options (``SO_SNDBUF``,
-``SO_RCVBUF``) tune throughput for high-bandwidth applications. ``SO_KEEPALIVE``
-detects dead connections by sending periodic probes. Understanding these options
-helps you optimize performance and handle edge cases in production systems.
+Socket 选项控制低级 socket 行为，对于构建强大的网络应用程序至关重要。 ``SO_REUSEADDR`` 允许立即重新启动服务器，而无需等待 TIME_WAIT 过期。 ``SO_REUSEPORT`` 可以将多个 processes 绑定到同一端口以实现负载均衡。 Buffer 尺寸选项（ ``SO_SNDBUF`` 、 ``SO_RCVBUF`` ）可针对高 bandwidth 应用调整 throughput。 ``SO_KEEPALIVE`` 通过发送周期性探测来检测死连接。了解这些选项有助于您优化性能并处理生产系统中的边缘情况。
 
 .. code-block:: python
 
@@ -334,38 +266,32 @@ helps you optimize performance and handle edge cases in production systems.
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    # Reuse address (avoid "Address already in use" error)
+    # 重用地址（避免"Address already in use"错误）
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-    # Reuse port (multiple processes can bind to same port)
+    # 复用端口（多个processes可以绑定到同一个端口）
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
 
-    # Set send/receive buffer sizes
+    # Set 发送/接收 buffer 尺寸
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 65536)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 65536)
 
-    # Enable TCP keepalive
+    # 启用 TCP 保活
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
-    # Set timeout (seconds)
+    # Set 超时（秒）
     sock.settimeout(10.0)
 
-    # Non-blocking mode
+    # 非阻塞模式
     sock.setblocking(False)
 
-    # Get current option value
+    # 获取当前选项 value
     print(sock.getsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF))
 
-Troubleshooting: Connection Refused
------------------------------------
+故障排除：连接被拒绝（Troubleshooting: Connection Refused）
+----------------------------------------------------------------------------------------------
 
-"Connection refused" is one of the most common network errors, but its cause isn't
-always obvious. It can mean the target port has no listening service, a firewall is
-actively rejecting connections, or the service crashed. Other errors like "Connection
-timed out" suggest the host is unreachable or a firewall is silently dropping packets,
-while "Network unreachable" indicates routing problems. This diagnostic function
-categorizes different error types to help identify the root cause, which is essential
-for debugging network connectivity issues in development and production environments.
+"Connection refused" 是最常见的网络错误之一，但其原因并不总是显而易见。这可能意味着目标端口没有侦听服务、防火墙主动拒绝连接或服务崩溃。其他错误（例如 "Connection timed out"）表明主机无法访问或防火墙正在默默地丢弃数据包，而 "Network unreachable" 则表明存在路由问题。此诊断 function 对不同的错误 types 进行分类，以帮助识别根本原因，这对于开发和生产环境中的 debugging 网络连接问题至关重要。
 
 .. code-block:: python
 
@@ -398,16 +324,10 @@ for debugging network connectivity issues in development and production environm
     diagnose_connection('localhost', 8080)
 
 
-Timeout Handling
-----------------
+超时处理（Timeout Handling）
+--------------------------------------------
 
-Network operations can block indefinitely if a remote host becomes unresponsive,
-a network path fails, or packets are lost. Without proper timeout handling, your
-application may hang forever waiting for data that will never arrive. Python sockets
-support timeouts at multiple levels: a global timeout via ``settimeout()`` that applies
-to all operations, or per-operation timeouts using ``select()`` for more precise control.
-Always set appropriate timeouts based on your application's requirements—too short
-causes false failures, too long delays error detection.
+如果远程主机没有响应，网络操作可能会无限期地阻塞， 网络路径失败， 或数据包丢失。 如果没有适当的超时处理， 您的应用程序可能会永远挂起，等待永远不会到达的数据。 Python sockets 支持多个级别的超时： 通过 ``settimeout()`` 的全局超时适用于所有操作， 或使用 ``select()`` 进行每个操作超时以实现更精确的控制。 始终根据应用程序的要求设置适当的超时 set — 太短会导致 false 失败， 太长会延迟错误检测。
 
 .. code-block:: python
 
@@ -436,9 +356,9 @@ causes false failures, too long delays error detection.
         try:
             return sock.recv(bufsize)
         except socket.timeout:
-            return None  # Timeout, no data
+            return None  # 超时，无数据
 
-    # Per-operation timeout using select
+    # 使用 select 的每个操作超时
     import select
 
     def recv_timeout(sock, bufsize, timeout):
@@ -448,17 +368,10 @@ causes false failures, too long delays error detection.
             return sock.recv(bufsize)
         raise socket.timeout("recv timed out")
 
-Graceful Shutdown
------------------
+平稳关闭（Graceful Shutdown）
+----------------------------------------------
 
-Simply calling ``close()`` on a socket may lose data still in transit. The TCP
-protocol requires a proper four-way handshake (FIN-ACK sequence) to ensure both
-sides have finished sending. The ``shutdown()`` method provides fine-grained control:
-``SHUT_WR`` sends a FIN packet signaling "I'm done sending" while still allowing
-reads, ``SHUT_RD`` stops receiving, and ``SHUT_RDWR`` does both. For clean termination,
-call ``shutdown(SHUT_WR)`` first, drain any remaining incoming data, then ``close()``.
-This pattern is especially important for protocols where the server waits for client
-EOF before sending its final response.
+仅在 socket 上调用 ``close()`` 可能会丢失仍在传输中的数据。 TCP 协议需要正确的四次握手（FIN-ACK 序列）以确保双方都完成发送。 ``shutdown()`` method 提供细粒度控制： ``SHUT_WR`` 发送 FIN 数据包，发送 "I'm done sending" 信号，同时仍允许读取， ``SHUT_RD`` 停止接收， ``SHUT_RDWR`` 执行这两种操作。对于干净终止，首先调用 ``shutdown(SHUT_WR)`` ，耗尽所有剩余的传入数据，然后调用 ``close()`` 。此模式对于服务器在发送最终响应之前等待客户端 EOF 的协议尤其重要。
 
 .. code-block:: python
 
@@ -468,10 +381,10 @@ EOF before sending its final response.
     sock.connect(('example.com', 80))
     sock.send(b'GET / HTTP/1.0\r\nHost: example.com\r\n\r\n')
 
-    # Shutdown write side - signals EOF to server
+    # 关闭写入端 - 向服务器发出 EOF 信号
     sock.shutdown(socket.SHUT_WR)
 
-    # Read remaining data
+    # 读取剩余数据
     response = b''
     while True:
         data = sock.recv(4096)
@@ -479,25 +392,18 @@ EOF before sending its final response.
             break
         response += data
 
-    # Now close the socket
+    # 现在关闭socket
     sock.close()
 
-    # shutdown options:
-    # SHUT_RD   - no more reads
-    # SHUT_WR   - no more writes (sends FIN)
-    # SHUT_RDWR - no more reads or writes
+    # 关机选项：
+    # SHUT_RD - 不再读取
+    # SHUT_WR - 不再写入（发送 FIN）
+    # SHUT_RDWR - 不再读取或写入
 
-Multicast UDP
--------------
+组播 UDP（Multicast UDP）
+------------------------------------------
 
-Multicast is a one-to-many communication model where a single packet is delivered
-to multiple receivers simultaneously. Unlike broadcast (which floods the entire
-network) or unicast (one sender, one receiver), multicast uses special IP addresses
-(224.0.0.0 to 239.255.255.255) and IGMP protocol to efficiently route packets only
-to interested receivers. Receivers must explicitly join a multicast group to receive
-traffic. The TTL (Time To Live) controls how far packets travel—TTL=1 stays on the
-local subnet, higher values cross routers. Multicast is ideal for streaming media,
-real-time data feeds, and service discovery where the same data goes to many clients.
+组播是一种一对多通信模型，其中单个数据包同时传送到多个接收者。与 broadcast（淹没整个网络）或单播（一个发送者，一个接收者）不同，多播使用特殊的 IP 地址（224.0.0.0 到 239.255.255.255）和 IGMP 协议来有效地将数据包仅路由到感兴趣的接收者。接收方必须显式加入多播组才能接收流量。 TTL（生存时间）控制数据包传输的距离 - TTL=1 保留在本地子网上，更高的 values 跨路由器。组播非常适合流媒体、实时数据源和服务发现，其中相同的数据会传送到许多客户端。
 
 .. code-block:: python
 
@@ -507,20 +413,20 @@ real-time data feeds, and service discovery where the same data goes to many cli
     MCAST_GROUP = '224.1.1.1'
     MCAST_PORT = 5007
 
-    # Sender
+    # 发件人
     def multicast_sender():
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 2)
         sock.sendto(b'Hello Multicast!', (MCAST_GROUP, MCAST_PORT))
         sock.close()
 
-    # Receiver
+    # 接收者
     def multicast_receiver():
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind(('', MCAST_PORT))
 
-        # Join multicast group
+        # 加入多播组
         mreq = struct.pack('4sl', socket.inet_aton(MCAST_GROUP), socket.INADDR_ANY)
         sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
@@ -528,18 +434,10 @@ real-time data feeds, and service discovery where the same data goes to many cli
         print(f"Received: {data} from {addr}")
         sock.close()
 
-HTTP Client with Sockets
-------------------------
+带套接字的 HTTP 客户端（HTTP Client with Sockets）
+--------------------------------------------------------------------------------
 
-While high-level libraries like ``urllib`` and ``requests`` handle HTTP elegantly,
-understanding raw HTTP over sockets is invaluable for debugging, implementing custom
-protocols, or working in constrained environments. HTTP/1.1 is a text-based protocol:
-you send a request line (``GET /path HTTP/1.1``), headers (key-value pairs), a blank
-line, and optionally a body. The server responds similarly. Key headers include
-``Host`` (required in HTTP/1.1), ``Connection: close`` (to signal single request),
-and ``Content-Length`` for bodies. This low-level approach reveals exactly what's
-happening on the wire, making it easier to diagnose issues like malformed headers,
-encoding problems, or TLS handshake failures.
+虽然像 ``urllib`` 和 ``requests`` 这样的高级 libraries 可以优雅地处理 HTTP，但了解原始 HTTP 而不是 sockets 对于 debugging、实现自定义协议或在受限环境中工作来说非常宝贵。 HTTP/1.1 是基于文本的协议：您发送请求行 ( ``GET /path HTTP/1.1`` )、标头（key-value 对）、空行以及可选的正文。服务器响应类似。 Key 标头包括 ``Host`` （HTTP/1.1 中需要）、 ``Connection: close`` （用于发出单个请求信号）和用于主体的 ``Content-Length`` 。这种低级方法准确地揭示了线路上发生的情况，从而更容易诊断格式错误的标头、encoding 问题或 TLS 握手失败等问题。
 
 .. code-block:: python
 
@@ -569,29 +467,21 @@ encoding problems, or TLS handshake failures.
 
         sock.close()
 
-        # Split headers and body
+        # 拆分标题和正文
         header_end = response.find(b'\r\n\r\n')
         headers = response[:header_end].decode()
         body = response[header_end + 4:]
 
         return headers, body
 
-    # Usage
+    # 用法
     headers, body = http_get('example.com', '/', use_ssl=True)
     print(headers)
 
-SOCKS Proxy Support
--------------------
+SOCKS 代理支持（SOCKS Proxy Support）
+--------------------------------------------------------------
 
-SOCKS (Socket Secure) is a protocol that routes network traffic through a proxy
-server, providing anonymity and the ability to bypass firewalls or geographic
-restrictions. Unlike HTTP proxies that only handle HTTP traffic, SOCKS operates
-at a lower level and can proxy any TCP (and with SOCKS5, UDP) traffic. SOCKS5
-adds authentication and IPv6 support. Common use cases include routing traffic
-through Tor (which uses SOCKS5 on port 9050), accessing internal networks via
-SSH tunnels (``ssh -D``), or corporate proxy requirements. The ``PySocks`` library
-makes it easy to route Python socket connections through SOCKS proxies, either
-globally (patching all sockets) or per-connection.
+SOCKS (Socket Secure) 是一种通过代理服务器路由网络流量的协议，提供匿名性以及绕过防火墙或地理限制的能力。与仅处理 HTTP 流量的 HTTP 代理不同，SOCKS 在较低级别运行，可以代理任何 TCP（以及 SOCKS5、UDP）流量。 SOCKS5 添加了身份验证和 IPv6 支持。常见用例包括通过 Tor（在端口 9050 上使用 SOCKS5）路由流量、通过 SSH 隧道 ( ``ssh -D`` ) 访问内部网络或公司代理要求。 ``PySocks`` library 可以轻松地通过 SOCKS 代理路由 Python socket 连接，无论是全局（修补所有 sockets）还是每个连接。
 
 .. code-block:: python
 
@@ -599,20 +489,20 @@ globally (patching all sockets) or per-connection.
     import socks
     import socket
 
-    # Method 1: Patch all sockets globally
+    # Method 1：全局修补所有 sockets
     socks.set_default_proxy(socks.SOCKS5, "localhost", 9050)
     socket.socket = socks.socksocket
 
-    # Now all socket connections go through the proxy
+    # 现在所有 socket 连接都通过代理
     s = socket.socket()
     s.connect(("example.com", 80))
 
-    # Method 2: Create proxy socket directly
+    # Method 2：直接创建代理socket
     s = socks.socksocket()
     s.set_proxy(socks.SOCKS5, "localhost", 9050)
     s.connect(("example.com", 80))
 
-    # Method 3: With authentication
+    # Method 3：带认证
     s = socks.socksocket()
     s.set_proxy(socks.SOCKS5, "proxy.example.com", 1080,
                 username="user", password="pass")

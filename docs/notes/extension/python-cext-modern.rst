@@ -1,33 +1,22 @@
 .. meta::
-    :description lang=en: Comprehensive guide to modern Python C/C++ extensions covering pybind11, ctypes, cffi, and Cython with practical examples for building high-performance Python modules, NumPy integration, GIL management, and class bindings
+    :description lang=zh_CN: 现代 Python C/C++ 扩展的综合指南，涵盖 pybind11、ctypes、cffi 和 Cython，以及构建高性能 Python、modules、NumPy 集成、GIL 管理、和 class 绑定
     :keywords: Python, Python3, pybind11, C Extension, C++, ctypes, cffi, Cython, NumPy, Performance, GIL, Native Code, PyTorch, TensorFlow, SciPy, shared library
 
-=========================
-Modern C/C++ Extensions
-=========================
+========================================================================
+现代 C/C++ 扩展（Modern C/C++ Extensions）
+========================================================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-Python's flexibility and ease of use come at a performance cost compared to compiled
-languages. When you need maximum speed for numerical computing, real-time processing,
-system interfaces, or wrapping existing C/C++ libraries, native extensions bridge the
-gap between Python's productivity and C/C++'s performance. This guide covers modern
-approaches to building Python extensions: **pybind11** (the recommended choice for C++
-projects), **ctypes/cffi** (for calling C libraries without compilation), and **Cython**
-(for Python-like syntax that compiles to C). We compare each approach using the same
-Fibonacci benchmark to help you choose the right tool for your specific use case.
+与编译语言相比，Python 的灵活性和易用性是以性能为代价的。当您需要最大速度进行数值计算、实时处理、系统接口或包装现有的 C/C++ libraries 时，本机扩展可以弥补 Python 的生产力和 C/C++ 的性能之间的差距。本指南涵盖了构建 Python 扩展的现代方法： **pybind11**（C++ 项目的推荐选择）、**ctypes/cffi**（用于在不编译的情况下调用 C libraries）以及**Cython** （用于编译为 C 的类似 Python 的语法）。我们使用相同的斐波那契 benchmark 来比较每种方法，以帮助您为您的特定用例选择正确的工具。
 
 .. note::
 
-    For most C++ projects, **pybind11** is the recommended choice. It's used by
-    major machine learning frameworks like PyTorch, TensorFlow, and scientific
-    computing libraries like SciPy. pybind11 provides clean C++11 syntax, automatic
-    type conversions between Python and C++ types, excellent NumPy integration for
-    numerical computing, and seamless exception handling across language boundaries.
+    对于大多数 C++ 项目，建议选择 **pybind11** 。它被 PyTorch、TensorFlow 等主要机器学习框架和 SciPy 等科学计算 libraries 使用。 pybind11 提供干净的 C++11 语法、Python 和 C++ types 之间的自动 type 转换、出色的 NumPy 数值计算集成以及跨语言边界的无缝 exception 处理。
 
-Comparison of Approaches
-------------------------
+方法比较（Comparison of Approaches）
+------------------------------------------------------------
 
 ::
 
@@ -65,21 +54,14 @@ Comparison of Approaches
     - Need PyPy compatibility      → cffi or Cython
     - Quick prototype              → ctypes
 
-pybind11: Getting Started
--------------------------
+pybind11：入门（pybind11: Getting Started）
+----------------------------------------------------------------------------
 
 :Source: `src/cext/example.cpp <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/example.cpp>`_
 
-pybind11 is a lightweight header-only C++ library that creates Python bindings for
-existing C++ code. Unlike the traditional Python C API, pybind11 uses modern C++11
-features like variadic templates and lambda expressions to provide a clean, intuitive
-syntax. Installation is simple with ``pip install pybind11``, and it requires only a
-C++11 compatible compiler (GCC 4.8+, Clang 3.3+, MSVC 2015+). The ``PYBIND11_MODULE``
-macro defines the module entry point, and ``m.def()`` binds C++ functions to Python
-with automatic type conversion for common types like int, float, string, and STL
-containers.
+pybind11 是一个轻量级的仅标头 C++ library，它为现有 C++ 代码创建 Python 绑定。与传统的 Python C API 不同，pybind11 使用现代 C++11 功能（例如可变参数模板和 lambda expressions）来提供干净、直观的语法。 ``pip install pybind11`` 的安装非常简单，只需要兼容 C++11 的 compiler（GCC 4.8+、Clang 3.3+、MSVC 2015+）。 ``PYBIND11_MODULE`` 宏定义了module入口点， ``m.def()`` 将C++ functions绑定到Python，并自动将type转换为常见的types，如int， float、string 和 STL 容器。
 
-**Simple function binding:**
+**简单function绑定：**
 
 .. code-block:: cpp
 
@@ -90,7 +72,7 @@ containers.
         return a + b;
     }
 
-    // Fibonacci for performance comparison
+    // 斐波那契性能比较
     unsigned long fib(unsigned long n) {
         if (n < 2) return n;
         return fib(n - 1) + fib(n - 2);
@@ -103,7 +85,7 @@ containers.
         m.def("fib", &fib, "Compute Fibonacci number");
     }
 
-**Build with setup.py:**
+**使用setup.py构建：**
 
 .. code-block:: python
 
@@ -133,17 +115,12 @@ containers.
     $ python -c "import example; print(example.fib(35))"
     9227465
 
-pybind11: Classes
------------------
+pybind11：类（pybind11: Classes）
+----------------------------------------------------------
 
 :Source: `src/cext/vector.cpp <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/vector.cpp>`_
 
-pybind11 makes binding C++ classes to Python straightforward with the ``py::class_``
-template. You can expose constructors with ``def(py::init<...>())``, member variables
-with ``def_readwrite()`` or ``def_readonly()``, and methods with ``def()``. Python
-special methods like ``__repr__``, ``__add__``, ``__eq__`` are bound by name, enabling
-natural Python syntax for your C++ objects. Default argument values are supported via
-``py::arg()``, and you can add docstrings to improve the Python help() experience.
+pybind11 使用 ``py::class_`` 模板将 C++ classes 直接绑定到 Python。您可以使用 ``def(py::init<...>())`` 公开构造函数，使用 ``def_readwrite()`` 或 ``def_readonly()`` 公开成员 variables，以及使用 ``def()`` 公开 methods。 Python special methods 与 ``__repr__`` 、 ``__add__`` 、 ``__eq__`` 一样按名称绑定，为 C++ objects 启用自然的 Python 语法。 Default argument values 通过 ``py::arg()`` 支持，您可以添加文档字符串来改善 Python help() 体验。
 
 .. code-block:: cpp
 
@@ -194,18 +171,12 @@ natural Python syntax for your C++ objects. Default argument values are supporte
     >>> v3
     Vector2D(4.0, 6.0)
 
-pybind11: NumPy Integration
----------------------------
+pybind11：NumPy 集成（pybind11: NumPy Integration）
+--------------------------------------------------------------------------------------------
 
 :Source: `src/cext/numpy_example.cpp <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/numpy_example.cpp>`_
 
-pybind11 provides first-class NumPy support through the ``pybind11/numpy.h`` header,
-enabling high-performance numerical computing without data copying. The ``py::array_t<T>``
-template wraps NumPy arrays with type safety, and ``unchecked<N>()`` provides fast,
-bounds-check-free access for performance-critical inner loops. Arrays can be modified
-in-place using ``mutable_unchecked<N>()``, or new arrays can be created and returned.
-This zero-copy approach is essential for scientific computing where large datasets
-would be expensive to duplicate.
+pybind11通过 ``pybind11/numpy.h`` 头提供第一个class NumPy支持，无需数据复制即可实现高性能数值计算。 ``py::array_t<T>`` 模板将 NumPy arrays 与 type 安全性封装在一起， ``unchecked<N>()`` 为性能关键的内部 loops 提供快速、无边界检查的访问。可以使用 ``mutable_unchecked<N>()`` 就地修改 Arrays，或者可以创建并返回新的 arrays。这种零复制方法对于科学计算至关重要，因为复制大型数据集的成本很高。
 
 .. code-block:: cpp
 
@@ -215,7 +186,7 @@ would be expensive to duplicate.
 
     namespace py = pybind11;
 
-    // Element-wise multiply (modifies in place)
+    // Element 方向乘法（就地修改）
     void multiply_inplace(py::array_t<double> arr, double factor) {
         auto buf = arr.mutable_unchecked<1>();
         for (py::ssize_t i = 0; i < buf.shape(0); i++) {
@@ -223,7 +194,7 @@ would be expensive to duplicate.
         }
     }
 
-    // Return new array
+    // 返回新的 array
     py::array_t<double> add_arrays(py::array_t<double> a, py::array_t<double> b) {
         auto buf_a = a.unchecked<1>();
         auto buf_b = b.unchecked<1>();
@@ -259,18 +230,12 @@ would be expensive to duplicate.
     >>> add_arrays(a, b)
     array([5., 7., 9.])
 
-pybind11: Releasing the GIL
----------------------------
+pybind11：释放 GIL（pybind11: Releasing the GIL）
+----------------------------------------------------------------------------------------
 
 :Source: `src/cext/gil_example.cpp <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/gil_example.cpp>`_
 
-Python's Global Interpreter Lock (GIL) prevents true parallel execution of Python code
-across threads. For CPU-intensive C++ operations or blocking I/O that doesn't need
-Python objects, releasing the GIL allows other Python threads to run concurrently.
-pybind11 provides ``py::gil_scoped_release`` for RAII-style GIL management—the GIL is
-released when the object is created and automatically reacquired when it goes out of
-scope. This pattern is essential for multi-threaded applications where C++ code performs
-heavy computation while Python threads handle other tasks like UI updates or network I/O.
+Python 的全局 Interpreter Lock (GIL) 阻止 true 在 threads 上并行执行 Python 代码。对于 CPU 密集型 C++ 操作或阻塞不需要 Python objects 的 I/O，释放 GIL 允许其他 Python threads 并发运行。 pybind11 为 RAII 式的 GIL 管理提供 ``py::gil_scoped_release`` ——GIL 在创建 object 时释放，在 scope 退出时自动重新获取。此模式对于多线程应用程序至关重要，其中 C++ 代码执行繁重的计算，而 Python threads 处理其他任务，例如 UI 更新或网络 I/O。
 
 .. code-block:: cpp
 
@@ -280,16 +245,16 @@ heavy computation while Python threads handle other tasks like UI updates or net
 
     namespace py = pybind11;
 
-    // Slow operation that releases GIL
+    // 释放GIL的缓慢操作
     void slow_operation(int seconds) {
-        // Release GIL while doing CPU work
+        // 在执行 CPU 工作时释放 GIL
         py::gil_scoped_release release;
 
-        // Simulate slow work
+        // 模拟慢速工作
         std::this_thread::sleep_for(std::chrono::seconds(seconds));
     }
 
-    // CPU-intensive work
+    // CPU 密集型工作
     unsigned long fib_nogil(unsigned long n) {
         py::gil_scoped_release release;
 
@@ -317,27 +282,21 @@ heavy computation while Python threads handle other tasks like UI updates or net
         slow_operation(1)
         print(f"{datetime.now()}: Thread {n} done")
 
-    # Threads run in parallel because GIL is released
+    # Threads 并行运行，因为 GIL 已发布
     threads = [threading.Thread(target=worker, args=(i,)) for i in range(3)]
     for t in threads: t.start()
     for t in threads: t.join()
 
-ctypes: Quick C Library Access
-------------------------------
+ctypes：快速 C 库访问（ctypes: Quick C Library Access）
+----------------------------------------------------------------------------------------------
 
 :Source: `src/cext/fib.c <https://github.com/crazyguitar/pysheeet/blob/master/src/cext/fib.c>`_
 
-ctypes is Python's built-in foreign function interface (FFI) that lets you call C
-functions from shared libraries (.so, .dylib, .dll) without writing any C wrapper code
-or compiling Python extensions. It's ideal for quick prototyping, accessing system
-libraries, or wrapping existing C code when you don't want a build step. The key
-requirement is declaring function signatures with ``argtypes`` and ``restype``—without
-these declarations, ctypes assumes all arguments and return values are C ``int``, which
-causes silent bugs or crashes with other types like ``double`` or pointers.
+ctypes 是 Python 的内置外部 function 接口 (FFI)，可让您从共享 libraries（.so、.dylib、.dll）调用 C functions，而无需编写任何 C 包装器代码或编译 Python 扩展。它非常适合快速原型设计、访问系统 libraries 或在不需要构建步骤时包装现有 C 代码。 key 要求使用 ``argtypes`` 和 ``restype`` 声明 function 签名 - 如果没有这些声明，ctypes 会假定所有 arguments 和 return values 都是 C ``int`` ，这会导致静默错误或与其他 types 发生崩溃，例如 ``double`` 或指针。
 
 .. code-block:: c
 
-    // fib.c - Compile: gcc -shared -fPIC -o libfib.so fib.c
+    // fib.c - 编译：gcc -shared -fPIC -o libfib.so fib.c
     unsigned long fib(unsigned long n) {
         if (n < 2) return n;
         return fib(n - 1) + fib(n - 2);
@@ -352,30 +311,25 @@ causes silent bugs or crashes with other types like ``double`` or pointers.
     import ctypes
     from ctypes import c_ulong, c_double
 
-    # Load shared library
-    # Linux: libfib.so, macOS: libfib.dylib, Windows: fib.dll
+    # 负载共享 library
+    # Linux：libfib.so，macOS：libfib.dylib，Windows：fib.dll
     lib = ctypes.CDLL("./libfib.so")
 
-    # Declare function signatures (important for non-int types!)
+    # 声明 function 签名（对于非 int types 很重要！）
     lib.fib.argtypes = [c_ulong]
     lib.fib.restype = c_ulong
 
     lib.add_doubles.argtypes = [c_double, c_double]
     lib.add_doubles.restype = c_double
 
-    # Call functions
+    # 拨打 functions
     print(lib.fib(35))        # 9227465
     print(lib.add_doubles(1.5, 2.5))  # 4.0
 
-ctypes: Structures and Pointers
--------------------------------
+ctypes：结构体和指针（ctypes: Structures and Pointers）
+--------------------------------------------------------------------------------------------
 
-Working with C structures and pointers in ctypes requires careful type declarations
-that mirror the C memory layout exactly. Define structures by subclassing ``Structure``
-and specifying ``_fields_`` as a list of (name, type) tuples in the same order as the
-C struct. Use ``POINTER(Type)`` to create pointer types and ``byref(obj)`` to pass
-objects by reference (equivalent to ``&obj`` in C). This approach is more error-prone
-than pybind11 but works without any compilation step.
+在 ctype 中使用 C 结构和指针需要仔细的 type 声明，以准确反映 C 内存布局。通过子类化 ``Structure`` 并将 ``_fields_`` 指定为 (name, type) tuples 的 list 来定义结构，顺序与 C 结构体相同。使用 ``POINTER(Type)`` 创建指针types和 ``byref(obj)`` 通过引用传递objects（相当于C中的 ``&obj`` ）。这种方法比 pybind11 更容易出错，但无需任何编译步骤即可工作。
 
 .. code-block:: c
 
@@ -413,27 +367,22 @@ than pybind11 but works without any compilation step.
     lib.scale_point.argtypes = [POINTER(Point), c_double]
     lib.scale_point.restype = None
 
-    # Create points
+    # 创建点
     p1 = Point(0, 0)
     p2 = Point(3, 4)
 
-    # Pass by reference
+    # 通过引用传递
     dist = lib.distance(byref(p1), byref(p2))
     print(f"Distance: {dist}")  # 5.0
 
-    # Modify in place
+    # 就地修改
     lib.scale_point(byref(p2), 2.0)
     print(f"Scaled: ({p2.x}, {p2.y})")  # (6.0, 8.0)
 
-cffi: Cleaner Foreign Function Interface
-----------------------------------------
+cffi：更干净的外部函数接口（cffi: Cleaner Foreign Function Interface）
+------------------------------------------------------------------------------------------------------------------
 
-cffi (C Foreign Function Interface) provides a cleaner, more Pythonic API than ctypes
-for calling C code. Instead of Python type objects, you declare C function signatures
-using actual C syntax in ``ffi.cdef()``, which can often be copied directly from header
-files. cffi handles type conversions automatically and provides better error messages.
-It's also the recommended FFI for PyPy, where it runs significantly faster than ctypes.
-Install with ``pip install cffi``.
+cffi（C 外部 Function 接口）提供了比 ctypes 更干净、更 Pythonic API 的调用 C 代码。您可以使用 ``ffi.cdef()`` 中的实际 C 语法而不是 Python type objects 来声明 C function 签名，通常可以直接从头文件中复制。 cffi 自动处理 type 转换并提供更好的错误消息。它也是 PyPy 推荐的 FFI，它的运行速度明显快于 ctypes。使用 ``pip install cffi`` 安装。
 
 .. code-block:: python
 
@@ -441,20 +390,20 @@ Install with ``pip install cffi``.
 
     ffi = FFI()
 
-    # Declare C functions (copy from header file)
+    # 声明 C functions（从头文件复制）
     ffi.cdef("""
         unsigned long fib(unsigned long n);
         double add_doubles(double a, double b);
     """)
 
-    # Load library
+    # 加载library
     lib = ffi.dlopen("./libfib.so")
 
-    # Call functions - types are automatic!
+    # 拨打 functions - types 是自动的！
     print(lib.fib(35))              # 9227465
     print(lib.add_doubles(1.5, 2.5))  # 4.0
 
-**cffi with inline C code (ABI mode):**
+**cffi 带有内联 C 代码（ABI 模式）：**
 
 .. code-block:: python
 
@@ -463,7 +412,7 @@ Install with ``pip install cffi``.
     ffi = FFI()
     ffi.cdef("unsigned long fib(unsigned long n);")
 
-    # Compile C code inline
+    # 内联编译 C 代码
     ffi.set_source("_fib_cffi", """
         unsigned long fib(unsigned long n) {
             if (n < 2) return n;
@@ -473,20 +422,14 @@ Install with ``pip install cffi``.
 
     ffi.compile()
 
-    # Now import and use
+    # 现在导入并使用
     from _fib_cffi import lib
     print(lib.fib(35))
 
-Cython: Python-like Syntax
---------------------------
+Cython：类似 Python 的语法（Cython: Python-like Syntax）
+------------------------------------------------------------------------------------------------
 
-Cython is a programming language that combines Python syntax with C data types,
-compiling to efficient C code. It's excellent for gradual optimization: start with
-pure Python code, then add type declarations to critical sections for dramatic speedups.
-Cython supports three levels of optimization: pure Python (``def``), typed Python
-(``def`` with type hints), and pure C functions (``cdef``). The ``cdef`` functions
-run at C speed but can only be called from other Cython code, so you typically wrap
-them with a ``def`` function for Python access. Install with ``pip install cython``.
+Cython 是一种将 Python 语法与 C data types 相结合的编程语言，编译为高效的 C 代码。它非常适合逐步优化：从纯 Python 代码开始，然后将 type 声明添加到关键部分以实现显着的加速。 Cython 支持三个级别的优化：纯 Python ( ``def`` )、类型化 Python（ ``def`` 与 type hints）和纯 C functions ( ``cdef`` )。 ``cdef`` functions 以 C 速度运行，但只能从其他 Cython 代码调用，因此您通常用 ``def`` function 包装它们以进行 Python 访问。使用 ``pip install cython`` 安装。
 
 .. code-block:: cython
 
@@ -529,15 +472,10 @@ them with a ``def`` function for Python access. Install with ``pip install cytho
     $ python -c "from fib import fib_c; print(fib_c(35))"
     9227465
 
-Performance Comparison
-----------------------
+性能比较（Performance Comparison）
+--------------------------------------------------------
 
-Understanding the performance characteristics of each approach helps you choose the
-right tool. This benchmark compares all approaches using recursive Fibonacci (n=35),
-a CPU-bound task that highlights the overhead of Python's interpreter. Native code
-achieves 50-100x speedups by eliminating Python object creation, method dispatch, and
-bytecode interpretation. The actual speedup varies by workload—numerical code with
-NumPy integration can see even larger gains, while I/O-bound code benefits less.
+了解每种方法的性能特征有助于您选择正确的工具。此 benchmark 比较了使用 recursive 斐波那契 (n=35) 的所有方法，这是一个 CPU 绑定任务，突出显示了 Python 的 interpreter 的开销。通过消除 Python object 创建、method 调度和字节码解释，本机代码实现了 50-100 倍的加速。实际加速因工作负载而异，集成 NumPy 的数字代码可以获得更大的增益，而 I/O 绑定的代码受益较小。
 
 .. code-block:: python
 
@@ -551,52 +489,49 @@ NumPy integration can see even larger gains, while I/O-bound code benefits less.
             times.append(time() - start)
         return min(times), result
 
-    # Pure Python
+    # 纯正Python
     def fib_python(n):
         if n < 2: return n
         return fib_python(n - 1) + fib_python(n - 2)
 
-    # Results (approximate, varies by system):
+    # 结果（近似值，因系统而异）：
     #
-    # | Approach          | Time (s) | Speedup |
+    # |方法|时间|加速|
     # |-------------------|----------|---------|
-    # | Pure Python       | 2.50     | 1x      |
-    # | Cython (typed)    | 0.08     | 31x     |
-    # | Cython (cdef)     | 0.05     | 50x     |
-    # | ctypes            | 0.05     | 50x     |
-    # | cffi              | 0.05     | 50x     |
-    # | pybind11          | 0.04     | 62x     |
-    # | pybind11 (no GIL) | 0.04     | 62x     |
+    # |纯Python | 2.50 | 1x |
+    # | Cython（打字）| 0.08 | 31x |
+    # | Cython (cdef) | 0.05 | 50 倍 |
+    # | ctypes | 0.05 | 50 倍 |
+    # | cffi | 0.05 | 50 倍 |
+    # | pybind11 | 0.04 | 62x |
+    # | pybind11（无 GIL）| 0.04 | 62x |
 
-Best Practices
---------------
+最佳实践（Best Practices）
+----------------------------------------
 
-Following these guidelines will help you write efficient, maintainable, and safe
-native extensions. The most common mistakes are holding the GIL during long operations
-(blocking other threads), copying large arrays unnecessarily (killing performance),
-and ignoring error handling (causing crashes instead of Python exceptions).
+遵循这些指南将帮助您编写高效、可维护且安全的本机扩展。最常见的错误是在长时间操作期间持有GIL（阻塞其他threads），不必要地复制大arrays（杀死性能），以及忽略错误处理（导致崩溃而不是Python exceptions）。
 
-**Do:**
+**Do：**
 
-- Use pybind11 for new C++ bindings
-- Release the GIL for CPU-intensive operations
-- Use NumPy arrays for numerical data (zero-copy with pybind11)
-- Declare types in ctypes/cffi (avoid silent bugs)
-- Profile before optimizing—find the real bottleneck
+- 使用 pybind11 进行新的 C++ 绑定
+- 发布GIL，用于CPU密集型操作
+- 使用 NumPy arrays 作为数值数据（使用 pybind11 进行零复制）
+- 在 ctypes/cffi 中声明 types（避免无声错误）
+- 优化前的分析——找到真正的瓶颈
 
-**Don't:**
+**不：**
 
-- Write Python C API code for new projects (use pybind11)
-- Hold the GIL during blocking I/O or long computations
-- Copy large arrays between Python and C (use views)
-- Ignore error handling in C code
-- Optimize prematurely—Python is often fast enough
+- 为新项目编写Python C API代码（使用pybind11）
+- 在阻塞 I/O 或长时间计算期间按住 GIL
+- 在 Python 和 C 之间复制大 arrays（使用视图）
+- 忽略 C 代码中的错误处理
+- 过早优化 - Python 通常足够快
 
-**Error handling:**
+**错误处理：**
 
 .. code-block:: cpp
 
-    // pybind11 - exceptions automatically convert to Python
+    // pybind11 - exceptions 自动转换为 Python
     double divide(double a, double b) {
         if (b == 0) {
             throw std::runtime_error("Division by zero");
@@ -606,12 +541,12 @@ and ignoring error handling (causing crashes instead of Python exceptions).
 
     // In Python: raises RuntimeError
 
-**Memory management:**
+**内存管理：**
 
 .. code-block:: cpp
 
-    // pybind11 handles Python object refcounting automatically
-    // For raw pointers, use return value policies:
+    // pybind11 自动处理 Python object 重新计数
+    // 对于原始指针，使用 return value 策略：
 
     py::class_<Parent>(m, "Parent")
         .def("get_child", &Parent::get_child,

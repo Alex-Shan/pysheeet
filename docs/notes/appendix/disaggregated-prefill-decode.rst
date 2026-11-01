@@ -1,131 +1,87 @@
 .. meta::
-    :description lang=en: Evaluating disaggregated prefill/decode for LLM serving with vLLM, NIXL, and EFA on AWS
+    :description lang=zh_CN: 评估在 AWS 上与 vLLM、NIXL 和 EFA 一起服务的 LLM 的分解 prefill/decode
     :keywords: LLM, vLLM, NIXL, disaggregated prefill decode, KV cache, EFA, inference serving
 
-Is Disaggregated Prefill/Decode a Silver Bullet for LLM Serving?
-================================================================
+分离式 Prefill/Decode 是 LLM 服务的灵丹妙药吗？（Is Disaggregated Prefill/Decode a Silver Bullet for LLM Serving?）
+========================================================================================================================================================================================================
 
 :Date: 2026-03-10
 
-Abstract
---------
+摘要（Abstract）
+------------------------
 
-Disaggregated prefill/decode has gained traction as a promising architecture for
-LLM serving, separating the compute-intensive prefill phase from the
-memory-bound decode phase onto dedicated node groups. Proponents argue that this
-separation enables independent scaling and eliminates interference between the
-two phases. But is it truly a silver bullet? This article puts the claim to the
-test by evaluating disaggregated prefill/decode using vLLM with NIXL over the
-AWS Elastic Fabric Adapter (EFA) on a 4-node cluster. We compare data
-parallelism and simple load-balanced routing as baselines against disaggregated
-configurations. Our results show that while disaggregation dramatically reduces
-inter-token latency (ITL), it comes at a significant cost to throughput and
-time-to-first-token (TTFT), revealing that the architecture is far from a
-universal solution.
+分解式 prefill/decode 作为 LLM 服务的一种有前途的架构而受到关注，它将计算密集型 prefill 阶段与内存绑定的 decode 阶段分离到专用节点组上。支持者认为，这种分离可以实现独立缩放并消除两相之间的干扰。但这真的是灵丹妙药吗？本文通过在 4 节点集群上的 AWS Elastic Fabric Adapter (EFA) 上使用 vLLM 和 NIXL 来评估分解的 prefill/decode，从而对这一说法进行了测试。我们将数据并行性和简单的负载平衡路由作为基准与分解配置进行比较。我们的结果表明，虽然分解极大地减少了令牌间 latency (ITL)，但它对 throughput 和首次令牌时间 (TTFT) 造成了巨大的成本，这表明该架构远非通用解决方案。
 
-Introduction
-------------
+介绍（Introduction）
+--------------------------------
 
-In standard LLM serving, each node handles both prefill and decode for incoming
-requests. The prefill phase is compute-bound and processes the entire input
-prompt in parallel, while the decode phase is memory-bandwidth-bound and
-generates tokens autoregressively. When both phases share the same GPU pool,
-long prefill requests can block decode iterations, increasing inter-token
-latency for concurrent requests.
+在标准 LLM 服务中，每个节点处理 prefill 和 decode 传入请求。 prefill 阶段是计算限制的，processes 是并行的整个输入提示，而 decode 阶段是内存 bandwidth 限制并自回归生成令牌。当两个阶段共享相同的 GPU 池时，长 prefill 请求可能会阻止 decode 迭代，从而增加并发请求的令牌间 latency。
 
-Disaggregated prefill/decode addresses this interference by assigning prefill
-and decode to separate node groups. After a prefill node completes prompt
-processing, the KV cache is transferred to a decode node via a high-bandwidth
-interconnect. NIXL [1]_ (NVIDIA Inference Xfer Library) provides the KV cache
-transfer mechanism, and on AWS, this transfer occurs over EFA using the
-``LIBFABRIC`` backend.
+分解式 prefill/decode 通过将 prefill 和 decode 分配给单独的节点组来解决这种干扰。 prefill节点完成提示处理后，KV cache通过高bandwidth互连传输到decode节点。 NIXL [1]_ （NVIDIA Inference Xfer Library）提供 KV cache 传输机制，并且在 AWS 上，此传输使用 ``LIBFABRIC`` 后端在 EFA 上发生。
 
-The appeal is intuitive: by isolating decode nodes from prefill interference,
-token generation should proceed at a steady, low-latency pace. However, this
-separation introduces new costs — KV cache transfer overhead, prefill node
-saturation at long input lengths, and reduced effective cluster capacity for
-each phase. The question is whether these trade-offs are worthwhile compared to
-simpler alternatives like data parallelism or stateless load-balanced routing.
+其吸引力很直观：通过将 decode 节点与 prefill 干扰隔离，代币生成应该以稳定、低 latency 的速度进行。然而，这种分离引入了新的成本 - KV cache 传输开销、长输入长度下的 prefill 节点饱和以及每个阶段有效集群容量的减少。问题是，与数据并行或无状态负载平衡路由等更简单的替代方案相比，这些权衡是否值得。
 
-This experiment uses vLLM [2]_ with the
-``NixlConnector`` to orchestrate disaggregated serving, and ``vllm-router`` [3]_ as
-a reverse proxy to load-balance requests across node groups. The experiment
-code is available under `src/nixl <https://github.com/crazyguitar/pysheeet/tree/master/src/nixl>`_ in the companion repository.
+此实验使用 vLLM [2]_ 和 ``NixlConnector`` 来编排分类服务，并使用 ``vllm-router`` [3]_ 作为反向代理来跨节点组负载平衡请求。实验代码可在配套存储库的 `src/nixl <https://github.com/crazyguitar/pysheeet/tree/master/src/nixl>`_ 下找到。
 
-Container Image
----------------
+容器镜像（Container Image）
+------------------------------------------
 
-The experiment uses a custom Docker image that bundles all required components.
-The ``Dockerfile`` builds on ``nvidia/cuda:12.8.1-devel-ubuntu24.04`` and
-installs the following stack:
+该实验使用捆绑所有必需组件的自定义 Docker 映像。 ``Dockerfile`` 基于 ``nvidia/cuda:12.8.1-devel-ubuntu24.04`` 构建并安装以下 stack：
 
-- **GDRCopy** v2.5.1 for GPU-direct memory registration
-- **EFA installer** v1.47.0 for AWS Elastic Fabric Adapter support
-- **UCX** v1.20.0 built with verbs, rdmacm, and EFA transport
-- **NIXL** v0.10.1 with ``LIBFABRIC`` backend for KV cache transfer
-- **nixlbench** for standalone NIXL bandwidth/latency microbenchmarks
-- **PyTorch** 2.9.1, **flash-attn** 2.8.1, and **DeepGEMM** v2.1.1.post3
-- **vLLM** 0.15.1 with ``NixlConnector`` support
-- **vllm-router** for load-balancing across disaggregated node groups
+- **GDRCopy** v2.5.1 用于GPU-直接内存注册
+- **EFA 安装程序** v1.47.0，用于 AWS 弹性结构适配器支持
+- **UCX** v1.20.0 使用动词、rdmacm 和 EFA 传输构建
+- **NIXL** v0.10.1 与 ``LIBFABRIC`` 后端用于 KV cache 传输
+- **nixlbench** ，用于独立 NIXL bandwidth/latency 微基准测试
+- **PyTorch**2.9.1、**flash-attn**2.8.1 和**DeepGEMM** v2.1.1.post3
+- **vLLM** 0.15.1，支持 ``NixlConnector``
+- **vllm-router** 用于跨分解节点组的负载平衡
 
-The image is built and saved as a portable tarball via the ``Makefile``:
+图像通过 ``Makefile`` 构建并保存为便携式 tarball：
 
 .. code-block:: bash
 
     make docker && make save
 
-This produces ``nixl-latest.tar.gz``, which is distributed to all Slurm nodes
-at launch time via ``pigz`` decompression and ``docker load``.
+这会产生 ``nixl-latest.tar.gz`` ，在启动时通过 ``pigz`` 解压和 ``docker load`` 分发到所有 Slurm 节点。
 
-Serving Script
---------------
+服务脚本（Serving Script）
+----------------------------------------
 
-The ``vllm.sbatch`` script orchestrates multi-node vLLM serving on Slurm. It
-accepts two key flags that control the serving topology:
+``vllm.sbatch`` 脚本协调在 Slurm 上提供服务的多节点 vLLM。它接受两个控制服务拓扑的 key 标志：
 
-- ``--route R``: splits the allocated nodes into ``R`` identical groups, each
-  running an independent vLLM instance. A ``vllm-router`` process on the head
-  node round-robins requests across groups.
-- ``--prefill P``: within each group, assigns ``P`` nodes as prefill-only
-  (``kv_producer``) and the remaining nodes as decode-only (``kv_consumer``).
-  KV cache transfer between prefill and decode nodes uses ``NixlConnector``
-  with the ``LIBFABRIC`` backend over EFA.
+- ``--route R`` ：将分配的节点分成 ``R`` 相同的组，每个组运行一个独立的vLLM instance。头节点上的 ``vllm-router`` process 跨组循环请求。
+- ``--prefill P`` ：在每个组内，将 ``P`` 节点分配为仅 prefill ( ``kv_producer`` )，将其余节点分配为仅 decode ( ``kv_consumer`` )。 KV cache 在 prefill 和 decode 节点之间的传输使用 ``NixlConnector`` 以及 EFA 上的 ``LIBFABRIC`` 后端。
 
-When ``--prefill 0`` (default), all nodes in a group run standard data-parallel
-serving. The script computes ``DP = nodes_per_group * (8 / TP)`` and launches
-vLLM with ``--data-parallel-size`` accordingly.
+当 ``--prefill 0`` （默认）时，组中的所有节点都运行标准数据并行服务。该脚本计算 ``DP = nodes_per_group * (8 / TP)`` 并相应地启动 vLLM 和 ``--data-parallel-size`` 。
 
-For disaggregated mode, each prefill and decode node runs as an independent
-vLLM process with explicit KV transfer configuration:
+对于分解模式，每个 prefill 和 decode 节点作为独立的 vLLM process 运行，并具有显式 KV 传输配置：
 
 .. code-block:: bash
 
-    # Prefill node
+    # Prefill节点
     vllm serve ... \
         --kv-transfer-config.kv_connector NixlConnector \
         --kv-transfer-config.kv_role kv_producer \
         --kv-transfer-config.kv_connector_extra_config.backends+ LIBFABRIC
 
-    # Decode node
+    # Decode节点
     vllm serve ... \
         --kv-transfer-config.kv_connector NixlConnector \
         --kv-transfer-config.kv_role kv_consumer \
         --kv-transfer-config.kv_connector_extra_config.backends+ LIBFABRIC
 
-The router uses ``round_robin`` policy for pure-DP groups and
-``consistent_hash`` with ``--vllm-pd-disaggregation`` for PD groups, directing
-initial requests to prefill endpoints and subsequent decode traffic to decode
-endpoints:
+路由器对纯 DP 组使用 ``round_robin`` 策略，对 PD 组使用 ``consistent_hash`` 和 ``--vllm-pd-disaggregation`` ，将初始请求定向到 prefill 端点，并将后续 decode 流量定向到 decode 端点：
 
 .. code-block:: bash
 
-    # Router for pure-DP groups (round-robin across group endpoints)
+    # 纯 DP 组的路由器（跨组端点循环）
     vllm-router \
         --policy round_robin \
         --worker-urls http://<GROUP0_IP>:8000 http://<GROUP1_IP>:8001 \
         --host 0.0.0.0 --port 8010
 
-    # Router for PD disaggregation (consistent hash with prefill/decode split)
+    # 用于 PD 分解的路由器（hash 与 prefill/decode 分解一致）
     vllm-router \
         --policy consistent_hash \
         --vllm-pd-disaggregation \
@@ -133,18 +89,12 @@ endpoints:
         --decode http://<DECODE0_IP>:8001 --decode http://<DECODE1_IP>:8002 \
         --host 0.0.0.0 --port 8010
 
-Each container is launched with ``--privileged``, ``--net=host``, and explicit
-``/dev/infiniband/uverbs*`` and ``/dev/gdrdrv`` device mounts to enable
-GPU-direct RDMA over EFA.
+每个容器都使用 ``--privileged`` 、 ``--net=host`` 以及显式 ``/dev/infiniband/uverbs*`` 和 ``/dev/gdrdrv`` 设备安装来启动，以通过 EFA 启用 GPU-direct RDMA。
 
-Benchmark Script
-----------------
+基准脚本（Benchmark Script）
+--------------------------------------------
 
-The ``bench.sh`` script wraps ``vllm bench serve`` and handles Docker image
-loading transparently. If the ``vllm`` CLI is not available on the host, the
-script re-executes itself inside the container. It points the benchmark client
-at the router endpoint (or the direct vLLM endpoint for single-group
-configurations):
+``bench.sh`` 脚本包装 ``vllm bench serve`` 并透明地处理 Docker 图像加载。如果 ``vllm`` CLI 在主机上不可用，则脚本会在容器内重新执行自身。它将 benchmark 客户端指向路由器端点（或单组配置的直接 vLLM 端点）：
 
 .. code-block:: bash
 
@@ -154,26 +104,18 @@ configurations):
         --random-input-len 512 --random-output-len 256 \
         --num-prompts 1024
 
-Experimental Setup
-------------------
+实验配置（Experimental Setup）
+------------------------------------------------
 
-All experiments run on 4 nodes with 8 GPUs each (TP=8) using
-DeepSeek-V2-Lite as the model. The benchmark uses random input/output data
-with 1024 prompts via ``vllm bench serve``.
+所有实验均在 4 个节点上运行，每个节点有 8 个 GPU (TP=8)，使用 DeepSeek-V2-Lite 作为模型。 benchmark 使用随机输入/输出数据，通过 ``vllm bench serve`` 提供 1024 个提示。
 
-The configurations are:
+配置是：
 
-- **Baseline (data parallelism)**: 4 nodes, TP=8, DP=4. All nodes serve both
-  prefill and decode. This is the standard data-parallel serving setup.
-- **Route 2**: 2 groups of 2 nodes each, TP=8, DP=2 per group. A router
-  round-robins requests across groups. Each group independently handles both
-  prefill and decode.
-- **Route 4**: 4 groups of 1 node each, TP=8, no data parallelism. A router
-  distributes requests across all 4 independent nodes.
-- **PD 1P3D**: Disaggregated prefill/decode with 1 prefill node and 3 decode
-  nodes. KV cache is transferred from the prefill node to decode nodes via NIXL.
-- **PD 2P2D**: Disaggregated prefill/decode with 2 prefill nodes and 2 decode
-  nodes.
+- **基线（数据并行度）** ：4个节点，TP=8，DP=4。所有节点均服务于prefill和decode。这是标准的数据并行服务设置。
+- **Route 2** ：2组，每组2个节点，TP=8，DP=每组2个。路由器对跨组的请求进行轮询。每个组独立处理 prefill 和 decode。
+- **Route 4** ：4组，每组1个节点，TP=8，无数据并行。路由器将请求分发到所有 4 个独立节点。
+- **PD 1P3D** ：分解的 prefill/decode，具有 1 个 prefill 节点和 3 个 decode 节点。 KV cache从prefill节点通过NIXL传输到decode节点。
+- **PD 2P2D** ：分解的 prefill/decode，具有 2 个 prefill 节点和 2 个 decode 节点。
 
 .. code-block:: bash
 
@@ -187,42 +129,32 @@ The configurations are:
         --model /fsx/models/deepseek-ai/DeepSeek-V2-Lite \
         --gpu-memory-utilization 0.9
 
-    # Exp 3: 4 groups × 1 node, no DP, router round-robins
+    # Exp 3：4组×1节点，无DP，路由器轮询
     salloc -N 4 bash vllm.sbatch --route 4 \
         --model /fsx/models/deepseek-ai/DeepSeek-V2-Lite \
         --gpu-memory-utilization 0.9
 
-    # Exp 4: 1 prefill + 3 decode
+    # 经验 4：1 prefill + 3 decode
     salloc -N 4 bash vllm.sbatch --prefill 1 \
         --model /fsx/models/deepseek-ai/DeepSeek-V2-Lite \
         --gpu-memory-utilization 0.9
 
-    # Exp 5: 2 prefill + 2 decode
+    # 经验 5：2 prefill + 2 decode
     salloc -N 4 bash vllm.sbatch --prefill 2 \
         --model /fsx/models/deepseek-ai/DeepSeek-V2-Lite \
         --gpu-memory-utilization 0.9
 
-Results
--------
+结果（Results）
+----------------------
 
-We evaluate each configuration along four metrics: output token throughput,
-request throughput, time to first token (TTFT), and inter-token latency (ITL).
-Each plot contains two panels — the left panel sweeps input length with a fixed
-output length of 256 tokens (prefill-dominated regime), while the right panel
-sweeps output length with a fixed input length of 512 tokens (decode-dominated
-regime). This allows us to observe how each configuration behaves when the
-workload shifts from prefill-heavy to decode-heavy.
+我们根据四个指标评估每个配置：输出令牌 throughput、请求 throughput、第一个令牌的时间 (TTFT) 和令牌间 latency (ITL)。每个图包含两个面板 - 左侧面板以 256 个标记的固定输出长度（prefill 主导的体系）扫描输入长度，而右侧面板以 512 个标记的固定输入长度（decode 主导的体系）扫描输出长度。这使我们能够观察当工作负载从 prefill-heavy 转移到 decode-heavy 时每种配置的行为方式。
 
-Microbenchmark: KV Cache Transfer Bandwidth
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+微基准测试：KV Cache 传输带宽（Microbenchmark: KV Cache Transfer Bandwidth）
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Before examining end-to-end serving results, we use ``nixlbench`` to measure
-the raw NIXL transfer bandwidth over EFA between two nodes. This establishes
-an upper bound on KV cache transfer speed and helps contextualize the TTFT
-overhead observed in disaggregated configurations.
+在检查端到端服务结果之前，我们使用 ``nixlbench`` 来测量两个节点之间通过 EFA 的原始 NIXL 传输 bandwidth。这确定了 KV cache 传输速度的上限，并有助于了解在分解配置中观察到的 TTFT 开销。
 
-The benchmark runs in Multi-GPU (MG) mode with all 8 GPUs per node performing
-VRAM-to-VRAM transfers over the ``LIBFABRIC`` backend:
+benchmark 在 Multi-GPU (MG) 模式下运行，每个节点的所有 8 个 GPU 通过 ``LIBFABRIC`` 后端执行 VRAM 到 VRAM 传输：
 
 .. code-block:: bash
 
@@ -248,166 +180,88 @@ VRAM-to-VRAM transfers over the ``LIBFABRIC`` backend:
     33554432            1              327.436372     102.5          796.0
     67108864            1              349.608429     192.0          1724.0
 
-**Mapping to DeepSeek-V2-Lite KV cache transfer.** DeepSeek-V2-Lite uses
-Multi-head Latent Attention (MLA), which compresses the KV cache into a latent
-vector per token per layer. The per-token-per-layer KV cache size is
-``(kv_lora_rank + qk_rope_head_dim) × dtype_size = (512 + 64) × 2 = 1,152 bytes``.
-For 512 input tokens across 27 layers, the total KV cache is approximately **15.2 MB**.
-With TP=8, each GPU transfers about **1.9 MB**, which falls in the ~121 GB/s
-bandwidth range per the table above. Without tensor parallelism, the full 15.2 MB
-transfer achieves approximately ~289 GB/s.
+**映射到 DeepSeek-V2-Lite KV cache 传输。**DeepSeek-V2-Lite 使用多头潜在 Attention (MLA)，它压缩KV cache 转化为每层每个标记的潜在向量。每个令牌每层 KV cache 大小为 ``(kv_lora_rank + qk_rope_head_dim) × dtype_size = (512 + 64) × 2 = 1,152 bytes`` 。对于跨 27 层的 512 个输入令牌，总 KV cache 约为**15.2 MB**。当 TP=8 时，每个 GPU 传输大约**1.9 MB** ，根据上表，该值落在 ~121 GB/s bandwidth range 内。如果没有 tensor 并行性，完整的 15.2 MB 传输可达到约 289 GB/s。
 
-Output Token Throughput
-~~~~~~~~~~~~~~~~~~~~~~~
+输出 Token 吞吐量（Output Token Throughput）
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. image:: https://raw.githubusercontent.com/crazyguitar/pysheeet/master/docs/_static/appendix/nixl/throughput.png
+.. image:: /_static/appendix/nixl/throughput.png
     :alt: Output token throughput comparison
 
-The left panel varies input length with a fixed output length of 256 tokens
-(prefill-dominated), while the right panel varies output length with a fixed
-input length of 512 tokens (decode-dominated).
+.. admonition:: 图例
 
-For prefill-dominated workloads, Route 4 achieves the highest throughput since
-each node operates independently without the overhead of data parallelism
-coordination. The disaggregated configurations (PD 1P3D and PD 2P2D) show
-competitive throughput at shorter input lengths but degrade at longer inputs
-where the prefill nodes become the bottleneck.
+   Without Expert Parallelism：未启用专家并行；Output Token Throughput：输出 Token 吞吐量（tok/s）。左图横轴 Input Length 为输入长度，固定 output_len=256；右图横轴 Output Length 为输出长度，固定 input_len=512。图例中 baseline 为基线，pd 为分离式部署，route 为路由方案；各曲线名称保留为实验配置标识。
 
-For decode-dominated workloads, Route 4 again leads, followed by PD 1P3D.
-PD 2P2D shows the lowest throughput in this regime, as its two decode nodes
-cannot match the decode capacity of other configurations.
+左侧面板以 256 个令牌的固定输出长度（以 prefill 为主）改变输入长度，而右侧面板以 512 个令牌的固定输入长度（以 decode 为主）改变输出长度。
 
-Request Throughput
-~~~~~~~~~~~~~~~~~~
+对于 prefill 为主的工作负载，Route 4 实现了最高的 throughput，因为每个节点独立运行，没有数据并行协调的开销。分解配置（PD 1P3D 和 PD 2P2D）在较短的输入长度下显示出具有竞争力的 throughput，但在较长的输入下性能下降，其中 prefill 节点成为瓶颈。
 
-.. image:: https://raw.githubusercontent.com/crazyguitar/pysheeet/master/docs/_static/appendix/nixl/req_throughput.png
+对于以 decode 为主的工作负载，Route 4 再次领先，其次是 PD 1P3D。 PD 2P2D 在该机制中显示出最低的 throughput，因为它的两个 decode 节点无法与其他配置的 decode 容量相匹配。
+
+请求吞吐量（Request Throughput）
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. image:: /_static/appendix/nixl/req_throughput.png
     :alt: Request throughput comparison
 
-Request throughput follows a similar pattern. Route 4 consistently achieves the
-highest request throughput across all configurations. The disaggregated PD 1P3D
-configuration maintains reasonable request throughput for short inputs but drops
-significantly at longer input lengths (4096 tokens), where the single prefill
-node becomes saturated.
+.. admonition:: 图例
 
-Time to First Token (TTFT)
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+   Without Expert Parallelism：未启用专家并行；Request Throughput：请求吞吐量（req/s）。左图横轴 Input Length 为输入长度，固定 output_len=256；右图横轴 Output Length 为输出长度，固定 input_len=512。图例中 baseline 为基线，pd 为分离式部署，route 为路由方案；各曲线名称保留为实验配置标识。
 
-.. image:: https://raw.githubusercontent.com/crazyguitar/pysheeet/master/docs/_static/appendix/nixl/ttft.png
+请求 throughput 遵循类似的模式。 Route 4 在所有配置中始终满足最高要求 throughput。分解的 PD 1P3D 配置保持了对短输入的合理请求 throughput，但在较长的输入长度（4096 个令牌）下显着下降，其中单个 prefill 节点变得饱和。
+
+首个 Token 延迟（TTFT）（Time to First Token (TTFT)）
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. image:: /_static/appendix/nixl/ttft.png
     :alt: TTFT comparison
 
-TTFT is critical for user-perceived latency. The baseline DP and Route 2
-configurations show moderate TTFT that scales with input length. Route 4
-achieves the lowest TTFT across all input lengths due to the absence of
-cross-node coordination.
+.. admonition:: 图例
 
-The disaggregated configurations exhibit higher TTFT, particularly at longer
-input lengths. PD 1P3D shows TTFT exceeding 37 seconds at 4096 input tokens,
-as all prefill work funnels through a single node. PD 2P2D improves on this
-but still lags behind the non-disaggregated configurations. The additional
-latency from KV cache transfer over NIXL contributes to the elevated TTFT.
+   Without Expert Parallelism：未启用专家并行；Mean TTFT：平均首个 Token 延迟（ms）。左图横轴 Input Length 为输入长度，固定 output_len=256；右图横轴 Output Length 为输出长度，固定 input_len=512。图例中 baseline 为基线，pd 为分离式部署，route 为路由方案；各曲线名称保留为实验配置标识。
 
-For decode-dominated workloads (right panel), the differences are smaller. At
-short output lengths (256–512 tokens), PD 1P3D shows 1–2 seconds higher TTFT
-than the baseline, as the KV cache transfer overhead is proportionally more
-significant. At longer output lengths (1024+ tokens), the disaggregated
-configurations converge with or improve upon the baseline, as the baseline
-suffers from increased prefill/decode contention under heavier concurrent
-decode load.
+TTFT 对于用户感知的 latency 至关重要。基线 DP 和路线 2 配置显示中等 TTFT，可随输入长度缩放。由于缺乏跨节点协调，路线 4 在所有输入长度上实现了最低的 TTFT。
 
-Inter-Token Latency (ITL)
-~~~~~~~~~~~~~~~~~~~~~~~~~
+分解配置表现出更高的 TTFT，特别是在较长的输入长度下。 PD 1P3D 显示 TTFT 在 4096 个输入令牌处超过 37 秒，因为所有 prefill 工作都通过单个节点进行。 PD 2P2D 对此进行了改进，但仍然落后于非分解配置。从 KV cache 传输到 NIXL 的额外 latency 有助于提高 TTFT。
 
-.. image:: https://raw.githubusercontent.com/crazyguitar/pysheeet/master/docs/_static/appendix/nixl/itl.png
+对于 decode 主导的工作负载（右图），差异较小。在短输出长度（256–512 个令牌）下，PD 1P3D 显示 TTFT 比基线高 1–2 秒，因为 KV cache 传输开销按比例更显着。在较长的输出长度（1024+令牌）下，分解的配置与基线收敛或改进，因为基线在较重的并发 decode 负载下会受到 prefill/decode 争用的增加。
+
+Token 间延迟（ITL）（Inter-Token Latency (ITL)）
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. image:: /_static/appendix/nixl/itl.png
     :alt: ITL comparison
 
-ITL measures the latency between consecutive generated tokens during the decode
-phase. This is where disaggregated serving shows its primary advantage.
+.. admonition:: 图例
 
-In the prefill-dominated regime (left panel), PD 1P3D achieves the lowest ITL
-across all input lengths, with mean ITL as low as 10 ms at 4096 input tokens.
-By isolating decode nodes from prefill interference, the decode phase runs
-uninterrupted. PD 2P2D also shows reduced ITL compared to the baseline, though
-the benefit is less pronounced due to having fewer decode nodes. The baseline DP
-and Route configurations show higher ITL, particularly at longer input lengths
-where prefill and decode contend for the same GPU resources.
+   Without Expert Parallelism：未启用专家并行；Mean ITL：平均 Token 间延迟（ms）。左图横轴 Input Length 为输入长度，固定 output_len=256；右图横轴 Output Length 为输出长度，固定 input_len=512。图例中 baseline 为基线，pd 为分离式部署，route 为路由方案；各曲线名称保留为实验配置标识。
 
-In the decode-dominated regime (right panel), Route 4 achieves the lowest ITL
-(~25–29 ms) since each node serves independently without cross-node
-coordination. Among the disaggregated configurations, PD 1P3D outperforms
-PD 2P2D due to its greater decode capacity (3 decode nodes vs. 2), maintaining
-ITL around 26–35 ms. PD 2P2D, with only 2 decode nodes, shows ITL comparable
-to the baseline (~45–50 ms). As output length increases, ITL gradually rises
-across all configurations, reflecting the growing decode load.
+ITL 测量 decode 阶段期间连续生成的令牌之间的 latency。这就是分类服务显示其主要优势的地方。
 
-Discussion
-----------
+在 prefill 主导的体系中（左图），PD 1P3D 在所有输入长度上实现了最低的 ITL，在 4096 个输入令牌时，平均 ITL 低至 10 ms。通过隔离decode节点与prefill干扰，decode阶段不间断运行。与基线相比，PD 2P2D 还显示 ITL 有所减少，但由于 decode 节点较少，因此优势不太明显。基线 DP 和路由配置显示更高的 ITL，特别是在 prefill 和 decode 争夺相同 GPU 资源的较长输入长度时。
 
-So, is disaggregated prefill/decode a silver bullet? The answer is clearly no —
-at least not under the conditions tested here. All benchmarks use randomly
-generated prompts, meaning every request produces a unique KV cache with zero
-prefix cache hit rate. This represents a worst-case scenario for disaggregated
-serving, where every prefill must be computed from scratch and the full KV cache
-must be transferred over the network. In production workloads with shared system
-prompts or repeated prefixes, prefix caching on prefill nodes could
-substantially reduce redundant computation and transfer volume, potentially
-shifting the balance in favor of disaggregation. Even so, the results reveal a
-set of sharp trade-offs that make disaggregation a specialized tool rather than
-a universal improvement:
+在 decode 主导的体系中（右图），路线 4 实现了最低的 ITL（~25–29 ms），因为每个节点独立服务，无需跨节点协调。在分解配置中，PD 1P3D 优于 PD 2P2D，因为它具有更大的 decode 容量（3 个 decode 节点 vs. 2 个节点），将 ITL 维持在 26–35 ms 左右。 PD 2P2D 仅具有 2 个 decode 节点，显示 ITL 与基线相当（~45–50 ms）。随着输出长度的增加，ITL 在所有配置中逐渐增加，反映了不断增长的 decode 负载。
 
-- **ITL wins, but throughput depends on scaling**: Disaggregated configurations
-  deliver dramatically lower inter-token latency — PD 1P3D achieves as low as
-  10 ms ITL at long input lengths, up to 14× better than the baseline in
-  prefill-dominated regimes and 1.4–2.4× better in decode-dominated regimes.
-  The throughput and TTFT degradation observed here is partly an artifact of a
-  fixed 4-node cluster: dedicating nodes to one role starves the other. In
-  practice, prefill and decode pools can be scaled independently — adding more
-  prefill nodes to eliminate the prefill bottleneck, or more decode nodes to
-  increase token throughput. The challenge is finding the right ratio between
-  prefill and decode capacity for a given workload, as over-provisioning either
-  side increases cost without proportional benefit.
+讨论（Discussion）
+----------------------------
 
-- **Prefill bottleneck is a hard constraint**: With a fixed cluster size,
-  dedicating nodes to prefill reduces decode capacity and vice versa. PD 1P3D
-  suffers severe prefill saturation at long input lengths (TTFT > 37s at 4096
-  tokens), while PD 2P2D has fewer decode nodes, limiting decode throughput.
-  Frameworks such as `NVIDIA Dynamo <https://github.com/ai-dynamo/dynamo>`_
-  aim to address this by dynamically scaling prefill and decode pools based on
-  real-time demand, though this adds operational complexity.
+那么，分解的 prefill/decode 是灵丹妙药吗？答案显然是否定的——至少在此处测试的条件下不是。所有基准测试都使用随机生成的提示，这意味着每个请求都会生成唯一的 KV cache，前缀 cache 命中率为零。这代表了分类服务的最坏情况，其中每个 prefill 必须从头开始计算，并且完整的 KV cache 必须通过网络传输。在具有共享系统提示或重复前缀的生产工作负载中，prefill 节点上的前缀 caching 可以大大减少冗余计算和传输量，从而有可能改变平衡以利于分解。即便如此，结果还是揭示了 set 的尖锐权衡，使得分解成为一种专门的工具，而不是一种普遍的改进：
 
-- **Simple routing beats disaggregation on throughput**: Route 4 (pure routing,
-  no DP, no disaggregation) consistently achieves the highest throughput across
-  all configurations by eliminating cross-node synchronization entirely. It also
-  achieves the lowest TTFT in prefill-dominated workloads, though PD 1P3D edges
-  it out on TTFT in decode-dominated regimes where the fixed 512-token input is
-  short enough to avoid prefill saturation. This is a surprisingly strong
-  baseline — for workloads where ITL is not the primary concern, stateless
-  load-balanced independent nodes outperform both data parallelism and
-  disaggregated configurations.
+- **ITL 获胜，但 throughput 取决于扩展** ：分解配置可显着降低代币间 latency — PD 1P3D 在长输入长度下实现低至 10 毫秒的 ITL，最多提高 14 倍比 prefill 主导体系中的基线更好，而 1.4–2.4× 在 decode 主导体系中更好。这里观察到的 throughput 和 TTFT 性能下降部分是固定 4 节点集群的产物：将节点专用于一个角色会使另一个角色挨饿。在实践中，prefill和decode池可以独立扩展——添加更多prefill节点以消除prefill瓶颈，或添加更多decode节点以增加代币throughput。面临的挑战是针对给定工作负载找到 prefill 和 decode 容量之间的正确比例，因为任何一方的过度配置都会增加成本，而不会带来相应的效益。
 
-- **KV cache transfer is not free**: The NIXL transfer over EFA adds measurable
-  latency to TTFT in disaggregated configurations. This overhead is amortized
-  for longer decode sequences but is noticeable for short output lengths,
-  making disaggregation less attractive for short-response workloads.
+- **预填充瓶颈是一个硬约束** ：在固定集群大小的情况下，将节点专用于prefill会减少decode的容量，反之亦然。 PD 1P3D 在长输入长度下会遭受严重的 prefill 饱和（TTFT > 37s，4096 个令牌），而 PD 2P2D 的 decode 节点较少，限制了 decode throughput。 `NVIDIA Dynamo <https://github.com/ai-dynamo/dynamo>`_ 等框架旨在通过根据实时需求动态扩展 prefill 和 decode 池来解决此问题，但这会增加操作复杂性。
 
-In summary, disaggregated prefill/decode aims to optimize both TTFT and ITL by
-isolating the two phases, but achieving these goals is not guaranteed. KV cache
-transfer over the network introduces additional overhead that can negate the
-TTFT benefit, particularly at long input lengths where the transfer volume is
-large. While ITL improvements are consistently observed due to the elimination
-of prefill interference on decode nodes, the overall serving performance depends
-heavily on the prefill-to-decode ratio, workload characteristics, and network
-bandwidth. Teams considering this architecture should carefully profile their
-input/output length distributions, latency SLAs, and throughput requirements
-before committing to the added complexity.
+- **简单路由在吞吐量方面胜过分解** ：路线4（纯路由，无DP，无分解）通过完全消除跨节点同步，在所有配置中一致实现最高的throughput。它还在以 prefill 为主的工作负载中实现了最低的 TTFT，尽管 PD 1P3D 在以 decode 为主的体系中比 TTFT 略胜一筹，其中固定 512 个令牌输入足够短，足以避免 prefill 饱和。这是一个令人惊讶的强大基线 - 对于 ITL 不是主要问题的工作负载，无状态负载平衡独立节点的性能优于数据并行性和分解配置。
 
-References
-----------
+- **KV cache 传输不是免费的** ：EFA 上的 NIXL 传输在分解配置中将可测量的 latency 添加到 TTFT。对于较长的 decode 序列，此开销会被摊销，但对于较短的输出长度来说会很明显，使得分解对于短响应工作负载的吸引力较小。
 
-.. [1] NVIDIA, "NIXL: NVIDIA Inference Xfer Library," GitHub, 2025.
-   https://github.com/ai-dynamo/nixl
+总之，分解的 prefill/decode 旨在通过隔离两个阶段来优化 TTFT 和 ITL，但不能保证实现这些目标。 KV cache 通过网络传输会带来额外的开销，从而抵消 TTFT 的优势，特别是在传输量较大的长输入长度下。虽然由于消除了 decode 节点上的 prefill 干扰而持续观察到 ITL 的改进，但总体服务性能在很大程度上取决于 prefill 与 decode 的比率、工作负载特性和网络 bandwidth。考虑此架构的团队应在承诺增加的复杂性之前仔细分析其输入/输出长度分布、latency SLA 和 throughput 要求。
 
-.. [2] vLLM Project, "vLLM: Easy, fast, and cheap LLM serving," GitHub, 2024.
-   https://github.com/vllm-project/vllm
+参考资料（References）
+--------------------------------
 
-.. [3] vLLM Project, "vllm-router: Production-ready router for vLLM," GitHub, 2025.
-   https://github.com/vllm-project/vllm-router
+.. [1] NVIDIA，"NIXL: NVIDIA Inference Xfer Library," GitHub，2025。https://github.com/ai-dynamo/nixl
+
+.. [2] vLLM 项目，"vLLM: Easy, fast, and cheap LLM serving," GitHub，2024。https://github.com/vllm-project/vllm
+
+.. [3] vLLM 项目，"vllm-router: Production-ready router for vLLM," GitHub，2025。https://github.com/vllm-project/router

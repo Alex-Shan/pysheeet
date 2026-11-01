@@ -47,7 +47,7 @@ class TestEnvironmentVariables:
 
     def test_get_env(self):
         """Test getting environment variable."""
-        # PATH should exist on all systems
+        # PATH 应该存在于所有系统上
         path = os.environ.get("PATH")
         assert path is not None
 
@@ -103,7 +103,7 @@ class TestPathOperations:
     def test_isfile_isdir(self):
         """Test isfile and isdir."""
         assert os.path.isdir(".")
-        # Create temp file to test isfile
+        # 创建临时文件来测试 isfile
         with tempfile.NamedTemporaryFile() as f:
             assert os.path.isfile(f.name)
 
@@ -130,12 +130,12 @@ class TestDirectoryOperations:
     def test_makedirs_exist_ok(self):
         """Test makedirs with exist_ok."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            os.makedirs(tmpdir, exist_ok=True)  # Should not raise
+            os.makedirs(tmpdir, exist_ok=True)  # 不应该提高
 
     def test_listdir(self):
         """Test listing directory contents."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            # Create some files
+            # 创建一些文件
             Path(tmpdir, "file1.txt").touch()
             Path(tmpdir, "file2.txt").touch()
             entries = os.listdir(tmpdir)
@@ -145,7 +145,7 @@ class TestDirectoryOperations:
     def test_walk(self):
         """Test walking directory tree."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            # Create nested structure
+            # 创建嵌套结构
             os.makedirs(os.path.join(tmpdir, "subdir"))
             Path(tmpdir, "file1.txt").touch()
             Path(tmpdir, "subdir", "file2.txt").touch()
@@ -231,11 +231,11 @@ class TestTempFiles:
         """Test TemporaryDirectory."""
         with tempfile.TemporaryDirectory() as tmpdir:
             assert os.path.isdir(tmpdir)
-            # Create file inside
+            # 里面创建文件
             path = os.path.join(tmpdir, "test.txt")
             Path(path).write_text("data")
             assert os.path.exists(path)
-        # Directory should be deleted
+        # 目录应该被删除
         assert not os.path.exists(tmpdir)
 
     def test_gettempdir(self):

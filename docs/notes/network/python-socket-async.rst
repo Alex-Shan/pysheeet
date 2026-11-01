@@ -1,38 +1,22 @@
 .. meta::
-    :description lang=en: Python asynchronous socket programming tutorial with select, poll, epoll, kqueue, and selectors module for building high-performance non-blocking servers
+    :description lang=zh_CN: Python asynchronous socket 编程教程，包含 select、poll、epoll、kqueue 和选择器 module，用于构建高性能非阻塞服务器
     :keywords: Python, socket, async, select, poll, epoll, kqueue, selectors, non-blocking, event-driven, I/O multiplexing, concurrent connections, high-performance server
 
-=================
-Async Socket I/O
-=================
+======================================================
+异步套接字 I/O（Async Socket I/O）
+======================================================
 
-.. contents:: Table of Contents
+.. contents:: 目录（Table of Contents）
     :backlinks: none
 
-Asynchronous I/O is essential for building high-performance network servers that can
-handle thousands of concurrent connections efficiently. Traditional blocking I/O
-requires one thread per connection, which doesn't scale well due to memory overhead
-and context switching costs. Asynchronous I/O solves this by allowing a single thread
-to handle multiple connections using I/O multiplexing—the program monitors multiple
-sockets simultaneously and processes whichever ones are ready for reading or writing.
+Asynchronous I/O 是构建高性能网络服务器的关键，使其能够高效处理数千个并发连接。传统 blocking I/O 为每个连接使用一个 thread，受内存开销和 context switching 成本限制，难以扩展。Asynchronous I/O 通过 I/O multiplexing，让单个 thread 处理多个连接：程序同时监视多个 sockets，并处理其中已准备好读取或写入的 sockets。
 
-This section covers the evolution of I/O multiplexing in Python, from the classic
-``select()`` system call (portable but limited) to modern high-performance mechanisms
-like ``epoll`` (Linux) and ``kqueue`` (BSD/macOS) that can efficiently handle tens of
-thousands of connections. We also cover the ``selectors`` module, which provides a
-high-level, platform-independent interface that automatically uses the best available
-mechanism. Understanding these primitives is valuable even if you use higher-level
-frameworks like ``asyncio``, as they build upon these same concepts.
+本节介绍 Python 中 I/O 复用的演变，从经典的 ``select()`` 系统调用（可移植但有限）到现代高性能机制，如 ``epoll`` (Linux) 和 ``kqueue`` (BSD/macOS)处理数万个连接。我们还介绍了 ``selectors`` module，它提供了一个高级、独立于平台的接口，可自动使用最佳的可用机制。即使您使用 ``asyncio`` 等更高级别的框架，理解这些原语也很有价值，因为它们构建在这些相同的概念之上。
 
-Async TCP Server - select
--------------------------
+异步 TCP 服务器：select（Async TCP Server - select）
+----------------------------------------------------------------------------------------
 
-``select()`` is the oldest and most portable I/O multiplexing mechanism, available on
-virtually all platforms including Windows, Linux, and macOS. It monitors file descriptors
-for three conditions: readability (data available to read), writability (buffer space
-available to write), and exceptional conditions (errors). While portable, ``select()``
-has limitations: it typically supports only up to 1024 file descriptors and has O(n)
-performance as it must scan all monitored descriptors on each call.
+``select()`` 是最古老、最便携的 I/O 复用机制，几乎可用于所有平台，包括 Windows、Linux 和 macOS。它监视 file descriptors 的三个条件：可读性（可供读取的数据）、可写性（buffer 的空间可供写入）和异常条件（错误）。虽然可移植，但 ``select()`` 也有局限性：它通常仅支持最多 1024 个 file descriptors，并且具有 O(n) 性能，因为它必须在每次调用时扫描所有受监控的描述符。
 
 .. code-block:: python
 
@@ -74,11 +58,10 @@ performance as it must scan all monitored descriptors on each call.
     except KeyboardInterrupt:
         sock.close()
 
-Async TCP Server - poll
------------------------
+异步 TCP 服务器：poll（Async TCP Server - poll）
+--------------------------------------------------------------------------------
 
-``poll()`` is similar to ``select()`` but more efficient for large numbers of
-file descriptors. Available on Unix systems.
+``poll()`` 与 ``select()`` 类似，但对于大量 file descriptors 效率更高。在 Unix 系统上可用。
 
 .. code-block:: python
 
@@ -151,11 +134,10 @@ file descriptors. Available on Unix systems.
         except KeyboardInterrupt:
             pass
 
-Async TCP Server - epoll
-------------------------
+异步 TCP 服务器 - epoll（Async TCP Server - epoll）
+----------------------------------------------------------------------------------------
 
-``epoll`` is Linux-specific and the most efficient for handling thousands of
-connections. It uses edge-triggered or level-triggered notifications.
+``epoll`` 是 Linux 专用的，对于处理数千个连接最有效。它使用边缘触发或电平触发的通知。
 
 .. code-block:: python
 
@@ -230,11 +212,10 @@ connections. It uses edge-triggered or level-triggered notifications.
         finally:
             epoll.close()
 
-Async TCP Server - kqueue
--------------------------
+异步 TCP 服务器 - kqueue（Async TCP Server - kqueue）
+--------------------------------------------------------------------------------------------
 
-``kqueue`` is the BSD/macOS equivalent of epoll, providing efficient event
-notification for large numbers of file descriptors.
+``kqueue`` 相当于 epoll 的 BSD/macOS，为大量 file descriptors 提供高效的事件通知。
 
 .. code-block:: python
 
@@ -281,7 +262,7 @@ notification for large numbers of file descriptors.
         msg = conn.recv(1024)
         if msg:
             responses[fd] = msg
-            # Switch from read to write
+            # 从读切换到写
             ke_del = select.kevent(fd, select.KQ_FILTER_READ, select.KQ_EV_DELETE)
             ke_add = select.kevent(fd, select.KQ_FILTER_WRITE, select.KQ_EV_ADD)
             kq.control([ke_del, ke_add], 0)
@@ -297,7 +278,7 @@ notification for large numbers of file descriptors.
         msg = responses.pop(fd, None)
         if conn and msg:
             conn.send(msg)
-            # Switch from write to read
+            # 从写入切换到读取
             ke_del = select.kevent(fd, select.KQ_FILTER_WRITE, select.KQ_EV_DELETE)
             ke_add = select.kevent(fd, select.KQ_FILTER_READ, select.KQ_EV_ADD)
             kq.control([ke_del, ke_add], 0)
@@ -324,11 +305,10 @@ notification for large numbers of file descriptors.
         finally:
             kq.close()
 
-High-Level API - selectors
---------------------------
+高层 API：selectors（High-Level API - selectors）
+----------------------------------------------------------------------------------------
 
-The ``selectors`` module (Python 3.4+) provides a high-level, platform-independent
-interface that automatically uses the best available mechanism (epoll, kqueue, etc.).
+``selectors`` module (Python 3.4+) 提供了一个高级的、独立于平台的接口，它自动使用最佳的可用机制（epoll、kqueue 等）。
 
 .. code-block:: python
 
@@ -375,25 +355,38 @@ interface that automatically uses the best available mechanism (epoll, kqueue, e
         except KeyboardInterrupt:
             pass
 
-Comparison of I/O Multiplexing Methods
---------------------------------------
+I/O 复用方法比较（Comparison of I/O Multiplexing Methods）
+----------------------------------------------------------------------------------------------------
 
-+------------+------------+------------------+---------------------------+
-| Method     | Platform   | Scalability      | Notes                     |
-+============+============+==================+===========================+
-| select     | All        | O(n) - Limited   | Max ~1024 FDs             |
-+------------+------------+------------------+---------------------------+
-| poll       | Unix       | O(n) - Better    | No FD limit               |
-+------------+------------+------------------+---------------------------+
-| epoll      | Linux      | O(1) - Excellent | Edge/level triggered      |
-+------------+------------+------------------+---------------------------+
-| kqueue     | BSD/macOS  | O(1) - Excellent | Similar to epoll          |
-+------------+------------+------------------+---------------------------+
-| selectors  | All        | Best available   | Recommended for new code  |
-+------------+------------+------------------+---------------------------+
+.. list-table::
+   :header-rows: 1
+
+   * - Method
+     - 平台
+     - 可扩展性
+     - 笔记
+   * - 选择
+     - 全部
+     - O(n) - 有限公司
+     - 最多 ~1024 个 FD
+   * - 轮询
+     - Unix
+     - O(n) - 更好
+     - 无 FD 限制
+   * - epoll
+     - Linux
+     - O(1) - 优秀
+     - 边沿/电平触发
+   * - 队列
+     - BSD/macOS
+     - O(1) - 优秀
+     - 类似于 epoll
+   * - 选择器
+     - 全部
+     - 最好的可用
+     - 推荐用于新代码
+
 
 .. note::
 
-    For new code, use the ``selectors`` module or ``asyncio`` for async I/O.
-    The low-level APIs (select, poll, epoll, kqueue) are mainly useful for
-    understanding how async I/O works or when you need fine-grained control.
+    对于新代码，请使用 ``selectors`` module 或 ``asyncio`` 进行异步 I/O。低级 APIs（select、poll、epoll、kqueue）主要用于了解异步 I/O 的工作原理或何时需要细粒度控制。

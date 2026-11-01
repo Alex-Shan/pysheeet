@@ -1,11 +1,11 @@
 /**
- * example.cpp - Basic pybind11 example
+ * example.cpp - 基本 pybind11 示例
  *
- * Build:
+ * 建造：
  *   mkdir build && cd build
  *   cmake .. && make
  *
- * Usage:
+ * 用法：
  *   >>> import example
  *   >>> example.add(1, 2)
  *   3
@@ -23,7 +23,7 @@ unsigned long fib(unsigned long n) {
   return fib(n - 1) + fib(n - 2);
 }
 
-// Iterative version for large n
+// 大 n 的迭代版本
 unsigned long fib_iter(unsigned long n) {
   if (n < 2) return n;
   unsigned long a = 0, b = 1;

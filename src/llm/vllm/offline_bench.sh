@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Offline vLLM benchmark wrapper (no API server)
-# Usage:
+# 离线 vLLM benchmark 包装器（无 API 服务器）
+# 用法：
 #   salloc -N1 bash offline_bench.sh --model meta-llama/Llama-3.1-8B --num-prompts 50
 #   salloc -N2 bash offline_bench.sh --model Qwen/Qwen2-57B-A14B --tp-size 4 --enable-ep
 set -euo pipefail
@@ -11,7 +11,7 @@ CONTAINER_MOUNT="${CONTAINER_MOUNT:-/fsx}"
 IMAGE="${IMAGE:-${PWD}/vllm-serve-latest.tar.gz}"
 NPROC="${NPROC:-}"
 
-# Setup multi-node coordination early (before container launch)
+# 尽早设置多节点协调（在容器启动之前）
 if [[ -n "${SLURM_JOB_ID:-}" ]]; then
   NUM_NODES=${SLURM_JOB_NUM_NODES:-1}
   readarray -t NODES < <(scontrol show hostnames "$SLURM_JOB_NODELIST")
@@ -138,7 +138,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Parse BENCH_ARGS to extract TP/DP sizes for nproc calculation
+# 解析 BENCH_ARGS 以提取 TP/DP 大小用于 nproc 计算
 for ((i = 0; i < ${#BENCH_ARGS[@]}; i++)); do
   case "${BENCH_ARGS[$i]}" in
   --tp-size | --tensor-parallel-size)
@@ -150,18 +150,18 @@ for ((i = 0; i < ${#BENCH_ARGS[@]}; i++)); do
   esac
 done
 
-# Auto-detect nproc if not set
+# 如果不是 set，则自动检测 nproc
 if [[ -z "$NPROC" ]]; then
-  # Calculate based on total GPUs across all nodes
+  # 根据所有节点上的 GPU 总数进行计算
   GPUS_PER_NODE=8
   TOTAL_GPUS=$((NUM_NODES * GPUS_PER_NODE))
 
-  # If DP not specified, auto-calculate
+  # 如果未指定DP，则自动计算
   if [[ "$DP_SIZE" -eq 1 ]]; then
     DP_SIZE=$((TOTAL_GPUS / TP_SIZE))
     [[ $DP_SIZE -lt 1 ]] && DP_SIZE=1
     info "Auto-detected: DP_SIZE=${DP_SIZE} (${TOTAL_GPUS} GPUs / TP_SIZE=${TP_SIZE})"
-    # Inject --data-parallel-size into BENCH_ARGS
+    # 将 --data-parallel-size 注入 BENCH_ARGS
     BENCH_ARGS+=("--data-parallel-size" "$DP_SIZE")
   fi
 
@@ -169,12 +169,12 @@ if [[ -z "$NPROC" ]]; then
   NPROC=$GPUS_PER_NODE
 fi
 
-# If python is not available or not in container, load image and run in container
+# 如果 python 不可用或不在容器中，则加载映像并在容器中运行
 if ! command -v python3 &>/dev/null || ! python3 -c "import vllm" &>/dev/null 2>&1; then
   load_or_pull_image
   SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-  # Build nsys command prefix
+  # 构建nsys命令前缀
   NSYS_CMD=""
   NSYS_ARG=""
   if [[ "${ENABLE_NSYS}" == "true" ]]; then
@@ -214,7 +214,7 @@ if ! command -v python3 &>/dev/null || ! python3 -c "import vllm" &>/dev/null 2>
   exit $?
 fi
 
-# This code only runs if already inside container with vllm available
+# 此代码仅在已位于 vllm 可用的容器内时运行
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 info "========================================"
